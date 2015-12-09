@@ -10,21 +10,21 @@
 <title><?php echo $title;?></title>
 <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body style="padding-bottom: 70px;">
 <nav class="navbar navbar-default">
   <div class="container">
     <div class="navbar-header">
       <a href="index.php" class="pull-left"><img style="max-width:150px; margin-top: 4px; margin-left: 4px;" src="logo.png"></a>
     </div>
-    <form class="navbar-form navbar-right" role="search" style="margin-bottom: -1px;">
+    <form class="navbar-form navbar-right" action="search.php" method="get" role="search" style="margin-bottom: -1px;">
       <div class="input-group">
         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-        <input type="text" class="form-control" placeholder="검색어 입력">
+        <input type="text" class="form-control" name="q" value="<?php echo $query;?>" placeholder="검색어 입력">
         <span class="input-group-btn">
-          <a class="btn btn-default" href="search.php" role="button">검색</a>
+          <button class="btn btn-default" type="submit">검색</button>
           <?php
             if ($loggedin) {
-              echo '<a class="btn btn-default" href="signout.php" role="button"><span class="glyphicon glyphicon-off" aria-hidden="true"></a>';
+              echo '<a class="btn btn-default" href="signout.php" role="button"><abbr title="'.$user_name.' 로그아웃"><span class="glyphicon glyphicon-off" aria-hidden="true"></abbr></a>';
             } else {
               echo '<a class="btn btn-default" href="signin.php" role="button"><span class="glyphicon glyphicon-user" aria-hidden="true"></a>';
             }
