@@ -22,12 +22,12 @@ if (!empty($user_name) && !empty($user_password)) {
     exit($db->connect_error);
   } 
 
-  $sqlQuery = "SELECT `id`, `password`, `email` FROM `$db_users_table` WHERE `name`=? LIMIT 1";
+  $sqlQuery = "SELECT `id`, `password`, `email`, `permission` FROM `$db_users_table` WHERE `name`=? LIMIT 1";
   $statement = $db->prepare($sqlQuery);
   $statement->bind_param('s', $user_name);
   $statement->execute();
   $statement->store_result();
-  $statement->bind_result($user_db_id, $user_db_password, $user_db_email);
+  $statement->bind_result($user_db_id, $user_db_password, $user_db_email, $user_permission);
   $statement->fetch();
 
   // 로그인 성공
@@ -35,6 +35,7 @@ if (!empty($user_name) && !empty($user_password)) {
     $_SESSION['name'] = $user_name;
     $_SESSION['id'] = $user_db_id;
     $_SESSION['email'] = $user_db_email;
+    $_SESSION['permission'] = intval($user_permission);
     $_SESSION['loggedin'] = TRUE;
     $statement->close();
 

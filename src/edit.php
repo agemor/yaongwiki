@@ -1,49 +1,21 @@
 <?php
 require 'db.php';
 require 'session.php';
+include 'finediff.php';
 
-function diff($old, $new){
-    $matrix = array();
-    $maxlen = 0;
-    foreach($old as $oindex => $ovalue){
-        $nkeys = array_keys($new, $ovalue);
-        foreach($nkeys as $nindex){
-            $matrix[$oindex][$nindex] = isset($matrix[$oindex - 1][$nindex - 1]) ?
-                $matrix[$oindex - 1][$nindex - 1] + 1 : 1;
-            if($matrix[$oindex][$nindex] > $maxlen){
-                $maxlen = $matrix[$oindex][$nindex];
-                $omax = $oindex + 1 - $maxlen;
-                $nmax = $nindex + 1 - $maxlen;
-            }
-        }   
-    }
-    if($maxlen == 0) return array(array('d'=>$old, 'i'=>$new));
-    return array_merge(
-        diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
-        array_slice($new, $nmax, $maxlen),
-        diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen)));
-}
-
-function htmlDiff($old, $new){
-    $ret = '';
-    $diff = diff(preg_split("/[\s]+/", $old), preg_split("/[\s]+/", $new));
-    foreach($diff as $k){
-        if(is_array($k))
-            $ret .= (!empty($k['d'])?"<del>".implode(' ',$k['d'])."</del> ":'').
-                (!empty($k['i'])?"<ins>".implode(' ',$k['i'])."</ins> ":'');
-        else $ret .= $k . ' ';
-    }
-    return $ret;
-}
+$TITLE_CHANGE_PERMISSION = 1;
+$ARTICLE_DELETE_PERMISSION = 1;
 
 $article_title = empty($_GET['t']) ? $_POST['article-title'] : $_GET['t'];
 
 if(empty($article_title)) {
   header('Location: 404.php');
+  exit();
 }
 
 if(!$loggedin) {
   header('Location: signin.php?redirect=edit.php?t='.$article_title);
+  exit();
 }
 
 $error = false;
@@ -55,57 +27,89 @@ if ($db->connect_errno) {
   exit($db->connect_error);
 } 
 
-// 읽어오기 - 이전에 넘겨진 데이터가 없는 경우
-if (empty($_POST['article-id'])) {
+// 읽어오기
+$sqlQuery = "SELECT * FROM `$db_articles_table` ";
+$sqlQuery .= "WHERE `title`='".$db->real_escape_string($article_title)."' LIMIT 1;";
 
-  $sqlQuery = "SELECT * FROM `$db_articles_table` ";
-  $sqlQuery .= "WHERE `title`='".$db->real_escape_string($article_title)."';";
+$result = $db->query($sqlQuery);
 
-  $result = $db->query($sqlQuery);
+// 읽어올 결과값이 없는 경우 404로 리다이렉트
+if ($result->num_rows < 1) {
+  header('Location: 404.php');
+  exit();
+}
 
-  // 읽어올 결과값이 없는 경우 404로 리다이렉트
-  if ($result->num_rows < 1) {
-    header('Location: 404.php');
-  }
+$row = $result->fetch_assoc();
+$article_id = $row["id"];
+$article_content = $row["content"];
+$article_tags = $row["tags"];
+$article_hits = $row["hits"];
 
-  $row = $result->fetch_assoc();
-  $article_id = $row["id"];
-  $article_content = $row["content"];
-  $article_tags = $row["tags"];
-  $article_hits = $row["hits"];
-
-  $result->free();
-} 
+$result->free();
 
 // 저장하기
-else {
+if (isset($_POST['article-content'])) {
 
-  $article_title = $db->real_escape_string($_POST['article-title']);
-  $article_id = $db->real_escape_string($_POST["article-id"]);
-  $article_content = $db->real_escape_string($_POST['article-content']);
-  $article_content_previous = $db->real_escape_string($_POST['article-content-previous']);
-  $article_tags = $db->real_escape_string($_POST['article-tags']);
-  $article_tags_previous = $db->real_escape_string($_POST['article-tags-previous']);
+  $article_content_previous = $article_content;
+  $article_tags_previous = $article_tags;
+
+  $article_new_title = $_POST['article-new-title'];
+  $article_content = $_POST['article-content'];
+  $article_tags = $_POST['article-tags'];
+  $article_delete = isset($_POST['article-delete']);
+
   if (empty($article_title) || empty($article_id)) {
     exit();
   }
 
+  // 삭제 명령
+  if($article_delete && $user_permission >= $ARTICLE_DELETE_PERMISSION) {
+    $sqlQuery = "DELETE FROM `$db_articles_table` WHERE `id`='$article_id';";
+    $sqlQuery .= "DELETE FROM `$db_revisions_table` WHERE `article_id`='$article_id';"; 
+    if ($db->multi_query($sqlQuery) === TRUE) {
+      header('Location: 404.php');
+    }
+
+    exit();
+  }
+
+  // 변경된 내용이 없으면 그냥 리다이렉트
+  if (strlen($article_content) - strlen($article_content_previous) == 0) {
+    if (strcmp($article_content, $article_content_previous) == 0 && strcmp($article_tags, $article_tags_previous) == 0 && strcmp($article_title, $article_new_title) == 0) {
+      header('Location: read.php?t='.$article_title."&update=2");
+      exit();
+    }
+  }
+
   $sqlQuery = "UPDATE `$db_articles_table` SET ";
-  $sqlQuery .= "`content`='$article_content', ";
-  $sqlQuery .= "`tags`='$article_tags' ";
-  $sqlQuery .= "WHERE `id`='$article_id'";
+  $sqlQuery .= "`content`='".$db->real_escape_string($article_content)."', ";
+  $sqlQuery .= "`tags`='".$db->real_escape_string($article_tags)."' ";
+  if (strlen($article_new_title) > 1  && $user_permission >= $TITLE_CHANGE_PERMISSION) {
+    $titleChanged = true;
+    $sqlQuery .= ",`title`='".$db->real_escape_string($article_new_title)."' ";
+  }
+  $sqlQuery .= "WHERE `id`='".$db->real_escape_string($article_id)."';";
 
   // 글 업데이트
   if ($db->query($sqlQuery) === TRUE) {
+  
+    $opcodes = FineDiff::getDiffOpcodes($article_content_previous, $article_content);
 
-    $content_diff = $db->real_escape_string(htmlDiff($article_content_previous, $article_content));
-    $tags_diff = $db->real_escape_string(htmlDiff($article_tags_previous, $article_tags));
-
-    $sqlQuery = "INSERT INTO `$db_revisions_table` (`article_id`, `user_id`, `content`, `tags`, `fluctuation`) ";
-    $sqlQuery .= "VALUES ('$article_id', '$user_id', '$content_diff', '$tags_diff', ".(strlen($article_content_previous) - strlen($article_content)).")";
+    $sqlQuery = "INSERT INTO `$db_revisions_table` (`article_id`, `user_name`, `content`, `opcodes`, `tags`, `fluctuation`) ";
+    $sqlQuery .= "VALUES (";
+    $sqlQuery .= "'".$article_id."', ";
+    $sqlQuery .= "'".$user_name."', ";
+    $sqlQuery .= "'".$db->real_escape_string($article_content_previous)."', ";
+    $sqlQuery .= "'".$db->real_escape_string($opcodes)."', ";
+    $sqlQuery .= "'".$db->real_escape_string($article_tags)."', ";
+    $sqlQuery .= (strlen($article_content) - strlen($article_content_previous)).");";
 
     if ($db->query($sqlQuery) === TRUE) {
-      header('Location: read.php?t='.$article_title."&update=1");
+      if ($titleChanged) {
+        header('Location: read.php?t='.$article_new_title."&update=1");
+      } else {
+        header('Location: read.php?t='.$article_title."&update=1");
+      }
     } else {
       $error_message = $db->error;
       $error = true;
@@ -131,16 +135,33 @@ include 'header.php';
 
 <div class="container">
 
-  <h1><?php echo $article_title;?> <span class="badge"><abbr title="이 지식의 조회수"><?php echo "+".$article_hits;?></abbr></span></h1><br/>
-  <div class="well well-sm">
-    자세한 편집 방법은 <a href="read.php?t=편집 방법">편집 방법</a> 문서를 참조하세요.<br/>
-    <em>지식에 대해 고의적인 훼손을 가하거나 악의적인 내용을 작성할 경우 차단될 수 있습니다.</em>
-  </div>
+  <h1>
   <?php
-  if ($error) {
-    echo "<div class=\"alert alert-danger\" role=\"alert\">".$error_message."</div>";
+  echo $article_title." ";
+  if ($user_permission >= $TITLE_CHANGE_PERMISSION) { 
+    echo " <a role=\"button\" class=\"btn btn-default btn-xs\" data-toggle=\"collapse\" data-target=\"#edit-title\">제목 수정</a>";
   }?>
+  </h1>
+
   <form action="edit.php" method="post">
+
+    <?php
+    if ($user_permission >= $TITLE_CHANGE_PERMISSION) { 
+      echo '<div class="collapse" id="edit-title">';
+      echo '<input type="text" class="form-control input-lg" name="article-new-title" placeholder="이 지식의 제목" value="'.$article_title.'" aria-describedby="helpBlock">';
+      echo '<span id="helpBlock" class="help-block"><em>지식 제목의 잦은 변경은 다른 사용자들에게 혼란을 줄 수 있습니다.</em></span></div>';   
+    }
+    ?>
+    <hr>
+    <div class="well well-sm">
+      자세한 편집 방법은 <a href="read.php?t=편집 방법">편집 방법</a> 문서를 참조하세요.<br/>
+      <em>지식에 대해 고의적인 훼손을 가하거나 악의적인 내용을 작성할 경우 차단될 수 있습니다.</em>
+    </div>
+    <?php
+    if ($error) {
+      echo "<div class=\"alert alert-danger\" role=\"alert\">".$error_message."</div>";
+    }?>
+  
     <div class="form-group">
       <label for="content">내용</label>
       <textarea type="text" name="article-content" class="form-control" id="content" data-provide="markdown" rows="23" style="padding: 10px"><?php echo $article_content;?></textarea>
@@ -150,10 +171,11 @@ include 'header.php';
       <input type="text" name="article-tags" class="form-control"  id="tags" value="<?php echo $article_tags;?>">
     </div>
     <input type="hidden" name="article-title" value="<?php echo $article_title;?>">
-    <input type="hidden" name="article-id" value="<?php echo $article_id;?>">
-    <input type="hidden" name="article-content-previous" value="<?php echo $article_content;?>">
-    <input type="hidden" name="article-tags-previous" value="<?php echo $article_tags;?>">
     <div class="text-center">
+      <?php
+      if ($user_permission >= $ARTICLE_DELETE_PERMISSION) { 
+        echo '<div class="checkbox"><label><input type="checkbox" name="article-delete" value="1" onclick="return deleteAlert(this);">이 지식 삭제하기</label></div>';
+      }?>
       <button type="submit" class="btn btn-default" onclick="window.onbeforeunload=null;">업데이트</button>
       <a href="read.php?t=<?php echo $article_title;?>" class="btn btn-danger" role="button">취소</a>
     </div>
@@ -161,6 +183,14 @@ include 'header.php';
 </div>
 <script type="text/javascript">
   $("#content").markdown({language:'kr'});
+
+  function deleteAlert(e) {
+    if (e.checked) {
+      alert('이 옵션을 누르면 지식이 영구적으로 삭제됩니다.');
+    }
+    return true;
+  }
+
   var confirmOnPageExit = function (e) {
     e = e || window.event;
     var message = '업데이트되지 않은 내용은 삭제됩니다.';

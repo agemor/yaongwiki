@@ -32,7 +32,7 @@ if ($db->connect_errno) {
 } 
 
 // 글 읽어오기
-$sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `title`='$article_title'";
+$sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `title`='$article_title' LIMIT 1;";
 $result = $db->query($sqlQuery);
 
 if ($result->num_rows < 1) {
@@ -56,12 +56,14 @@ include 'header.php';?>
   <?php
   if ($_GET["update"] == 1) {
     echo "<div class=\"alert alert-success\" role=\"alert\">지식을 새로 업데이트했습니다.</div>";
-  } 
+  } else if ($_GET["update"] == 2) {
+    echo "<div class=\"alert alert-warning\" role=\"alert\">변경된 내용이 없습니다.</div>";
+  }
   ?>
   <h1><?php echo $article_title;?> <span class="badge"><abbr title="이 지식의 조회수"><?php echo "+".$article_hits;?></abbr></span></h1>
   <div class=" text-right">
     <div class="btn-group" role="group">
-      <a type="button" class="btn btn-default" role="button">역대 집필자 보기</a>
+      <a type="button" href="revisions.php?t=<?php echo $article_title;?>" class="btn btn-default" role="button">역대 집필자 보기</a>
       <a type="button" href="edit.php?t=<?php echo $article_title;?>" class="btn btn-default" role="button">지식 업데이트하기</a>
     </div>
     <hr>
