@@ -1,5 +1,7 @@
 <?php
-$title = "야옹위키";
+$page_title = "야옹위키";
+$page_location = "index.php";
+
 require 'session.php';
 include 'header.php';?>
 

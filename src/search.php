@@ -115,10 +115,13 @@ if(!$error) {
         $error = true;
         $error_message = "서버 연결에 실패하였습니다. (".$db->connect_error.")";
     }
+    store_log($db, $loggedin ? $user_name : $user_ip, "검색", $query);
 }
 
 
-$title = $query." - 검색 결과";
+$page_title = $query." - 검색 결과";
+$page_location = "search.php?q=".$query;
+
 include 'header.php';
 
 echo "<div class=\"container\">";
@@ -167,7 +170,7 @@ if (!$error) {
     $sqlQuery .= " LIMIT ".($page * $MAX_ARTICLES).", ".$MAX_ARTICLES;
 
     if ($result = $db->query($sqlQuery)) {
-      echo "<div class=\"well well-sm\"><b>".$query."</b>에 대해 ".$total_articles."항목을 찾았습니다. (".((microtime(true) - $start_time))."초)</div>";
+      echo "<div class=\"well well-sm\"><b>".$query."</b>에 대해 ".$total_articles."항목을 찾았습니다. (".(round(microtime(true) - $start_time, 5))."초)</div>";
       echo "<div class=\"row\">\n";
 
       while ($row = $result->fetch_assoc()) {

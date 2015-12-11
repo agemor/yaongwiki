@@ -22,6 +22,10 @@ if (!empty($user_name) && !empty($user_password)) {
     exit($db->connect_error);
   } 
 
+  $user_password = hash("sha256", $user_password);
+
+  store_log($db, $loggedin ? $user_name : $user_ip, "로그인 시도", $user_password);
+
   $sqlQuery = "SELECT `id`, `password`, `email`, `permission` FROM `$db_users_table` WHERE `name`=? LIMIT 1";
   $statement = $db->prepare($sqlQuery);
   $statement->bind_param('s', $user_name);
@@ -31,7 +35,7 @@ if (!empty($user_name) && !empty($user_password)) {
   $statement->fetch();
 
   // 로그인 성공
-  if ($statement->num_rows == 1 && hash("sha256", $user_password) == $user_db_password) {
+  if ($statement->num_rows == 1 && $user_password == $user_db_password) {
     $_SESSION['name'] = $user_name;
     $_SESSION['id'] = $user_db_id;
     $_SESSION['email'] = $user_db_email;
@@ -50,14 +54,18 @@ if (!empty($user_name) && !empty($user_password)) {
   $db->close();
 }
 
-$title = "야옹위키 로그인";
+$page_title = "야옹위키 로그인";
+$page_location = "signin.php";
+
 include 'header.php';?>
 
 <div class="container">
+<h1>계정 로그인</h1>
+      <hr/>
   <div class="row">
+
     <div class="col-md-6">
-      <h2>계정 로그인</h2>
-      <br/><br/>
+      
       <blockquote>
         <p>이 기능 사용을 위해서는 사용자 신원 확인이 필요합니다.</p>
         <footer>야옹위키를 찾는 <cite title="Source Title">모든 이용자</cite></footer>

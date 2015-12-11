@@ -7,7 +7,7 @@
 <meta name="description" content="Yaong Engine 1.0">
 <meta name="author" content="HyunJun Kim">
 <link rel="icon" href="favicon.ico">
-<title><?php echo $title;?></title>
+<title><?php echo $page_title;?></title>
 <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body style="padding-bottom: 70px;">
@@ -18,17 +18,29 @@
     </div>
     <form class="navbar-form navbar-right" action="search.php" method="get" role="search" style="margin-bottom: -1px;">
       <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
         <input type="text" class="form-control" name="q" value="<?php echo $query;?>" placeholder="검색어 입력">
         <span class="input-group-btn">
           <button class="btn btn-default" type="submit">검색</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle=dropdown aria-haspopup=true aria-expanded=false>
           <?php
+          if ($loggedin) {
+            echo '<span class="glyphicon glyphicon-cog" aria-hidden="true">';
+          } else {
+            echo '<span class="glyphicon glyphicon-user" aria-hidden="true">';
+          }
+          ?>   
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <?php
             if ($loggedin) {
-              echo '<a class="btn btn-default" href="signout.php" role="button"><abbr title="'.$user_name.' 로그아웃"><span class="glyphicon glyphicon-off" aria-hidden="true"></abbr></a>';
+              echo '<li><a href="user.php?name='.$user_name.'">나의 정보 보기</a></li>';
+              echo '<li><a href="signout.php?redirect='.$page_location.'">로그아웃</a></li>';
             } else {
-              echo '<a class="btn btn-default" href="signin.php" role="button"><span class="glyphicon glyphicon-user" aria-hidden="true"></a>';
+              echo '<li><a href="signin.php?redirect='.$page_location.'">로그인</a></li>';
+              echo '<li><a href="signup.php">계정 만들기</a></li>';
             }
-          ?>
+            ?>
+          </ul>
         </span>
       </div>
     </form> 

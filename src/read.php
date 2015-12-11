@@ -21,15 +21,13 @@ if(empty($article_title)) {
 }
 
 $error = false;
-
-$error = false;
 $error_message = "";
 
 // 데이터베이스 연결
 $db = new mysqli($db_server, $db_user, $db_password, $db_name);
 if ($db->connect_errno) {
   exit($db->connect_error);
-} 
+}
 
 // 글 읽어오기
 $sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `title`='$article_title' LIMIT 1;";
@@ -37,6 +35,7 @@ $result = $db->query($sqlQuery);
 
 if ($result->num_rows < 1) {
   header('Location: 404.php');
+  exit();
 }
 $parsedown = new Parsedown();
 
@@ -45,11 +44,22 @@ $article_id = $row["id"];
 $article_content = $parsedown->text($row["content"]);
 $article_tags = splitTags($row["tags"]);
 $article_hits = $row["hits"];
-
 $result->free();
+
+// 조회수 증가
+
+if(!in_array($article_id, $_SESSION['pageview'])) {
+  array_push($_SESSION['pageview'], $article_id);
+  $sqlQuery = "UPDATE `$db_articles_table` SET `hits`=`hits`+1 WHERE `id`='$article_id';";
+  $db->query($sqlQuery);
+  store_log($db, $loggedin ? $user_name : $user_ip, "항목 읽기", $article_title);
+}
+
 $db->close();
 
-$title = $article_title;
+$page_title = $article_title;
+$page_location = "read.php?t=".$article_title;
+
 include 'header.php';?>
 
 <div class="container">

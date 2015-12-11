@@ -49,7 +49,11 @@ $sqlQuery = "SELECT * FROM `$db_revisions_table` WHERE `article_id`='$article_id
 $result = $db->query($sqlQuery);
 $parsedown = new Parsedown();
 
-$title = $article_title." - 역대 집필자";
+$page_title = $article_title." - 역대 집필자";
+$page_location = "revisions.php?t=".$article_title;
+
+store_log($db, $loggedin ? $user_name : $user_ip, "지식 역사 열람", $article_title);
+
 include 'header.php';?>
 
 <div class="container">
@@ -79,7 +83,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<div class=\"panel panel-danger\">";
   }
 
-  echo "<div class=\"panel-heading\"><code>".$article_timestamp."</code>  <a href=\"#\">".$article_user_name."</a>님이 ".abs($article_fluctuation)."글자를 ";
+  echo "<div class=\"panel-heading\"><code>".$article_timestamp."</code>  <a href=\"user.php?name=".$article_user_name."\">".$article_user_name."</a>님이 ".abs($article_fluctuation)."글자를 ";
   if($article_fluctuation >= 0) {
     echo "추가했습니다.";
   } else {

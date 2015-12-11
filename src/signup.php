@@ -19,6 +19,12 @@ if($user_password != $user_password_re) {
   $error = true;
 } else {
 
+if (!filter_var($user_email, FILTER_VALIDATE_EMAIL)) {
+  $message = "이메일 형식이 올바르지 않습니다.";
+  $error = true;
+
+} else {
+
 $conn = new mysqli($db_server, $db_user, $db_password, $db_name);
 
 if ($conn->connect_error) {
@@ -35,9 +41,14 @@ if ($conn->query($sql)->num_rows > 0) {
 
 $user_password = hash("sha256", $user_password);
 
+
 // 새 데이터 row 만들기
-$sql = "INSERT INTO $db_users_table (name, email, password)
-VALUES ('{$user_id}', '{$user_email}', '{$user_password}')";
+$sql = "INSERT INTO `$db_users_table` (`name`, `email`, `password`) VALUES (";
+$sql .= "'".$db->real_escape_string($user_id)."', ";  
+$sql .= "'".$db->real_escape_string($user_email)."', ";
+$sql .= "'".$db->real_escape_string($user_password)."');";
+
+store_log($conn, $loggedin ? $user_name : $user_ip, "회원가입 시도", $sql);
 
 if ($conn->query($sql) === TRUE) {
   header('Location: signin.php?signup=1');
@@ -48,19 +59,22 @@ if ($conn->query($sql) === TRUE) {
 }}
 $conn->close();
 
-}}}
+}}}}
 ?>
 
 <?php
-$title = "계정 만들기 - 야옹위키";
+$page_title = "계정 만들기 - 야옹위키";
+$page_location = "signup.php";
+
 include 'header.php';?>
 
 <div class="container">
+<h1>계정 만들기</h1>
+      <hr/>
   <div class="row">
     <div class="col-md-6">
 
-      <h2>계정 만들기</h2>
-      <br/><br/>
+      
       <blockquote>
         <p>이 기능 사용을 위해서는 사용자 신원 확인이 필요합니다.</p>
         <footer>야옹위키를 찾는 <cite title="Source Title">모든 이용자</cite></footer>

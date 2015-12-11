@@ -26,33 +26,34 @@ if ($conn->query($sql)->num_rows > 0) {
 } else { 
 
 // 새 데이터 row 만들기
-$sql = "INSERT INTO $db_articles_table (title)
-VALUES ('{$article_title}')";
+$sql = "INSERT INTO `$db_articles_table` (`title`)
+VALUES ('".$conn->real_escape_string($article_title)."')";
 
 if ($conn->query($sql) === TRUE) {
   header('Location: edit.php?t='.$article_title);
+  store_log($conn, $loggedin ? $user_name : $user_ip, "새 항목 생성", $sql);
 } else {
   $message = "서버 오류가 발생하였습니다.";
   //$message = mysqli_error($conn);
   $error = true;
 }}
-$conn->close();
+//$conn->close();
 
 }}
 ?>
 
 
 <?php
-$title = "새 항목 만들기 - 야옹위키";
-require 'session.php';
+$page_title = "새 항목 만들기 - 야옹위키";
+$page_location = "create.php";
 include 'header.php';?>
 
-    <div class="container">
-
-    
+<div class="container">
+    <h2>새 항목 만들기</h2>
+     <hr/>
+    <div class="row">
     <div class="col-md-6">
-          <h2>새 항목 만들기</h2>
-          <br/><br/>
+          
           <blockquote>
             <p>새 항목을 만들기 전에 반드시 아래의 원칙을 확인해 주세요!</p><br/>
             <h5>1. 중복되는 항복이 없는지 </h5>
@@ -79,7 +80,7 @@ include 'header.php';?>
           </form>
         </div>
       </div>
-
+</div>
 
 
 

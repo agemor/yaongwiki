@@ -1,5 +1,8 @@
 <?php
 session_start();
 session_destroy();
-header('Location: index.php');
+
+$redirect = !empty($_GET["redirect"]) ? $_GET["redirect"] : "index.php";
+
+header('Location: '.$redirect);
 ?>
