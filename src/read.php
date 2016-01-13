@@ -15,8 +15,9 @@ function splitTags($text) {
 }
 
 $article_title = stripslashes($_GET['t']);
+$article_id = stripslashes($_GET['i']);
 
-if(empty($article_title)) {
+if(empty($article_title) && empty($article_id)) {
   header('Location: 404.php');
 }
 
@@ -30,7 +31,12 @@ if ($db->connect_errno) {
 }
 
 // 글 읽어오기
-$sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `title`='$article_title' LIMIT 1;";
+if (!empty($article_id)) {
+  $sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `id`='$article_id' LIMIT 1;";
+} else {
+  $sqlQuery = "SELECT * FROM `$db_articles_table` WHERE `title`='$article_title' LIMIT 1;";
+}
+
 $result = $db->query($sqlQuery);
 
 if ($result->num_rows < 1) {
@@ -41,6 +47,7 @@ $parsedown = new Parsedown();
 
 $row = $result->fetch_assoc();
 $article_id = $row["id"];
+$article_title = $row["title"];
 $article_content = $parsedown->text($row["content"]);
 $article_tags = splitTags($row["tags"]);
 $article_hits = $row["hits"];
@@ -70,7 +77,7 @@ include 'header.php';?>
     echo "<div class=\"alert alert-warning\" role=\"alert\">변경된 내용이 없습니다.</div>";
   }
   ?>
-  <h1><?php echo $article_title;?> <span class="badge"><abbr title="이 지식의 조회수"><?php echo "+".$article_hits;?></abbr></span></h1>
+  <h1><?php echo '<a style="text-decoration: none;" href="'.$page_location.'">'.$article_title.'</a>'?> <span class="badge"><abbr title="이 지식의 조회수"><?php echo "+".$article_hits;?></abbr></span></h1>
   <div class=" text-right">
     <div class="btn-group" role="group">
       <a type="button" href="revisions.php?t=<?php echo $article_title;?>" class="btn btn-default" role="button">역대 집필자 보기</a>

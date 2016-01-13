@@ -67,6 +67,7 @@ if (isset($_POST['article-content']) && $article_permission <= $user_permission)
   $article_delete = isset($_POST['article-delete']);
   $article_change_permission = isset($_POST['article-permission']);
   $article_permission = intval($_POST['article-permission']);
+  $article_comment = removeScriptTags($_POST['article-comment']);
 
   if (empty($article_title) || empty($article_id)) {
     exit();
@@ -109,22 +110,35 @@ if (isset($_POST['article-content']) && $article_permission <= $user_permission)
   if (strlen($article_new_title) > 1  && $user_permission >= $TITLE_CHANGE_PERMISSION) {
     $titleChanged = true;
     $sqlQuery .= ",`title`='".$db->real_escape_string($article_new_title)."' ";
+    $article_title = $article_new_title;
   }
   $sqlQuery .= "WHERE `id`='".$db->real_escape_string($article_id)."';";
 
   // 글 업데이트
   if ($db->query($sqlQuery) === TRUE) {
-  
+    
+    // 가장 최근의 revision 넘버 가져오기
+    $sqlQuery = "SELECT * FROM `$db_revisions_table` WHERE `article_id`='$article_id' ORDER BY `timestamp` DESC LIMIT 1;";
+    if ($result = $db->query($sqlQuery)){
+      $row = $result->fetch_assoc();
+      $article_recent_revision_number = intval($row["revision"]);
+    } else {
+      $article_recent_revision_number = 0;
+    }
+ 
     $opcodes = FineDiff::getDiffOpcodes($article_content_previous, $article_content);
 
-    $sqlQuery = "INSERT INTO `$db_revisions_table` (`article_id`, `user_name`, `content`, `opcodes`, `tags`, `fluctuation`) ";
+    $sqlQuery = "INSERT INTO `$db_revisions_table` (`article_id`, `article_title`, `revision`, `user_name`, `content`, `opcodes`, `tags`, `fluctuation`, `comment`) ";
     $sqlQuery .= "VALUES (";
     $sqlQuery .= "'".$article_id."', ";
+    $sqlQuery .= "'".$article_title."', ";
+    $sqlQuery .= "'".($article_recent_revision_number + 1)."', ";
     $sqlQuery .= "'".$user_name."', ";
     $sqlQuery .= "'".$db->real_escape_string($article_content_previous)."', ";
     $sqlQuery .= "'".$db->real_escape_string($opcodes)."', ";
     $sqlQuery .= "'".$db->real_escape_string($article_tags)."', ";
-    $sqlQuery .= (strlen($article_content) - strlen($article_content_previous)).");";
+    $sqlQuery .= (strlen($article_content) - strlen($article_content_previous)).", ";
+    $sqlQuery .= "'".$db->real_escape_string($article_comment)."');";
 
     if ($db->query($sqlQuery) === TRUE) {
 
@@ -162,7 +176,7 @@ include 'header.php';
 
   <h1>
   <?php
-  echo $article_title." ";
+  echo '<a style="text-decoration: none;" href="read.php?t='.$article_title.'">'.$article_title.'</a> ';
   if ($user_permission >= $TITLE_CHANGE_PERMISSION) { 
     echo " <a role=\"button\" class=\"btn btn-default btn-xs\" data-toggle=\"collapse\" data-target=\"#edit-title\">제목 수정</a>";
   }?>
@@ -215,7 +229,10 @@ include 'header.php';
 }
 
 ?>
-
+    <div class="form-group">
+      <label for="tags">수정한 내용 요약 <small>(구체적으로 적어주시면 도움이 됩니다.)</small></label>
+      <input type="text" name="article-comment" class="form-control"  id="comment" value="<?php echo $article_comment;?>">
+    </div>
 
     <div class="text-center">
       <?php

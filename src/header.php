@@ -33,7 +33,8 @@
           <ul class="dropdown-menu dropdown-menu-right">
             <?php
             if ($loggedin) {
-              echo '<li><a href="user.php?name='.$user_name.'">나의 정보 보기</a></li>';
+              echo '<li><a href="profile.php?name='.$user_name.'">내 프로필</a></li>';
+              echo '<li><a href="myinfo.php">계정 관리</a></li>';
               echo '<li><a href="signout.php?redirect='.$page_location.'">로그아웃</a></li>';
             } else {
               echo '<li><a href="signin.php?redirect='.$page_location.'">로그인</a></li>';
