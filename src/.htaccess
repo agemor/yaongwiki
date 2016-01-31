@@ -1,0 +1,29 @@
+Options FollowSymLinks
+RewriteEngine On
+
+
+ 
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^keywords/([^/.]+)$ /page.search.php?q=$1 [NC,QSA,L]
+RewriteRule ^users/([^/.]+)$ /page.profile.php?name=$1 [NC,QSA,L]
+RewriteRule ^pages/(\d+)$ /page.read.php?i=$1 [NC,QSA,L]
+RewriteRule ^pages/([^/.]+)$ /page.read.php?t=$1 [NC,QSA,L]
+RewriteRule ^revisions/(\d+)$ /page.revisions.php?i=$1 [NC,QSA,L]
+RewriteRule ^revisions/([^/.]+)$ /page.revisions.php?t=$1 [NC,QSA,L]
+RewriteRule ^edit/(\d+)$ /page.write.php?i=$1 [NC,QSA,L]
+RewriteRule ^edit/([^/.]+)$ /page.write.php?t=$1 [NC,QSA,L]
+
+RewriteRule ^revision$ /page.revision.php [NC,QSA,L]
+RewriteRule ^suggest$ /page.suggest.php [NC,QSA,L]
+RewriteRule ^create$ /page.create.php [NC,QSA,L]
+RewriteRule ^dashboard$ /page.dashboard.php [QSA,L]
+RewriteRule ^signin$ /page.signin.php [NC,QSA,L]
+RewriteRule ^signup$ /page.signup.php [NC,QSA,L]
+RewriteRule ^signout$ /page.signout.php [NC,QSA,L]
+RewriteRule ^reset$ /page.reset.php [NC,QSA,L]
+
+RewriteRule ^([^\.]+)$ $1.php [QSA,L]
+
+ErrorDocument 404 /page.404.php
