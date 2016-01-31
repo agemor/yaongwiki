@@ -15,6 +15,7 @@ RewriteRule ^revisions/([^/.]+)$ /page.revisions.php?t=$1 [NC,QSA,L]
 RewriteRule ^edit/(\d+)$ /page.write.php?i=$1 [NC,QSA,L]
 RewriteRule ^edit/([^/.]+)$ /page.write.php?t=$1 [NC,QSA,L]
 
+RewriteRule ^recent$ /page.recent.php [NC,QSA,L]
 RewriteRule ^revision$ /page.revision.php [NC,QSA,L]
 RewriteRule ^suggest$ /page.suggest.php [NC,QSA,L]
 RewriteRule ^create$ /page.create.php [NC,QSA,L]

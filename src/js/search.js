@@ -22,7 +22,10 @@ searchInput.keydown(function(e){
   }
 });
 
-searchInput.typeahead({ autoSelect:false });
+searchInput.typeahead({ autoSelect:false, afterSelect:function(e) {
+  searchInput.val(e);
+  searchButton.click();
+} });
 searchInput.keyup(function(e) {
   if (e.keyCode == 38 || e.keyCode == 40) return;
   var keyword = searchInput.val();

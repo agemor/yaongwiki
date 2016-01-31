@@ -73,7 +73,7 @@ function main() {
     
     // 조회수 증가
     if ($session->visit(intval($article['id'])))
-        $db->query("UPDATE " . ARTICLE_TABLE . " SET `hits`=`hits`+1 WHERE `id`='" . $article['id'] . "';");
+        $db->query("UPDATE " . ARTICLE_TABLE . " SET `hits`=`hits`+1, `today_hits`=`today_hits`+1 WHERE `id`='" . $article['id'] . "';");
     
     $db->close();
     return array(

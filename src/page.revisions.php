@@ -144,9 +144,7 @@ include 'frame.header.php';
             }
             echo '</td>';
             echo '<td id="c"> <a href="'.HREF_REVISION.'?i='.$result["id"].'&j='.$next_id.'" class="btn btn-xs btn-default" type="button">비교</a>';
-            if($session->permission >= intval($page_response['article']['permission'])) {
-                echo ' <a href="'.HREF_REVISION.'?i='.$result["id"].'&j='.$next_id.'&rollback=1" class="btn btn-xs btn-default" type="button"  onclick="return confirm(\'정말 이 버전으로 되돌리시겠습니까?\')">되돌리기</a>';
-            }
+           
             echo '</td>';
             echo '<td id="c">'.$result["timestamp"].'</td>';
             echo '</tr>';

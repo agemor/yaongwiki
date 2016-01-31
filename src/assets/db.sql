@@ -4,6 +4,7 @@ CREATE TABLE `yw_article` (
   `content` text NOT NULL,
   `tags` varchar(500) NOT NULL,
   `hits` int(11) UNSIGNED NOT NULL,
+  `today_hits` int(11) UNSIGNED NOT NULL,
   `permission` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -83,3 +84,10 @@ ALTER TABLE `yw_user`
 
 ALTER TABLE `yw_user`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+CREATE EVENT reset_populer
+  ON SCHEDULE
+    EVERY 1 DAY
+    STARTS '2014-04-30 00:20:00' ON COMPLETION PRESERVE ENABLE 
+  DO
+    UPDATE `yw_article` SET `today_hits`=0;

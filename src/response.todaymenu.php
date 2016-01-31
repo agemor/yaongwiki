@@ -11,7 +11,7 @@ require_once 'common.php';
 require_once 'common.db.php';
 require_once 'common.session.php';
 
-const REDIRECT_KEYWORD = '#이동하기 ';
+const DINNER_END = 19 * 60;
 
 function main() {
 
@@ -41,7 +41,6 @@ function main() {
         );
     
     $result = $db->get_result();
-    
     return array(
         'result'=>$result['content']
     );

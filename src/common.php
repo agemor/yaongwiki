@@ -37,6 +37,7 @@ const HREF_REVISIONS = '/revisions';
 const HREF_REVISION = '/revision';
 const HREF_404 = '/404';
 const HREF_SUGGEST = '/suggest';
+const HREF_RECENT = '/recent';
 
 const LOG_DELETE_ACCOUNT = 'delete-account';
 const LOG_STUDENT_AUTH = 'auth';

@@ -35,11 +35,11 @@ $(document).ready(function() {
 
 function sendFile(file) {
     var formData = new FormData();
-    formData.append("user-file", file);
+    formData.append("userfile", file);
 
     var fileData = URL.createObjectURL(file);
     $.ajax({
-        url: "/yw_upload.php",
+        url: "/response.upload.php",
         data: formData,
         cache: false,
         contentType: false,
