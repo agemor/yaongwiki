@@ -87,30 +87,25 @@ $rand_text = $rand_array[array_rand($rand_array)];
       .container .text-muted {
       margin: 20px 0;
       }
-
       .typeahead, .tt-hint, .tt-input, .tt-menu { width: 100%; }
-
     </style>
     <div class="container">
       <div class="text-center" style="max-width:700px; margin: auto;">
-        <form role="form" target="page.search.php" class="search">
-          <div class="logo">
-            <img style="max-width:260px; margin-bottom:40px; margin-top:30px" src="/assets/yonsei-wiki-logo-main.png">
-          </div>
-          <div class="input-group input-group-lg typeahead">
-            <input type="search" placeholder="<?php echo $rand_text;?>" data-provide="typeahead" class="form-control" id="search-keyword">
-            <span class="input-group-btn">
-            <button class="btn btn-primary" type="button" id="search-button">검색</button>
+        <div class="logo">
+          <img style="max-width:260px; margin-bottom:40px; margin-top:30px" src="/assets/yonsei-wiki-logo-main.png">
+        </div>
+        <div class="input-group input-group-lg" role="search">
+          <input type="text" class="form-control typeahead" id="search-keyword" placeholder="<?php echo $rand_text;?>" data-provide="typeahead" >
+          <span class="input-group-btn">
+            <button class="btn btn-primary" id="search-button">검색</button>
             <script src="/js/search.js"></script>
-            </span>
-          </div>
-          
-          <div style="margin-top:25px">
-            <h5><a href="/pages/<?php echo $now_date." 국제캠퍼스 학식 정보"; ?>">학식</a></a>&nbsp;&nbsp;&nbsp;<a href="http://ysweb.yonsei.ac.kr/ysbus.jsp">셔틀</a>&nbsp;&nbsp;&nbsp;<a href="<?php echo HREF_READ.'/'.$top1;?>"><?php echo $top1;?></a>
-              &nbsp;&nbsp;<a href="<?php echo HREF_READ.'/'.$top2;?>"><?php echo $top2;?></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo HREF_READ . '/' . $result[0]['title']; ?>"><?php echo truncate($result[0]['title']);?></a>
-            </h5>
-          </div>
-        </form>
+          </span>
+        </div>
+        <div style="margin-top:25px">
+          <h5><a href="/pages/<?php echo $now_date." 국제캠퍼스 학식 정보"; ?>">학식</a></a>&nbsp;&nbsp;&nbsp;<a href="http://ysweb.yonsei.ac.kr/ysbus.jsp">셔틀</a>&nbsp;&nbsp;&nbsp;<a href="<?php echo HREF_READ.'/'.$top1;?>"><?php echo $top1;?></a>
+            &nbsp;&nbsp;<a href="<?php echo HREF_READ.'/'.$top2;?>"><?php echo $top2;?></a>&nbsp;&nbsp;&nbsp;<a href="<?php echo HREF_READ . '/' . $result[0]['title']; ?>"><?php echo truncate($result[0]['title']);?></a>
+          </h5>
+        </div>
       </div>
     </div>
     <footer class="footer">
