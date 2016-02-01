@@ -1,4 +1,12 @@
 <?php
+/**
+ * YaongWiki Engine
+ *
+ * @version 1.1
+ * @author HyunJun Kim
+ * @date 2016. 02. 01
+ */
+
 require_once 'libs/recaptcha/autoload.php';
 
 const RECAPTCHA_PRIVATE_KEY = '6LewehYTAAAAAFZJJRnqErvewMQ_dY8oCxW7g2n6';

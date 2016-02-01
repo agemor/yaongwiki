@@ -1,4 +1,12 @@
 <?php
+/**
+ * YaongWiki Engine
+ *
+ * @version 1.1
+ * @author HyunJun Kim
+ * @date 2016. 02. 01
+ */
+
 require_once 'libs/phpmailer/class.phpmailer.php';
 require_once 'libs/phpmailer/class.smtp.php';
 
