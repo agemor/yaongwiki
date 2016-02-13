@@ -12,7 +12,7 @@ require_once 'common.db.php';
 
 function getRecentUpdates($db, $count=1) {
     
-    if (!$db->query("SELECT `article_title`, `fluctuation` FROM " . REVISION_TABLE . " WHERE `id` IN (SELECT MAX(`id`) FROM " . REVISION_TABLE . " GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . $count . ";"))
+    if (!$db->query("SELECT `article_id`, `article_title`, `fluctuation` FROM " . REVISION_TABLE . " WHERE `id` IN (SELECT MAX(`id`) FROM " . REVISION_TABLE . " GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . $count . ";"))
         return array();
     
     if ($db->total_results() < 1)
