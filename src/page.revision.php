@@ -61,6 +61,12 @@ function main() {
     if ($http_rollback) {
         
         $article = $db->get_result();
+
+        if (!$session->started())
+           return array(
+                'result' => false,
+                'message' => '로그인한 사용자만 되돌릴 수 있습니다.'
+            ); 
         
         if ($session->permission < intval($article['permission']))
             return array(
@@ -174,7 +180,11 @@ include 'frame.header.php';
       <?php if (!isset($_GET['pure'])) {?>
       <a type="button" href="<?php echo $page_location.'&pure=1';?>" class="btn btn-default" role="button">원본 보기</a>
       <?php }?>
-      <a type="button" href="<?php echo $page_location.'&rollback=1';?>" class="btn btn-default" role="button">이 버전으로 되돌리기</a>
+
+      <?php
+        if ($session->started())
+            echo '<a type="button" href="'.$page_location.'&rollback=1" class="btn btn-default" role="button">이 버전으로 되돌리기</a>';
+      ?>
     </div>
     <hr/>
   </div>
