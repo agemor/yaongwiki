@@ -94,7 +94,7 @@ include 'frame.header.php';
 </style>
 <div class="container">
   <h1>
-    <?php echo '<a style="text-decoration: none;" href="/pages/'.$page_response['article']['title'].'">'.$page_response['article']['title'].'</a>';?>
+    <?php echo '<a style="text-decoration: none;" href="./pages/'.$page_response['article']['title'].'">'.$page_response['article']['title'].'</a>';?>
     <span class="badge"><abbr title="이 지식의 조회수"><?php echo "+".$page_response['article']['hits'];?></abbr></span></h1>
   <div class=" text-right">
     <div class="btn-group" role="group">

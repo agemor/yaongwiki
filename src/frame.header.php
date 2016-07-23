@@ -16,27 +16,27 @@ require_once 'common.session.php';
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="./favicon.ico">
     <title><?php echo $page_title.TITLE_AFFIX;?></title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.yeti.css" rel="stylesheet">
+    <link href="./theme/bootstrap.yeti.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/js/typeahead.js"></script>
-    <script src="/js/analytics.js"></script>
+    <script src="./js/typeahead.js"></script>
+    <script src="./js/analytics.js"></script>
   </head>
   <body style="padding-bottom: 70px;">
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
-          <a href="<?php echo HREF_MAIN;?>" class="pull-left"><img style="max-width:110px; margin-top: 8px; margin-left: 14px;" src="/assets/yonsei-wiki-logo.png"></a>
+          <a href="<?php echo HREF_MAIN;?>" class="pull-left"><img style="max-width:110px; margin-top: 8px; margin-left: 14px;" src="./assets/yonsei-wiki-logo.png"></a>
         </div>
         <div class="navbar-form navbar-right" role="search" style="margin-bottom: -1px;">
           <div class="input-group">
             <input type="text" class="form-control typeahead" id="search-keyword" data-provide="typeahead" placeholder="검색어 입력" style="height: 31px;">
             <span class="input-group-btn">
               <button class="btn btn-default" id="search-button" style="height: 31px;">검색</button>
-              <script src="/js/search.js"></script>
+              <script src="./js/search.js"></script>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle=dropdown aria-haspopup=true aria-expanded=false style="height: 31px;">
               <?php
                 if ($session->started()) {

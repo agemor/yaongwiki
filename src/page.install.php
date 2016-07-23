@@ -68,16 +68,16 @@ $page_location = "page.install.php";
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="./favicon.ico">
     <title>데이터베이스 설정</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.yeti.css" rel="stylesheet">
+    <link href="./theme/bootstrap.yeti.css" rel="stylesheet">
   </head>
   <body style="padding-bottom: 70px;">
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
-          <a href="#" class="pull-left"><img style="max-width:110px; margin-top: 8px; margin-left: 14px;" src="/assets/yonsei-wiki-logo.png"></a>
+          <a href="#" class="pull-left"><img style="max-width:110px; margin-top: 8px; margin-left: 14px;" src="./assets/yonsei-wiki-logo.png"></a>
         </div>
       </div>
     </nav>

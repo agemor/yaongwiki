@@ -23,7 +23,7 @@ require_once 'common.php';?>
 <div class="col-md-6">
   <div class="well">
     <p>
-    <div class="text-center"><a href="http://www.yonsei.ac.kr"><img src="/assets/yonsei-logo.png" alt="연세대학교 로고" style="max-width:170px; margin-bottom: 15px;  margin-top: -10px;"></a></div>
+    <div class="text-center"><a href="http://www.yonsei.ac.kr"><img src="./assets/yonsei-logo.png" alt="연세대학교 로고" style="max-width:170px; margin-bottom: 15px;  margin-top: -10px;"></a></div>
     </p>
     <?php 
       if (!$page_response['result'] && $page_focus == 1) {

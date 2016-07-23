@@ -202,12 +202,12 @@ include 'frame.header.php';
   <div id='content'></div>
   <br/>
   <div id='tags' class="well well-sm"></div>
-  <script src="/js/diff.min.js"></script>
+  <script src="./js/diff.min.js"></script>
   <script>
     var original = <?php echo $page_response['original_json'];?>;
     var revision = <?php echo $page_response['revision_json'];?>;
   </script>
-  <script src="/js/revision.js"></script>
+  <script src="./js/revision.js"></script>
   <?php } else { 
     echo $page_response['original']['snapshot_content'].'<br/><br/><div id="tags" class="well well-sm">';
     echo !empty($page_response['original']['snapshot_tags']) ? parseTags($page_response['original']['snapshot_tags']) : "<em>이 지식에는 아직 분류가 없습니다. 분류를 추가해 주세요!</em>";

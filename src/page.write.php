@@ -218,7 +218,7 @@ include 'frame.header.php';
 <link href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.3/summernote.css" rel="stylesheet">
 <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.3/summernote.js"></script>
-<script src="/js/editor-locale.js"></script>
+<script src="./js/editor-locale.js"></script>
 
 <div class="container">
 
@@ -255,7 +255,7 @@ include 'frame.header.php';
     <div class="form-group">
       <label for="content">내용</label>
       <textarea id="editor" name="article-content" required><?php echo $page_response['article']['content'];?></textarea>
-      <script src="/js/editor.js"></script>
+      <script src="./js/editor.js"></script>
     </div>
 
     <div class="form-group">

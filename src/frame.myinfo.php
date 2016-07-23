@@ -30,7 +30,7 @@ require_once 'common.php';?>
         <td>
           <?php
             $info = permissionInfo(intval($page_response['user']['permission']));
-            echo '<a href="/pages/'.$info['description'].'">'.$info['description'].'</a>';?>
+            echo '<a href="./pages/'.$info['description'].'">'.$info['description'].'</a>';?>
         </td>
       </tr>
       <tr>
