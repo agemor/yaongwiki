@@ -7,10 +7,10 @@
  * @date 2016. 01. 31
  */
 
-const DB_HOST = 'localhost';
-const DB_USER = 'root';
-const DB_NAME = 'opinion';
-const DB_PASSWORD = 'Opinionkit16!';
+const DB_HOST = '{DB_HOST}';
+const DB_USER = '{DB_USER}';
+const DB_NAME = '{DB_NAME}';
+const DB_PASSWORD = '{DB_PASSWORD}';
 
 const FILE_MAXIMUM_SIZE = 10485760; // 10MB
 const FILE_DIRECTORY = "uploads";
