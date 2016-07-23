@@ -19,7 +19,7 @@ function main() {
     if (empty($http_db_host) || empty($http_db_name) || empty($http_db_user) || empty($http_db_password))
         return array(
             'result'=>true,
-            ''
+            'message'=>''
         );
     
     $connection = new mysqli($http_db_host, $http_db_user, $http_db_password, $http_db_name);
@@ -27,7 +27,7 @@ function main() {
     if ($connection->connect_errno)
         return array(
             'result'=>false,
-            '서버에 접속할 수 없습니다:' . $connection->connect_error
+            'message'=>'서버에 접속할 수 없습니다: <br>' . $connection->connect_error
         );
     
     $query = file_get_contents('assets/db.sql');
@@ -35,7 +35,7 @@ function main() {
     if (!$connection->multi_query($query))
         return array(
             'result'=>false,
-            '테이블 추가에 실패했습니다: ' . $connection->error
+            'message'=>'테이블 추가에 실패했습니다: <br>' . $connection->error
         );
     
     $config_keywords = array(
@@ -75,25 +75,20 @@ $page_location = "page.install.php";
   </head>
   <body style="padding-bottom: 70px;">
     <nav class="navbar navbar-inverse">
-      <div class="container">
-        <div class="navbar-header">
-          <a href="#" class="pull-left"><img style="max-width:110px; margin-top: 8px; margin-left: 14px;" src="./assets/yonsei-wiki-logo.png"></a>
-        </div>
-      </div>
     </nav>
     <div class="container text-center">
-      <h2>데이터베이스에 연세위키를 설치합니다.</h2>
+      <h2>데이터베이스에 야옹위키를 설치합니다.</h2>
       <hr/>
       <p>만약 이미 설치되어 있는 상태라면 모든 정보가 초기화되므로,
         <br/> 연결 정보를 수동으로 설정해 주시기 바랍니다.
       </p>
       <p><b>데이터베이스 설정을 위해 아래 정보를 입력해 주세요.</b></p>
       <br/>
-    </div>
+    
     <div class="container" style="width: 30%; min-width:350px">
       <?php
-        if (!$page_response[0]) {
-            echo '<div class="alert alert-danger" role="alert">'.$page_response[1].'</div>';
+        if (!$page_response['result']) {
+            echo '<div class="alert alert-danger" role="alert">'.$page_response['message'].'</div>';
          }
          ?>
       <form action="page.install.php" method="post">
@@ -115,10 +110,12 @@ $page_location = "page.install.php";
         </div>
         <button class="btn btn-default btn-block" type="submit">설치하기</button> 
       </form>
+      </div>
+      <hr/>
     </div>
-    <hr/>
+    
     <footer class="text-center">
-      <p>&copy; 2016 연세위키</p>
+      <p>&copy; 2016 야옹위키</p>
     </footer>
   </body>
 </html>
