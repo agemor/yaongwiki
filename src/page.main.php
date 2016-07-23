@@ -65,12 +65,12 @@ $page_location = HREF_MAIN;
     <link rel="icon" href="./favicon.ico">
     <title><?php echo $page_title;?></title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.yeti.css" rel="stylesheet">
-    <link href="/page.main.css" rel="stylesheet">
+    <link href="./theme/bootstrap.yeti.css" rel="stylesheet">
+    <link href="./page.main.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/js/typeahead.js"></script>
-    <script src="/js/analytics.js"></script>
+    <script src="./js/typeahead.js"></script>
+    <script src="./js/analytics.js"></script>
   </head>
   <body>
     <ul class="pager" style="margin-right:15px;">
@@ -81,24 +81,24 @@ $page_location = HREF_MAIN;
             echo '<li class="next"><a href="'.HREF_SIGNIN.'?redirect='.$page_location.'" style="color:grey">로그인</a></li>';
         }
         ?>
-      <li class="next"><a href="/recent" style="color:grey">최근 변경</a></li>
-      <li class="next"><a href="/create" style="color:grey">+ 항목 추가</a></li>
+      <li class="next"><a href="./recent" style="color:grey">최근 변경</a></li>
+      <li class="next"><a href="./create" style="color:grey">+ 항목 추가</a></li>
     </ul>
     <div class="container">
       <div class="text-center" style="max-width:700px; margin: auto;">
         <div class="logo">
-          <img style="max-width:260px; margin-bottom:40px; margin-top:30px" src="/assets/yonsei-wiki-logo-main.png">
+          <img style="max-width:260px; margin-bottom:40px; margin-top:30px" src="./assets/yonsei-wiki-logo-main.png">
         </div>
         <div class="input-group input-group-lg" role="search">
           <input type="text" class="form-control typeahead" id="search-keyword" placeholder="<?php echo PLACEHOLDERS[array_rand(PLACEHOLDERS)];?>" data-provide="typeahead" >
           <span class="input-group-btn">
             <button class="btn btn-primary" id="search-button">검색</button>
-            <script src="/js/search.js"></script>
+            <script src="./js/search.js"></script>
           </span>
         </div>
         <div style="margin-top:25px">
           <h5>
-            <a href="/pages/<?php echo $page_response['date']." 국제캠퍼스 학식 정보"; ?>">학식</a>
+            <a href="./pages/<?php echo $page_response['date']." 국제캠퍼스 학식 정보"; ?>">학식</a>
             &nbsp;&nbsp;&nbsp;
             <a href="http://ysweb.yonsei.ac.kr/ysbus.jsp">셔틀</a>
             &nbsp;&nbsp;&nbsp;
