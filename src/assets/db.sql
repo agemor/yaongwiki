@@ -7,7 +7,7 @@ CREATE TABLE `yw_article` (
   `today_hits` int(11) UNSIGNED NOT NULL,
   `permission` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `yw_article`
   ADD PRIMARY KEY (`id`),
@@ -24,7 +24,7 @@ CREATE TABLE `yw_file` (
   `size` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `uploader` varchar(100) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `yw_file`
   ADD PRIMARY KEY (`id`);
@@ -39,7 +39,7 @@ CREATE TABLE `yw_log` (
   `behavior` varchar(30) NOT NULL,
   `data` varchar(200) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `yw_log`
   ADD PRIMARY KEY (`id`);
@@ -58,7 +58,7 @@ CREATE TABLE `yw_revision` (
   `fluctuation` int(11) NOT NULL,
   `comment` varchar(400) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `yw_revision`
   ADD PRIMARY KEY (`id`);
@@ -75,7 +75,7 @@ ALTER TABLE `yw_revision`
   `code` varchar(50) DEFAULT NULL,
   `info` varchar(1500) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `yw_user`
   ADD PRIMARY KEY (`id`),
