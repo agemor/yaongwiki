@@ -154,7 +154,7 @@ function parseTags($tags) {
     $tags   = "";
     for ($i = 0; $i < count($chunks); $i++) {
         if (strlen($chunks[$i]) > 0)
-            $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '/' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
+            $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '?' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
     }
     return $tags;
 }

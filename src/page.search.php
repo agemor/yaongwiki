@@ -194,7 +194,7 @@ function parseTags($tags) {
     $tags   = "";
     for ($i = 0; $i < count($chunks); $i++) {
         if (strlen($chunks[$i]) > 0)
-            $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '/' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
+            $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '?' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
     }
     return $tags;
 }
@@ -204,7 +204,7 @@ $page_response = main();
 if ($page_response['result']) {
     $search_query = implode(' ', $page_response['keywords']);
     $page_title    = $search_query . ' 에 대한 검색 결과';
-    $page_location = HREF_SEARCH . '/' . $search_query;
+    $page_location = HREF_SEARCH . '?' . $search_query;
 } else {
     $page_title    = '검색 결과 없음';
     $page_location = HREF_SEARCH;
