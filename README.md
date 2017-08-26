@@ -1,4 +1,4 @@
-# YaongWiki
+# ![Logo](https://user-images.githubusercontent.com/6297755/29741970-b4bd37a4-8ab1-11e7-9bd5-6151010ee9a4.png)YaongWiki
 
 > Lightweight [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) wiki engine for general use
 
