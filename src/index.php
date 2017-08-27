@@ -6,8 +6,11 @@
  * @author HyunJun Kim
  * @date 2017. 08. 26
  */
- 
-require_once "./index.navigator.php";
+
+require_once "core/core.session.php";
+require_once "index.navigator.php";
+
+$post->set($_POST);
 
 $current_page_url = get_current_page_url();
 

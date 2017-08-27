@@ -7,10 +7,8 @@
  * @date 2017. 08. 26
  */
 
-const DB_HOST = "{DB_HOST}";
-const DB_USER = "{DB_USER}";
-const DB_NAME = "{DB_NAME}";
-const DB_PASSWORD = "{DB_PASSWORD}";
+require_once "./languages/language.php";
+require_once "./themes/theme.php";
 
 const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB
 const FILE_DIRECTORY = "uploads";
@@ -98,6 +96,10 @@ function permissionInfo($permission) {
             );
             
     }
+}
+
+function get_theme_path() {
+    return "./themes/" . THEME . "/";
 }
 
 function navigateTo($link = HREF_MAIN) {

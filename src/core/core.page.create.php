@@ -7,61 +7,67 @@
  * @date 2017. 08. 26
  */
 
-require_once "common.php";
-require_once "common.db.php";
-require_once "common.session.php";
+require_once "core.php";
+require_once "core.db.php";
+require_once "core.session.php";
 
-function main() {
+function process() {
     
-    global $session;
-    global $db_connect_info;
+    global $db;
+    global $post;
+    global $user;
+    global $redirect;
 
-    $http_article_title = trim(strip_tags(empty($_POST["article-title"]) ? "" : $_POST["article-title"]));
+    $http_article_title = $post->retrieve("article-title");
 
-    if (!$session->started())
-        navigateTo(HREF_SIGNIN . "?redirect=" . HREF_CREATE . "?t=" . $http_article_title);
+    if (!$user->signined()) {
+
+        $redirect->set(get_theme_path() . HREF_CREATE);
+
+        return array(
+            "redirect" => true
+        ); 
+    }
 
     if (strlen(preg_replace("/\s+/", "", $http_article_title)) < 2)
         return array(
-            "result"=>true,
-            "message"=>""
-        );
+            "result" => false,
+            "message" => STRINGS["EPCR0"]
+        ); 
     
     if (is_numeric($http_article_title))
         return array(
-            "result"=>false,
-            "message"=>"지식 제목으로 숫자를 사용할 수 없습니다"
+            "result" => false,
+            "message"=> STRINGS["EPCR1"]
         );
     
-    $db = new YwDatabase($db_connect_info);
+    $response = $db->in(DB_ARTICLE_TABLE)
+                   ->select("*")
+                   ->where("title", "=", $http_article_title)
+                   ->go_and_get();
     
-    if (!$db->connect())
+    if (!$response)
         return array(
-            "result"=>false,
-            "title"=>$http_article_title,
-            "message"=>"서버와의 연결에 실패했습니다"
-        );
-    
-    if (!$db->query("SELECT 1 FROM " . ARTICLE_TABLE . " WHERE `title`=\"" . $http_article_title . "\";"))
-        return array(
-            "result"=>false,
-            "title"=>$http_article_title,
-            "message"=>"지식 정보를 조회하는데 실패했습니다"
+            "result" => false,
+            "message" => STRINGS["EPCR2"]
         );
     
     if ($db->total_results() > 0)
         return array(
-            "result"=>false,
-            "title"=>$http_article_title,
-            "message"=>"이미 존재하는 지식입니다"
+            "result" => false,
+            "title" => $http_article_title,
+            "message" => STRINGS["EPCR3"]
         );
     
-    // 지식 등록
-    if (!$db->query("INSERT INTO " . ARTICLE_TABLE . " (`title`) VALUES ("" . $db->purify($http_article_title) . "");"))
+    $response = $db->in(DB_ARTICLE_TABLE)
+                   ->insert("title", $http_article_title)
+                   ->go();
+
+    if (!$response)
         return array(
-            "result"=>false,
-            "title"=>$http_article_title,
-            "message"=>"지식을 추가하는 중 서버 오류가 발생했습니다"
+            "result" => false,
+            "title" => $http_article_title,
+            "message" => STRINGS["EPCR4"]
         );
     
     $db->log($session->name, LOG_CREATE, $http_article_title);

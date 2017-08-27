@@ -8,7 +8,6 @@
  */
 
 require_once "./core/core.php";
-require_once "./themes/theme.php";
 
 /**
  * Get full URL of current page 
@@ -52,7 +51,7 @@ function to_inner_url($url) {
         . ($first_param_value != null ? "?value=" . $first_param_value : "");
     }
 
-    return "./themes/" . THEME . "/" . $target;
+    return get_theme_path() . $target;
 }
 
 ?>
