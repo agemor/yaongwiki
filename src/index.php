@@ -6,11 +6,11 @@
  * @author HyunJun Kim
  * @date 2017. 08. 26
  */
-
-require_once "./core/navigator.php";
+ 
+require_once "./index.navigator.php";
 
 $current_page_url = get_current_page_url();
 
-echo (analyze_url($current_page_url));
+echo (to_inner_url($current_page_url));
 
 ?>
