@@ -2,14 +2,15 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 08. 26
  */
 
-require_once 'common.php';
+require_once "./core/navigator.php";
 
-if (DB_HOST == '{DB_HOST}')
-	include 'page.install.php';
-else include 'page.main.php';
+$current_page_url = get_current_page_url();
+
+echo (analyze_url($current_page_url));
+
 ?>

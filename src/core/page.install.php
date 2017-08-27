@@ -2,9 +2,9 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 08. 26
  */
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
