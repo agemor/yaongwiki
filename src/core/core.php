@@ -67,7 +67,8 @@ const LOG_RESET = "reset";
 const LOG_SIGNIN = "signin";
 const LOG_SIGNUP = "signup";
 
-function permissionInfo($permission) {
+function permissionInfo($permission)
+{
     switch ($permission) {
         case 0:
             return array(
@@ -98,17 +99,12 @@ function permissionInfo($permission) {
     }
 }
 
-function get_theme_path() {
+function get_theme_path()
+{
     return "./themes/" . THEME . "/";
 }
 
-function navigateTo($link = HREF_MAIN) {
-    header("Location: " . $link);
-    exit();
-}
-
-function passwordHash($password) {
+function password_hash($password)
+{
     return hash("sha512", $password . "yw");
 }
-
-?>

@@ -2,280 +2,228 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 08. 26
  */
 
-require_once 'common.php';
-require_once 'common.db.php';
-require_once 'common.session.php';
-require_once 'tools/tool.yonsei-auth.php';
+ require_once "core.php";
+ require_once "core.db.php";
+ require_once "core.session.php";
 
-function main() {
+function process() {
 
-    global $session;
-    global $db_connect_info;
-    global $page_focus;
+    global $db;
+    global $post;
+    global $user_data;
+    global $redirect;
 
-    $http_user_email           = trim($_POST['user-email']);
-    $http_user_password        = $_POST['user-password'];
-    $http_user_new_password    = $_POST['user-new-password'];
-    $http_user_new_password_re = $_POST['user-new-password-re'];
-    $http_student_id           = trim($_POST['student-id']);
-    $http_student_password     = $_POST['student-password'];
-    $http_user_password_drop   = $_POST['user-drop-password'];
+    $http_user_email = $post->retrieve("user-email");
+    $http_user_password = $post->retrieve("user-password");
+    $http_user_new_password = $post->retrieve("user-new-password");
+    $http_user_new_password_re = $post->retrieve("user-new-password-re");
+    $http_user_password_drop = $post->retrieve("user-drop-password");
 
-    // 0: 계정 정보, 1: 재학생 인증, 2: 이메일 변경, 4: 비번 변경, 4: 계정 삭제
     $page_focus = 0;
     
-    if (!$session->started())
-        navigateTo(HREF_MAIN);
-    
-    $db = new YwDatabase($db_connect_info);
-    
-    if (!$db->connect())
+    // 로그인 되어 있지 않을 경우
+    if (!$user_data->signined()) {
+        $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
-            'result'=>false,
-            'message'=>'서버와의 연결에 실패했습니다'
-        );
+            "redirect" => true
+        ); 
+    }
     
-    // 유저 정보 불러오기
-    if (!$db->query("SELECT * FROM " . USER_TABLE . " WHERE `id`=" . $session->id . ";"))
-        return array(
-            'result'=>false,
-            'message'=>'유저 정보를 불러오는데 실패했습니다'
-        );
-    
-    $user = $db->get_result();
-    $user['login_history'] = array();
+    $user_data = $db->in(DB_USER_TABLE)
+                    ->select("*")
+                    ->where("id", "=", $user_data->id)
+                    ->go_and_get();
 
-    // 최근 3일간 로그인 기록 가져오기
-    if (!$db->query("SELECT * FROM " . LOG_TABLE . " WHERE `user_name`='" . $user['name'] . "' AND `behavior`='signin' AND `timestamp` >= (CURDATE() - INTERVAL 3 DAY) " . "ORDER BY `timestamp` DESC LIMIT 30;"))
+    if (!$user_data) {
         return array(
-            'result'=>false,
-            'user'=>$user,
-            'message'=>'최근 로그인 기록을 로드하는데 실패했습니다'
-        );
-
-    while ($result = $db->get_result())
-        array_push($user['login_history'], $result);
-
-    if (!empty($http_student_id)) {
-        
-        $page_focus = 1;
-        
-        // 중복 학번 검사
-        if (!$db->query("SELECT 1 FROM " . USER_TABLE . " WHERE `code`='" . $db->purify($http_student_id) . "';"))
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'학번을 조회하지 못했습니다'
-            );
-        
-        if ($db->total_results() > 0)
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'이미 인증에 사용된 연세포탈 계정입니다'
-            );
-        
-        // 포탈 로그인 인증
-        if (!getYonseiAuth($http_student_id, $http_student_password))
-            return array(
-                'result'=>false,
-                'message'=>'학번이나 비밀번호가 올바르지 않습니다'
-            );
-        
-        if (!$db->query("UPDATE " . USER_TABLE . " SET `code`='" . $http_student_id . "'" . (intval($user['permission']) < 1 ? ", `permission`=1" : "") . " WHERE `id`=" . $user['id'] . ";"))
-            return array(
-                'result'=>false,
-                'message'=>'서버 오류로 인증을 완료하지 못했습니다'
-            );
-        
-        if ($user_permission < 1)
-            $session->setPermission(1);
-        
-        $db->log($session->name, LOG_STUDENT_AUTH, $http_student_id);
-        
-        navigateTo(HREF_DASHBOARD . '?auth=1');
-        
-        return array(
-            'result'=>true,
-            'user'=>$user,
-            'message'=>'재학생 인증을 완료했습니다'
+            "result" => false,
+            "message" => STRINGS["EPDH0"]
         );
     }
     
+    // 최근 3일간 로그인 기록 가져오기
+    $response = $db->in(DB_LOG_TABLE)
+                   ->select("*")
+                   ->where("user_name", "=", $user_data["name"], "AND")
+                   ->where("behavior", "=", "signin", "AND")
+                   ->where("timestamp", ">=", "(CURDATE() - INTERVAL 3 DAY)", "AND", true)
+                   ->order_by("`timestamp` DESC")
+                   ->limit("30")
+                   ->go_and_get_all();
+
+    if (!$response) {
+        return array(
+            "result" => false,
+            "user" => $user_data,
+            "message" => STRINGS["EPDH1"]
+        );
+    }
+
+    $user_data["login_history"] = $response;
+    
     // 이메일 변경
     if (!empty($http_user_email)) {
+
+        $page_focus = 1;
         
-        $page_focus = 2;
-        
-        if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL))
+        if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL)) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'이메일 주소가 올바르지 않습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message"=> STRINGS["EPDH2"]
             );
+        }
         
-        if (strcmp($user['email'], $http_user_email) == 0)
+        if (strcmp($user_data["email"], $http_user_email) == 0) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'동일한 이메일 주소가 입력되었습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH3"]
             );
+        }
+
+        $response = $db->in(DB_USER_TABLE)
+                        ->select("*")
+                        ->where("email", "=", $http_user_email)
+                        ->go_and_get();
         
-        if (!$db->query("SELECT 1 FROM " . USER_TABLE . " WHERE `email`='" . $db->purify($http_user_email) . "';"))
+        if ($response) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'이메일 주소 조회에 실패했습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH4"]
             );
+        }
+
+        $response = $db->in(DB_USER_TABLE)
+                       ->update("email", $http_user_email)
+                       ->where("id", "=", $user_data["id"])
+                       ->go();
         
-        if ($db->total_results() > 0)
+        if (!$response) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'이미 사용중인 이메일 주소입니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH5"]
             );
+        }
         
-        if (!$db->query("UPDATE " . USER_TABLE . " SET `email`='" . $db->purify($http_user_email) . "' WHERE `id`=" . $user['id'] . ";"))
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'이메일 주소 변경에 실패하였습니다'
-            );
+        $response = $db->in(DB_LOG_TABLE)
+                       ->insert("behavior", "change-email")
+                       ->insert("data", $user_data["email"] . ":" . $http_user_email)
+                       ->go();
         
-        $db->log($session->name, LOG_CHANGE_EMAIL, $user['email']);
-        
-        $user['email'] = $http_user_email;
+        $user_data["email"] = $http_user_email;
         
         return array(
-            'result'=>true,
-            'user'=>$user,
-            'message'=>'이메일 주소를 변경하였습니다'
+            "result" => true,
+            "user" => $user_data,
+            "message" => STRINGS["EPDH6"]
         );
     }
     
     // 비밀번호 변경
     if (!empty($http_user_new_password)) {
-        
-        $page_focus = 3;
-        
-        if (strcmp($http_user_new_password, $http_user_new_password_re) != 0)
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'비밀번호와 비밀번호 확인이 일치하지 않습니다'
-            );
-        
-        if (strlen($http_user_new_password) < 4)
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'비밀번호는 4자 이상으로 입력해 주세요'
-            );
-        
-        $http_user_password = passwordHash($http_user_password);
-        $http_user_new_password = passwordHash($http_user_new_password);
 
-        if (strcmp($user['password'], $http_user_password) != 0)
-            return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'현재 비밀번호가 올바르지 않습니다'
-            );
+        $page_focus = 2;
         
-        if (!$db->query("UPDATE " . USER_TABLE . " SET `password`='" . $http_user_new_password . "' WHERE `id`=" . $user['id'] . ";"))
+        if (strcmp($http_user_new_password, $http_user_new_password_re) != 0) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'서버 오류로 비밀번호를 변경하지 못했습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH7"]
             );
+        }
         
-        $db->log($session->name, LOG_CHANGE_PASSWORD, $user['password']);
+        if (strlen($http_user_new_password) < 4) {
+            return array(
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH8"]
+            );
+        }
+        
+        $http_user_password = password_hash($http_user_password);
+        $http_user_new_password = password_hash($http_user_new_password);
+
+        if (strcmp($user_data["password"], $http_user_password) != 0) {
+            return array(
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH9"]
+            );
+        }
+
+        $response = $db->in(DB_USER_TABLE)
+                       ->update("password", $http_user_new_password)
+                       ->where("id", "=", $user_data["id"])
+                       ->go();
+        
+        if (!$response) {
+            return array(
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH10"]
+            );
+        }
+        
+        $response = $db->in(DB_LOG_TABLE)
+                       ->insert("behavior", "password-change")
+                       ->insert("data", "*")
+                       ->go();
         
         return array(
-            'result'=>true,
-            'user'=>$user,
-            'message'=>'비밀번호를 변경하였습니다.'
+            "result" => true,
+            "user" => $user_data,
+            "message" => STRINGS["EPDH11"]
         );
     }
     
     // 계정 삭제
     if (!empty($http_user_password_drop)) {
+
+        $page_focus = 3;
         
-        $page_focus = 4;
-        
-        if (strcmp($user['password'], passwordHash($http_user_password_drop)) != 0)
+        if (strcmp($user_data["password"], password_hash($http_user_password_drop)) != 0) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'비밀번호가 올바르지 않습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH9"]
             );
+        }
+
+        $response = $db->in(USER_TABLE)
+                       ->delete()
+                       ->where("id", "=", $user_data["id"])
+                       ->go();
         
-        if (!$db->query("DELETE FROM " . USER_TABLE . " WHERE `id`=" . $user['id'] . ";"))
+        if (!$response) {
             return array(
-                'result'=>false,
-                'user'=>$user,
-                'message'=>'서버 오류로 계정을 삭제하지 못했습니다'
+                "result" => false,
+                "user" => $user_data,
+                "message" => STRINGS["EPDH12"]
             );
+        }
         
-        $db->log($session->name, LOG_DELETE_ACCOUNT, '');
+        $response = $db->in(DB_LOG_TABLE)
+                       ->insert("behavior", "account-delete")
+                       ->insert("data", $user_data["name"])
+                       ->go();
         
-        navigateTo(HREF_SIGNOUT);
-        
+        $redirect->set(get_theme_path() . HREF_SIGNOUT);
+
         return array(
-            'result'=>true,
-            'user'=>$user,
-            'message'=>''
-        );
+            "redirect" => true
+        ); 
     }
 
     return array(
-        'result'=>true,
-        'user'=>$user
+        "result" => true,
+        "user" => $user_data
     );
 }
-
-$page_response = main();
-$page_title    = '대시보드';
-$page_location = HREF_DASHBOARD;
-
-include 'frame.header.php';
-?>
-
-<div class="container">
-<h1 ><a href="#" style="text-decoration: none;">대시보드</a></h1><br/>
-<ul class="nav nav-tabs" role="tablist">
-  <li role="presentation" class="<?php if($page_focus==0) {echo ' active';}?>"><a href="#main" aria-controls="main" role="tab" data-toggle="tab">계정 정보</a></li>
-  <?php
-    if (empty($page_response['user']['code'])){
-        echo '<li role="presentation"'.(($page_focus==1) ? ' class="active"' : '').'><a href="#auth" aria-controls="auth" role="tab" data-toggle="tab">재학생 인증</a></li>';
-    }?>
-  <li role="presentation" class="<?php if($page_focus==2) {echo ' active';}?>"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">이메일 변경</a></li>
-  <li role="presentation" class="<?php if($page_focus==3) {echo ' active';}?>"><a href="#password" aria-controls="password" role="tab" data-toggle="tab">비밀번호 변경</a></li>
-  <li role="presentation" class="<?php if($page_focus==4) {echo ' active';}?>"><a href="#dropout" aria-controls="dropout" role="tab" data-toggle="tab">계정 삭제</a></li>
-</ul>
-<div class="tab-content">
-  
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 0) ? ' active' : ' fade');?>" id="main">
-    <?php include 'frame.myinfo.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 1) ? ' active' : ' fade');?>" id="auth">
-    <?php include 'frame.yonseiauth.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 2) ? ' active' : ' fade');?>" id="email">
-    <?php include 'frame.changeemail.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 3) ? ' active' : ' fade');?>" id="password">
-    <?php include 'frame.changepassword.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 4) ? ' active' : ' fade');?>" id="dropout">
-    <?php include 'frame.deleteaccount.php';?>
-  </div>
-</div>
-</div>
-
-<?php include 'frame.footer.php';?>
