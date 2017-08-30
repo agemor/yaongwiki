@@ -11,6 +11,7 @@ require_once "core/core.session.php";
 require_once "index.navigator.php";
 
 $post->set($_POST);
+$get->set($_GET);
 
 $current_page_url = get_current_page_url();
 

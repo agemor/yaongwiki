@@ -148,8 +148,8 @@ function process() {
             );
         }
         
-        $http_user_password = password_hash($http_user_password);
-        $http_user_new_password = password_hash($http_user_new_password);
+        $http_user_password = hash_password($http_user_password);
+        $http_user_new_password = hash_password($http_user_new_password);
 
         if (strcmp($user_data["password"], $http_user_password) != 0) {
             return array(
@@ -189,7 +189,7 @@ function process() {
 
         $page_focus = 3;
         
-        if (strcmp($user_data["password"], password_hash($http_user_password_drop)) != 0) {
+        if (strcmp($user_data["password"], hash_password($http_user_password_drop)) != 0) {
             return array(
                 "result" => false,
                 "user" => $user_data,

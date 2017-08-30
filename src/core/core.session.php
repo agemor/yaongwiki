@@ -2,12 +2,12 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 08. 31
  */
  
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 session_start();
 
@@ -20,7 +20,7 @@ class User {
     
     public $time;
     
-    function __construct() {
+    public function __construct() {
 
         $this->name = $_SESSION['name'];
         $this->id = $_SESSION['id'];
@@ -57,8 +57,9 @@ class User {
     
     public function visit($article_id) {
 
-        if (in_array($article_id, $_SESSION['pageview']))
+        if (in_array($article_id, $_SESSION['pageview'])) {
             return false;
+        }
 
         array_push($_SESSION['pageview'], $article_id);
 
@@ -73,25 +74,27 @@ class User {
     
 }
 
-class PostManager {
+class FormDataManager {
     
     public $values;
-    
-    function __construct() {
+    public $form_name;
 
-        $this->values = $_SESSION["post_values"];
+    public function __construct($form_name) {
+
+        $this->values = $_SESSION[$form_name];
+        $this->form_name = $form_name;
     }
 
     public function set($values) {
 
         $this->values = $values;
-        $_SESSION["post_values"] = $values;
+        $_SESSION[$this->form_name] = $values;
     }
 
     public function clear() {
 
         $this->values = null;
-        $_SESSION["post_values"] = null;
+        $_SESSION[$this->form_name] = null;
     }
 
     public function retrieve($key) {
@@ -104,8 +107,12 @@ class PostManager {
         }
 
         $value = $this->values[$key];
+
+        if (empty($value)) {
+            return null;
+        }
         
-        return trim(strip_tags(empty($value ? null : $value)));
+        return trim(strip_tags($value));
     }
 }
 
@@ -113,7 +120,7 @@ class RedirectManager {
 
     public $redirect_url;
     
-    function __construct() {
+    public function __construct() {
 
         $this->redirect_url = $_SESSION["redirect_url"];
     }
@@ -136,7 +143,8 @@ class RedirectManager {
 }
 
 $user = new User();
-$post = new PostManager();
+$post = new FormDataManager("post-values");
+$get = new FormDataManager("get-values");
 $redirect = new RedirectManager();
 
 ?>
