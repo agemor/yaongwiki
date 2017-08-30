@@ -1,4 +1,4 @@
-CREATE TABLE `yw_article` (
+CREATE TABLE `[PREFIX]yaongwiki_articles` (
   `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(100) NOT NULL,
   `content` text NOT NULL,
@@ -9,15 +9,15 @@ CREATE TABLE `yw_article` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `yw_article`
+ALTER TABLE `[PREFIX]yaongwiki_articles`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `title` (`title`),
   ADD FULLTEXT KEY `content` (`content`);
 
-ALTER TABLE `yw_article`
+ALTER TABLE `[PREFIX]yaongwiki_articles`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yw_file` (
+CREATE TABLE `yaongwiki_files` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
   `type` varchar(50) NOT NULL,
@@ -26,13 +26,13 @@ CREATE TABLE `yw_file` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `yw_file`
+ALTER TABLE `[PREFIX]yaongwiki_files`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `yw_file`
+ALTER TABLE `[PREFIX]yaongwiki_files`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yw_log` (
+CREATE TABLE `yaongwiki_logs` (
   `id` int(10) UNSIGNED NOT NULL,
   `ip` varbinary(16) NOT NULL,
   `user_name` varchar(100) NOT NULL,
@@ -41,13 +41,13 @@ CREATE TABLE `yw_log` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `yw_log`
+ALTER TABLE `[PREFIX]yaongwiki_logs`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `yw_log`
+ALTER TABLE `[PREFIX]yaongwiki_logs`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yw_revision` (
+CREATE TABLE `yaongwiki_revisions` (
   `id` int(10) UNSIGNED NOT NULL,
   `article_title` varchar(200) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
@@ -60,13 +60,13 @@ CREATE TABLE `yw_revision` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `yw_revision`
+ALTER TABLE `[PREFIX]yaongwiki_revisions`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `yw_revision`
+ALTER TABLE `[PREFIX]yaongwiki_revisions`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-  CREATE TABLE `yw_user` (
+  CREATE TABLE `yaongwiki_users` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(200) NOT NULL,
@@ -77,17 +77,17 @@ ALTER TABLE `yw_revision`
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `yw_user`
+ALTER TABLE `[PREFIX]yaongwiki_users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`),
   ADD UNIQUE KEY `email` (`email`);
 
-ALTER TABLE `yw_user`
+ALTER TABLE `[PREFIX]yaongwiki_users`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 CREATE EVENT reset_populer
   ON SCHEDULE
     EVERY 1 DAY
-    STARTS '2014-04-30 00:20:00' ON COMPLETION PRESERVE ENABLE 
+    STARTS '2000-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE 
   DO
-    UPDATE `yw_article` SET `today_hits`=0;
+    UPDATE `[PREFIX]yaongwiki_articles` SET `today_hits`=0;

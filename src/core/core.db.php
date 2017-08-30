@@ -28,7 +28,7 @@ class Database {
             return true;
         }
 
-        $this->connection = new mysqli(DB_SERVER_NAME, DB_USER_NAME, DB_USER_PASSWORD, DB_NAME);
+        $this->connection = new mysqli(DB_HOST, DB_USER_NAME, DB_USER_PASSWORD, DB_NAME);
         $this->connection->set_charset("utf8");
         // 연결 상태 테스트
         if ($this->connection->connect_error){

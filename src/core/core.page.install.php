@@ -9,113 +9,73 @@
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-function main() {
+require_once "core.php";
+require_once "core.session.php";
+
+function process() {
+
+    global $db;
+    global $post;
+    global $user;
+    global $redirect;
+
+    $http_db_host = $post->retrieve("db-host");
+    $http_db_name = $post->retrieve("db-name");
+    $http_db_user = $post->retrieve("db-user");
+    $http_db_password = $post->retrieve("db-password");
+    $http_db_prefix = $post->retrieve("db-prefix");
     
-    $http_db_host     = $_POST['db-host'];
-    $http_db_name     = $_POST['db-name'];
-    $http_db_user     = $_POST['db-user'];
-    $http_db_password = $_POST['db-password'];
-    
-    if (empty($http_db_host) || empty($http_db_name) || empty($http_db_user) || empty($http_db_password))
+    if (empty($http_db_prefix)) {
+        $http_db_prefix = "";
+    }
+
+    if (empty($http_db_host) || empty($http_db_name) || empty($http_db_user) || empty($http_db_password)) {
         return array(
-            'result'=>true,
-            'message'=>''
+            "result" => true
         );
+    }
     
     $connection = new mysqli($http_db_host, $http_db_user, $http_db_password, $http_db_name);
     
-    if ($connection->connect_errno)
+    if ($connection->connect_errno) {
         return array(
-            'result'=>false,
-            'message'=>'서버에 접속할 수 없습니다: <br>' . $connection->connect_error
+            "result" => false,
+            "message" => STRINGS["EPIN0"] . "(" . $connection->connect_error . ")"
         );
+    }
     
-    $query = file_get_contents('assets/db.sql');
+    $query = file_get_contents("./core.db.schema.sql");
+    $query = str_replace("[PREFIX]", $http_db_prefix, $query);
     
-    if (!$connection->multi_query($query))
+    if (!$connection->multi_query($query)) {
         return array(
-            'result'=>false,
-            'message'=>'테이블 추가에 실패했습니다: <br>' . $connection->error
+            "result" => false,
+            "message" => STRINGS["EPIN1"] . "(" . $connection->connect_error . ")"
         );
+    }
     
     $config_keywords = array(
-        '{DB_HOST}',
-        '{DB_USER}',
-        '{DB_PASSWORD}',
-        '{DB_NAME}'
-    );
-    $settings        = array(
-        $http_db_host,
-        $http_db_user,
-        $http_db_password,
-        $http_db_name
+        "/DB_HOST = \".\"/",
+        "/DB_USER_NAME = \".\"/",
+        "/DB_USER_PASSWORD = \".\"/",
+        "/DB_NAME = \".\"/",
+        "/DB_TABLE_PREFIX = \".\"/"
     );
     
-    $filecontent = file_get_contents("common.php");
-    $filecontent = str_replace($config_keywords, $settings, $filecontent);
-    file_put_contents("common.php", $filecontent);
+    $settings = array(
+        "DB_HOST = \"" . $http_db_host . "\"",
+        "DB_USER_NAME = \"" . $http_db_user . "\"",
+        "DB_USER_PASSWORD = \"" . $http_db_password . "\"",
+        "DB_NAME = \"" . $http_db_name . "\"",
+        "DB_TABLE_PREFIX = \"" . $http_db_prefix . "\""
+    );
     
-    header('Location: /');
+    $filecontent = file_get_contents("core.db.account.php");
+    $filecontent = preg_replace($config_keywords, $settings, $filecontent);
+    file_put_contents("core.db.account.php", $filecontent);
+    
+    $redirect->set(get_theme_path() . HREF_MAIN);
+    return array(
+        "redirect" => true
+    ); 
 }
-
-$page_response = main();
-$page_location = "page.install.php";
-
-?>
-<!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="./favicon.ico">
-    <title>데이터베이스 설정</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./theme/bootstrap.yeti.css" rel="stylesheet">
-  </head>
-  <body style="padding-bottom: 70px;">
-    <nav class="navbar navbar-inverse">
-    </nav>
-    <div class="container text-center">
-      <h2>데이터베이스에 야옹위키를 설치합니다.</h2>
-      <hr/>
-      <p>만약 이미 설치되어 있는 상태라면 모든 정보가 초기화되므로,
-        <br/> 연결 정보를 수동으로 설정해 주시기 바랍니다.
-      </p>
-      <p><b>데이터베이스 설정을 위해 아래 정보를 입력해 주세요.</b></p>
-      <br/>
-    
-    <div class="container" style="width: 30%; min-width:350px">
-      <?php
-        if (!$page_response['result']) {
-            echo '<div class="alert alert-danger" role="alert">'.$page_response['message'].'</div>';
-         }
-         ?>
-      <form action="page.install.php" method="post">
-        <div style="margin-bottom: 10px" class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-          <input type="text" name="db-host" class="form-control" placeholder="DB 호스트" value="localhost" required autofocus>
-        </div>
-        <div style="margin-bottom: 10px" class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-hdd"></i></span>
-          <input type="text" name="db-name" class="form-control" placeholder="DB 이름" required>
-        </div>
-        <div style="margin-bottom: 10px" class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-          <input type="text" name="db-user" class="form-control" placeholder="DB 계정" required>
-        </div>
-        <div style="margin-bottom: 30px" class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-          <input type="password" name="db-password" class="form-control" placeholder="DB 계정 비밀번호" required>
-        </div>
-        <button class="btn btn-default btn-block" type="submit">설치하기</button> 
-      </form>
-      </div>
-      <hr/>
-    </div>
-    
-    <footer class="text-center">
-      <p>&copy; 2016 야옹위키</p>
-    </footer>
-  </body>
-</html>
