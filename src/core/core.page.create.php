@@ -65,11 +65,27 @@ function process() {
         );
     }
     
-    $response = $db->in(DB_ARTICLE_TABLE)
-                   ->insert("title", $http_article_title)
-                   ->go();
+    $response_1 = $db->in(DB_ARTICLE_TABLE)
+                     ->insert("title", $http_article_title)
+                     ->go();
 
-    if (!$response) {
+    $response = $db->in(DB_ARTICLE_TABLE)
+                   ->select("*")
+                   ->where("title", "=", $http_article_title)
+                   ->go_and_get();
+
+    $response_2 = $db->in(DB_REVISION_TABLE)
+                     ->insert("article_id", $response["id"])
+                     ->insert("article_title", $http_article_title)
+                     ->insert("revision", "0")
+                     ->insert("user_name", $user->name)
+                     ->insert("snapshot_content", "")
+                     ->insert("snapshot_tags", "")
+                     ->insert("fluctuation", "0")
+                     ->insert("comment", "새로 만들어짐")
+                     ->go();
+
+    if (!$response_1 || !$response_2) {
         return array(
             "result" => false,
             "title" => $http_article_title,
