@@ -18,5 +18,3 @@ const DB_ARTICLE_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_artic
 const DB_FILE_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_files`';
 const DB_REVISION_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_revisions`';
 const DB_LOG_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_logs`';
-
-?>

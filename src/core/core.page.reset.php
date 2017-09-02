@@ -7,92 +7,100 @@
  * @date 2017. 09. 12
  */
 
-require_once 'common.php';
-require_once 'common.db.php';
-require_once 'common.session.php';
-require_once 'tools/tool.recaptcha.php';
-require_once 'tools/tool.mailer.php';
+require_once "core.php";
+require_once "core.db.php";
+require_once "core.session.php";
+require_once "core.email.php";
+require_once "core.recaptcha.php";
 
-function main() {
+function process() {
 
-    global $session;
-    global $db_connect_info;
-    global $http_user_email;
+    global $db;
+    global $post;
+    global $user;
+    global $email;
+    global $redirect;
+    global $recaptcha;
     
-    if ($session->started())
-        navigateTo(HREF_MAIN);
-    
-    $http_user_email = trim($_POST['user-email']);
-    
-    // 입력 값의 유효성을 검증한다.
-    if (empty($http_user_email))
+    if ($user->signined()) {
+        $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
-            'result'=>true,
-            'message'=>''
-        );
+            "redirect" => true
+        ); 
+    }
     
-    // 이메일 포멧의 유효성을 검증한다.
-    if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL))
+    $http_user_email = $post->retrieve("user-email");
+    $http_recaptcha = $post->retrieve("g-recaptcha-response");    
+
+    if (empty($http_user_email)) {
         return array(
-            'result'=>false,
-            'message'=>'이메일 주소가 올바르지 않습니다'
-        );
-    
-    // reCAPTCHA를 검증한다.
-    if (!getReCaptcha())
-        return array(
-            'result'=>false,
-            'message'=>'reCAPTCHA가 올바르게 입력되지 않았습니다'
-        );
-    
-    $db = new YwDatabase($db_connect_info);
-    
-    // 데이터베이스 연결을 체크한다.
-    if (!$db->connect())
-        return array(
-            'result'=>false,
-            'message'=>'서버와의 연결에 실패했습니다'
-        );
-    
-    // 아이디와 이메일 유효성을 검증한다.
-    if (!$db->query("SELECT `name` FROM " . USER_TABLE . " WHERE `email`='" . $db->purify($http_user_email) . "';"))
-        return array(
-            'result'=>false,
-            'message'=>'이메일 주소를 조회하는데 실패했습니다'
-        );
-    
-    if ($db->total_results() < 1) {
-        return array(
-            'result'=>false,
-            'message'=>'존재하지 않는 이메일 주소입니다'
+            "result" => true
         );
     }
     
-    $result    = $db->get_result();
-    $user_name = $result['name'];
+    if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL)) {
+        return array(
+            "result" => false,
+            "message" => STRINGS["EPRS0"]
+        );
+    }
     
-    // 새로운 비밀번호를 생성한다.
+    // reCAPTCHA
+    if (!$recaptcha->verify($http_recaptcha)) {
+        return array(
+            "result" => false,
+            "message" => STRINGS["EPRS1"]
+        );
+    }
+    
+    $user_data = $db->in(DB_USER_TABLE)
+                    ->select("*")
+                    ->where("email", "=", $http_user_email)
+                    ->go_and_get();
+
+    if (!$user_data) {
+        return array(
+            "result" => false,
+            "message" => STRINGS["EPRS2"]
+        );
+    }
+
     $generated_password = bin2hex(openssl_random_pseudo_bytes(6));
     
-    if (!$db->query("UPDATE " . USER_TABLE . " SET `password`='" . passwordHash($generated_password) . "' WHERE `email`='" . $db->purify($http_user_email) . "';")) {
+    $response = $db->in(DB_USER_TABLE)
+                   ->update("password", hash_password($generated_password))
+                   ->where("email", "=", $http_user_email)
+                   ->go();
+
+    if (!$response) {
+        return array( 
+            "result" => false,
+            "message" => STRINGS["EPRS3"]
+        );
+    }
+
+    $email_content_table = array(
+        "{NAME}" => $user_data["name"],
+        "{PASSWORD}" => $generated_password
+    );
+    
+    $email_subject = STRINGS["SPRS0"];
+    $email_content = strtr(STRINGS["SPRS1"], $email_content_table);
+
+    if (!$email->send($http_user_email, $email_subject, $email_content)) {
         return array(
-            'result'=>false,
-            'message'=>'비밀번호를 업데이트하는데 실패했습니다'
+            "result" => false,
+            "message" => STRINGS["EPRS4"]
         );
     }
     
-    $email_content = "<b>" . $user_name . "</b> 회원님의 새 비밀번호는 <b>" . $generated_password . "</b>입니다.";
-    if (!getMailer($http_user_email, "연세위키 비밀번호를 알려드립니다", $email_content))
-        return array(
-            'result'=>false,
-            'message'=>'이메일 발송에 실패했습니다'
-        );
-    
-    $db->log($user_name, LOG_RESET, '1');
-    $db->close();
+    $response = $db->in(DB_LOG_TABLE)
+                   ->insert("behavior", "reset")
+                   ->insert("data", "*")
+                   ->go();
     
     return array(
-        'result'=>true,
-        'message'=>'이메일로 아이디와 새로운 비밀번호를 전송했습니다'
+        "result" => true,
+        "message" => STRINGS["EPRS5"]
     );
 }
