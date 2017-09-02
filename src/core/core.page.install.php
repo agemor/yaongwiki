@@ -13,7 +13,7 @@ require_once "core.php";
 require_once "core.session.php";
 
 function process() {
-
+    
     global $db;
     global $post;
     global $user;
@@ -77,5 +77,5 @@ function process() {
     $redirect->set(get_theme_path() . HREF_MAIN);
     return array(
         "redirect" => true
-    ); 
+    );
 }

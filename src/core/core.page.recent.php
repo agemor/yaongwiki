@@ -14,7 +14,7 @@ require_once "core.session.php";
 const MAX_RECENT_CHANGED = 30;
 
 function process() {
-
+    
     global $db;
 
     $response = $db->custom("SELECT * FROM " . DB_REVISION_TABLE . " WHERE `id` IN (SELECT MAX(`id`) FROM " . DB_REVISION_TABLE . " GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . MAX_RECENT_CHANGED . ";");

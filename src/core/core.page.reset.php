@@ -14,7 +14,7 @@ require_once "core.email.php";
 require_once "core.recaptcha.php";
 
 function process() {
-
+    
     global $db;
     global $post;
     global $user;
@@ -26,11 +26,11 @@ function process() {
         $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
             "redirect" => true
-        ); 
+        );
     }
     
     $http_user_email = $post->retrieve("user-email");
-    $http_recaptcha = $post->retrieve("g-recaptcha-response");    
+    $http_recaptcha = $post->retrieve("g-recaptcha-response");
 
     if (empty($http_user_email)) {
         return array(
@@ -73,7 +73,7 @@ function process() {
                    ->go();
 
     if (!$response) {
-        return array( 
+        return array(
             "result" => false,
             "message" => STRINGS["EPRS3"]
         );

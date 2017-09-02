@@ -12,16 +12,15 @@ require_once "core.db.php";
 require_once "core.session.php";
  
 function process() {
-    
+
     global $db;
     global $get;
     global $user;
     global $redirect;
     
-    $http_revision_id = $_GET["i"];
-    $http_revision_target_id = $_GET["j"];
-    $http_pure = !empty($_GET["pure"]);
-    $http_rollback = !empty($_GET["rollback"]);
+    $http_revision_id = $get->retrieve("i");
+    $http_revision_target_id = $get->retrieve("j");
+    $http_rollback = !empty($get->retrieve("rollback"));
     
     $compare_to_original = intval($http_revision_target_id) == 0;
     

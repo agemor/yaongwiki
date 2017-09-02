@@ -25,7 +25,7 @@ function process() {
         $redirect->set(get_theme_path() . HREF_CREATE);
         return array(
             "redirect" => true
-        ); 
+        );
     }
 
     // 제목 길이가 너무 짧을 경우
@@ -102,7 +102,5 @@ function process() {
     
     return array(
         "redirect" => true
-    ); 
+    );
 }
-
-?>

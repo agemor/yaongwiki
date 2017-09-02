@@ -32,7 +32,7 @@ class Database {
         $this->connection->set_charset("utf8");
 
         // 연결 상태 테스트
-        if ($this->connection->connect_error){
+        if ($this->connection->connect_error) {
             $this->recent_error = $this->connection->connect_error;
             $this->connected = false;
         } else {
@@ -65,7 +65,7 @@ class Database {
         // 응답 반환
         if ($result->num_rows > 0) {
             $returnList = array();
-            while($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($returnList, $row);
             }
             return $returnList;
@@ -116,7 +116,7 @@ class Database {
         // 응답 반환
         if ($result->num_rows > 0) {
             $returnList = array();
-            while($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($returnList, $row);
             }
             return $returnList;
@@ -179,7 +179,6 @@ class Database {
     }
 
     public function where($row, $operator, $value, $conjunction = null, $raw_value = false) {
-
         if ($conjunction === null) {
             $conjunction = "AND";
         }
@@ -190,8 +189,8 @@ class Database {
         return $this;
     }
 
-    public function order_by($orderFunction) {
-        $this->query_blocks["order"] = $orderFunction;
+    public function order_by($order_function) {
+        $this->query_blocks["order"] = $order_function;
         return $this;
     }
 
@@ -201,18 +200,17 @@ class Database {
     }
 
     private function formulate() {
-
         $query = "";
 
         // 쿼리 구성 블록은 비어있으면 안 됨
-        if (empty($this->query_blocks)){
+        if (empty($this->query_blocks)) {
             return $query;
         }
 
         // SELECT 문일 경우
         if ($this->query_blocks["type"] == "select") {
             $query .= "SELECT ";
-            foreach($this->query_blocks["target"] as $target) {
+            foreach ($this->query_blocks["target"] as $target) {
                 if ($target == "*") {
                     $query .= "*,";
                 } else {
@@ -224,14 +222,14 @@ class Database {
         }
 
         // DELETE 문일 경우
-        else if ($this->query_blocks["type"] == "delete") {
+        elseif ($this->query_blocks["type"] == "delete") {
             $query = "DELETE FROM `".$this->query_blocks["table"]."`";
         }
 
         // UPDATE 문일 경우
-        else if ($this->query_blocks["type"] == "update") {
+        elseif ($this->query_blocks["type"] == "update") {
             $query .= "UPDATE `".$this->query_blocks["table"]."` SET ";
-             foreach($this->query_blocks["target"] as $target) {
+            foreach ($this->query_blocks["target"] as $target) {
                 $query .= "`".$this->escape($target[0])."`=";
                 $query .= $target[2] ? "".$this->escape($target[1])."," : "'".$this->escape($target[1])."',";
             }
@@ -239,11 +237,11 @@ class Database {
         }
 
         // INSERT 문일 경우
-        else if ($this->query_blocks["type"] == "insert") {
+        elseif ($this->query_blocks["type"] == "insert") {
             $query .= "INSERT INTO `".$this->query_blocks["table"]."` ";
             $_set = "";
             $_value = "";
-            foreach($this->query_blocks["target"] as $target) {
+            foreach ($this->query_blocks["target"] as $target) {
                 $_set .= "`".$this->escape($target[0])."`,";
                 $_value .= "'".$this->escape($target[1])."',";
             }
@@ -268,12 +266,12 @@ class Database {
         }
 
         // ORDER BY 문
-        if(isset($this->query_blocks["order"])) {
+        if (isset($this->query_blocks["order"])) {
             $query .= " ORDER BY ".$this->query_blocks["order"];
         }
 
         // LIMIT 문
-        if(isset($this->query_blocks["limit"])) {
+        if (isset($this->query_blocks["limit"])) {
             $query .= " LIMIT ".$this->query_blocks["limit"];
         }
 

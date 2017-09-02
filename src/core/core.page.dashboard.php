@@ -12,7 +12,7 @@
  require_once "core.session.php";
 
 function process() {
-
+    
     global $db;
     global $post;
     global $user_data;
@@ -31,7 +31,7 @@ function process() {
         $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
             "redirect" => true
-        ); 
+        );
     }
     
     $user_data = $db->in(DB_USER_TABLE)
@@ -68,7 +68,6 @@ function process() {
     
     // 이메일 변경
     if (!empty($http_user_email)) {
-
         $page_focus = 1;
         
         if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL)) {
@@ -129,7 +128,6 @@ function process() {
     
     // 비밀번호 변경
     if (!empty($http_user_new_password)) {
-
         $page_focus = 2;
         
         if (strcmp($http_user_new_password, $http_user_new_password_re) != 0) {
@@ -186,7 +184,6 @@ function process() {
     
     // 계정 삭제
     if (!empty($http_user_password_drop)) {
-
         $page_focus = 3;
         
         if (strcmp($user_data["password"], hash_password($http_user_password_drop)) != 0) {
@@ -219,7 +216,7 @@ function process() {
 
         return array(
             "redirect" => true
-        ); 
+        );
     }
 
     return array(

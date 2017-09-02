@@ -14,7 +14,7 @@ require_once "core.session.php";
 const MAX_REVISIONS = 20;
 
 function process() {
-
+    
     global $db;
     global $post;
     global $get;
@@ -69,7 +69,6 @@ function process() {
 
     // 자기소개 업데이트
     if (!empty($http_user_info)) {
-
         if ($user->id != $user_data["id"]) {
             return array(
                 "result" => false,
