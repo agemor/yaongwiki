@@ -99,10 +99,12 @@ function permissionInfo($permission)
     }
 }
 
-function get_theme_path() {
+function get_theme_path()
+{
     return "./themes/" . THEME . "/";
 }
 
-function hash_password($password) {
+function hash_password($password)
+{
     return hash("sha512", $password . "yw");
 }
