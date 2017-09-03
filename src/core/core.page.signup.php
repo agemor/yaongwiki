@@ -4,7 +4,7 @@
  *
  * @version 1.2
  * @author HyunJun Kim
- * @date 2017. 08. 26
+ * @date 2017. 09. 03
  */
 
 require_once "core.php";
