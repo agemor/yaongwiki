@@ -2,125 +2,119 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 08. 26
  */
 
-require_once 'common.php';
-require_once 'common.db.php';
-require_once 'common.session.php';
-require_once 'tools/tool.recaptcha.php';
+require_once "core.php";
+require_once "core.db.php";
+require_once "core.session.php";
+require_once "core.recaptcha.php";
 
-function main()
-{
-    global $session;
-    global $db_connect_info;
-    global $http_user_name;
-    global $http_user_email;
+function process() {
+    
+    global $db;
+    global $post;
+    global $user;
+    global $redirect;
+    global $recaptcha;
 
-    if ($session->started()) {
-        navigateTo(HREF_MAIN);
+    if ($user->signined()) {
+        $redirect->set(get_theme_path() . HREF_MAIN);
+        return array(
+            "redirect" => true
+        );
     }
 
-    $http_user_name        = trim($_POST['user-name']);
-    $http_user_password    = trim($_POST['user-password']);
-    $http_user_password_re = trim($_POST['user-password-re']);
-    $http_user_email       = trim($_POST['user-email']);
+    $http_user_name = $post->retrieve("user-name");
+    $http_user_password = $post->retrieve("user-password");
+    $http_user_password_re = $post->retrieve("user-password-res");
+    $http_user_email = $post->retrieve("user-email");
     
-    // 입력 값의 유효성을 검증한다.
     if (empty($http_user_name) || empty($http_user_password) || empty($http_user_email)) {
         return array(
-            'result'=>true,
-            'message'=>''
+            "result" => true
         );
     }
     
     if (strlen($http_user_name) < 2) {
         return array(
-            'result'=>false,
-            'message'=>'아이디는 3자 이상으로 입력해 주세요'
+            "result" => false,
+            "message" => STRINGS["EPSU0"]
         );
     }
     
     if (strlen($http_user_password) < 5) {
         return array(
-            'result'=>false,
-            'message'=>'비밀번호는 4자 이상으로 입력해 주세요'
+            "result" => false,
+            "message" => STRINGS["EPSU1"]
         );
     }
     
     if (strcmp($http_user_password, $http_user_password_re) != 0) {
         return array(
-            'result'=>false,
-            'message'=>'비밀번호와 비밀번호 확인이 일치하지 않습니다'
+            "result" => false,
+            "message" => STRINGS["EPSU2"]
         );
     }
     
-    // 이메일 포멧의 유효성을 검증한다.
     if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL)) {
         return array(
-            'result'=>false,
-            'message'=>'올바르지 않은 이메일 주소입니다'
+            "result" => false,
+            "message" => STRINGS["EPSU3"]
         );
     }
     
-    // reCAPTCHA를 검증한다.
     if (!getReCaptcha()) {
         return array(
-            'result'=>false,
-            'message'=>'reCAPTCHA가 올바르게 입력되지 않았습니다'
+            "result" => false,
+            "message" => STRINGS["EPSU4"]
         );
     }
     
-    $db = new YwDatabase($db_connect_info);
+    $response = $db->in(DB_USER_TABLE)
+                   ->select("*")
+                   ->where("name", "=", $http_user_name, "OR")
+                   ->where("email", "=", $http_user_email)
+                   ->go_and_get_all();
     
-    // 데이터베이스 연결을 체크한다.
-    if (!$db->connect()) {
-        return array(
-            'result'=>false,
-            'message'=>'서버와의 연결에 실패했습니다'
-        );
-    }
-    
-    // 아이디와 이메일 유효성을 검증한다.
-    if (!$db->query("SELECT `name` FROM " . USER_TABLE . " WHERE `name`='" . $db->purify($http_user_name) . "' OR `email`='" . $db->purify($http_user_email) . "';")) {
-        return array(
-            'result'=>false,
-            'message'=>'유저 정보를 불러오는데 실패하였습니다'
-        );
-    }
-    
-    if ($db->total_results() > 0) {
-        $result = $db->get_result();
-        if (strcmp($http_user_name, $result['name']) == 0) {
-            return array(
-                'result'=>false,
-                'message'=>'이미 사용중인 아이디입니다'
-            );
-        } else {
-            return array(
-                'result'=>false,
-                'message'=>'이미 사용중인 이메일 주소입니다'
-            );
+    if ($response) {
+        for ($i = 0; $i < count($response); $i++) {
+            if (strcmp($http_user_name, $response[i]["name"]) == 0) {
+                return array(
+                    "result" => false,
+                    "message" => STRINGS["EPSU5"]
+                );
+            } else {
+                return array(
+                    "result" => false,
+                    "message" => STRINGS["EPSU6"]
+                );
+            }
         }
     }
+
+    $response = $db->in(DB_USER_TABLE)
+                   ->insert("name", $http_user_name)
+                   ->insert("password", hash_password($http_user_password))
+                   ->insert("email", $http_user_email)
+                   ->go();
     
-    // 서버로 데이터를 전송한다.
-    if (!$db->query("INSERT INTO " . USER_TABLE . " (`name`, `password`, `email`) VALUES ('" . $db->purify($http_user_name) . "', '" . passwordHash($http_user_password) . "', '" . $db->purify($http_user_email) . "');")) {
+    if (!$response) {
         return array(
-            'result'=>false,
-            'message'=>'계정을 생성하는데 실패했습니다'
+            "result" => false,
+            "message" => STRINGS["EPSU7"]
         );
     }
     
-    $db->log($http_user_name, LOG_SIGNUP, '1');
-    $db->close();
+    $response = $db->in(DB_LOG_TABLE)
+                   ->insert("behavior", "signup")
+                   ->insert("data", $http_user_name)
+                   ->go();
     
-    navigateTo(HREF_SIGNIN . '?signup=1');
-    
+    $redirect->set(get_theme_path() . HREF_SIGNIN);
     return array(
-        'result'=>true,
-        'message'=>''
+        "redirect" => true
     );
 }
