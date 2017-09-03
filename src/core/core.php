@@ -56,17 +56,6 @@ const NAVIGATOR_TABLE = array(
     "recent" => HREF_RECENT
 );
 
-const LOG_DELETE_ACCOUNT = "delete-account";
-const LOG_STUDENT_AUTH = "auth";
-const LOG_CHANGE_EMAIL = "change-email";
-const LOG_CHANGE_PASSWORD = "change-password";
-const LOG_WRITE = "write";
-const LOG_CREATE = "create";
-const LOG_UPDATE_USER_INFO = "update-user-info";
-const LOG_RESET = "reset";
-const LOG_SIGNIN = "signin";
-const LOG_SIGNUP = "signup";
-
 function permissionInfo($permission)
 {
     switch ($permission) {

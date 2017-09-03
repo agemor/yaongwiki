@@ -40,7 +40,7 @@ function process() {
         $db->where("title", "=", $http_article_title);
     }
 
-    $article_data = $db->limit("0")->go_and_get();
+    $article_data = $db->go_and_get();
     
     if (!$article_data) {
         if (!$read_by_id) {

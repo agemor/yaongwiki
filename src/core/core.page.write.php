@@ -2,226 +2,236 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 09. 03
  */
 
-require_once 'common.php';
-require_once 'common.db.php';
-require_once 'common.session.php';
-require_once 'tools/tool.html-purifier.php';
+require_once "core.php";
+require_once "core.db.php";
+require_once "core.session.php";
+require_once "core.purifier.php";
 
 const DELETE_REVISIONS = false;
 
-function main()
-{
-    global $session;
-    global $db_connect_info;
+function process() {
+    
+    global $db;
+    global $post;
+    global $get;
+    global $user;
+    global $redirect;
+    global $purifier;
 
-    $http_article_title             = trim(!empty($_POST['article-title']) ? $_POST['article-title'] : $_GET['t']);
-    $http_article_id                = trim(!empty($_POST['article-id']) ? $_POST['article-id'] : $_GET['i']);
-    $http_article_new_title         = strip_tags(trim($_POST['article-new-title']));
-    $http_article_content           = $_POST['article-content'];
-    $http_article_tags              = preg_replace('!\s+!', ' ', strip_tags($_POST['article-tags']));
-    $http_article_delete            = isset($_POST['article-delete']);
-    $http_article_change_permission = isset($_POST['article-permission']);
-    $http_article_permission        = abs(intval($_POST['article-permission']));
-    $http_article_comment           = strip_tags($_POST['article-comment']);
+    $http_article_title = $post->retrieve("article-title") !== null ? $post->retrieve("article-title") : $get->retrieve("t");
+    $http_article_id = $post->retrieve("article-id") !== null ? $post->retrieve("article-id") : $get->retrieve("i");
+    $http_article_new_title = strip_tags($post->retrieve("article-new-title"));
+    $http_article_content = $post->retrieve("article-content");
+    $http_article_tags = preg_replace("!\s+!", " ", strip_tags($post->retrieve("article-tags")));
+    $http_article_delete = $post->retrieve("article-delete") !== null;
+    $http_article_change_permission = $post->retrieve("article-permission") !== null;
+    $http_article_permission = $http_article_change_permission ? abs(intval($post->retrieve("article-permission"))) : 0;
+    $http_article_comment = strip_tags($post->retrieve("article-comment"));
     
     $read_by_id = !empty($http_article_id);
     
-    // 파라미터가 충분하지 않음
     if (empty($http_article_title) && empty($http_article_id)) {
-        navigateTo(HREF_MAIN);
-    }
-    
-    // 로그인 되어있지 않을 경우 로그인 유도
-    if (!$session->started()) {
-        navigateTo(HREF_SIGNIN . '?redirect=' . HREF_WRITE . '/' . ($read_by_id ? $http_article_id : $http_article_title));
-    }
-    
-    $db = new YwDatabase($db_connect_info);
-    
-    if (!$db->connect()) {
+        $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
-            'result'=>false,
-            'message'=>'서버와의 연결에 실패했습니다'
+            "redirect" => true
         );
     }
     
+    if ($user->signined()) {
+        $redirect->set(get_theme_path() . HREF_WRITE . "?redirect=" . ($read_by_id ? "&i=" . $http_article_id : "&t=" . $http_article_title));
+        return array(
+            "redirect" => true
+        );
+    }
+    
+    $db->in(DB_ARTICLE_TABLE)->select("*");
+
     if ($read_by_id) {
-        $query = "SELECT * FROM " . ARTICLE_TABLE . " WHERE `id`='$http_article_id' LIMIT 1;";
+        $db->where("id", "=", $http_article_id);
     } else {
-        $query = "SELECT * FROM " . ARTICLE_TABLE . " WHERE `title`='$http_article_title' LIMIT 1;";
+        $db->where("title", "=", $http_article_title);
     }
+
+    $article_data = $db->go_and_get();
+    $article_snapshot_data = $article_data;
     
-    if (!$db->query($query)) {
+    if (!$article_data) {
         return array(
-            'result'=>false,
-            'message'=>'글을 읽어오던 중 서버 에러가 발생했습니다'
+            "result" =>false,
+            "message" => STRINGS["EPWR0"]
         );
     }
     
-    if ($db->total_results() < 1) {
-        if (!$read_by_id) {
-            navigateTo(HREF_SUGGEST . '?t=' . $http_article_title);
-        }
+    if (intval($article_data["permission"]) > $user->permission) {
         return array(
-            'result'=>false,
-            'message'=>'존재하지 않는 지식입니다'
+            "result" => false,
+            "article" => $article_data,
+            "message" => STRINGS["EPWR1"]
         );
     }
     
-    $article = $db->get_result();
-    $article_old = $article;
-    
-    // 편집 권한 검사
-    if (intval($article['permission']) > $session->permission) {
-        return array(
-            'result'=>false,
-            'article'=>$article,
-            'message'=>'이 지식을 편집하기 위한 권한이 부족합니다'
-        );
-    }
-    
-    // 별다른 편집 문자열이 들어오지 않았으면 편집 모드로 들어간다.
+    // 편집 모드
     if (empty($http_article_content)) {
         return array(
-            'result'=>true,
-            'article'=>$article,
-            'message'=>''
+            "result" => true,
+            "article" => $article_data,
         );
     }
     
-    // 게시글 삭제 명령
+    // 글 삭제
     if ($http_article_delete) {
-        if (!$db->query("DELETE FROM " . ARTICLE_TABLE . " WHERE `id`='" . $article['id'] . "';")) {
+        if (intval($article_data["permission"]) > PERMISSION_DELETE_ARTICLE) {
             return array(
-                'result'=>false,
-                'message'=>'게시글 삭제에 실패했습니다'
+                "result" => false,
+                "article" => $article_data,
+                "message" => STRINGS["EPWR2"]
+            );
+        }
+
+        $response = $db->in(DB_ARTICLE_TABLE)
+                       ->delete()
+                       ->where("id", "=", $article_data["id"])
+                       ->go();
+
+        if (!$response) {
+            return array(
+                "result" =>false,
+                "message" => STRINGS["EPWR3"]
             );
         }
         
         if (DELETE_REVISIONS) {
-            $db->query("DELETE FROM " . REVISION_TABLE . " WHERE `article_id`='" . $article['id'] . "';");
+            $response = $db->in(DB_REVISION_TABLE)
+                           ->delete()
+                           ->where("article_id", "=", $article_data["id"])
+                           ->go();
         }
         
-        navigateTo(HREF_READ . '/' . $article['title']);
+        $redirect->set(get_theme_path() . HREF_READ . "?t=" . $article_data["title"]);
+        return array(
+            "redirect" => true
+        );
     }
     
     // 글 내용 필터링
     if ($session->permission < PERMISSION_NO_FILTERING) {
-        $http_article_content = getHtmlPurifier($http_article_content);
+        $http_article_content = $purifier->purify($http_article_content);
     }
     
-    $article['content'] = $http_article_content;
-    $article['tags'] = $http_article_tags;
+    $article_data["content"] = $http_article_content;
+    $article_data["tags"] = $http_article_tags;
 
-    $query = "UPDATE " . ARTICLE_TABLE . " SET ";
+    $db->in(DB_ARTICLE_TABLE);
     
-    // 타이틀 유효성 검사
-    if (!empty($http_article_new_title) && strcmp($http_article_new_title, $article['title']) != 0) {
-        if (strlen(preg_replace('/\s+/', '', $http_article_new_title)) < 2) {
+    // 제목 유효성 검사
+    if (!empty($http_article_new_title) && strcmp($http_article_new_title, $article_data["title"]) != 0) {
+        if (strlen(preg_replace("/\s+/", "", $http_article_new_title)) < 2) {
             return array(
-                'result'=>false,
-                'article'=>$article,
-                'message'=>'제목은 최소 두 글자 이상이어야 합니다'
+                "result" => false,
+                "article" => $article_data,
+                "message" => STRINGS["EPWR4"]
             );
         }
         
         if (is_numeric($http_article_new_title)) {
             return array(
-                'result'=>false,
-                'article'=>$article,
-                'message'=>'지식 제목으로 숫자를 사용할 수 없습니다'
+                "result" => false,
+                "article" => $article_data,
+                "message" => STRINGS["EPWR5"]
             );
         }
-        
-        if (!$db->query("SELECT 1 FROM " . ARTICLE_TABLE . " WHERE `title`='" . $db->purify($http_article_new_title) . "';")) {
+
+        $response = $db->in(DB_ARTICLE_TABLE)
+                       ->select("*")
+                       ->where("title", "=", $http_article_new_title)
+                       ->go_and_get();
+                     
+        if ($response) {
             return array(
-                'result'=>false,
-                'article'=>$article,
-                'message'=>'지식 제목을 검증하는데 서버 오류가 발생했습니다'
+                "result" => false,
+                "article" => $article_data,
+                "message" => STRINGS["EPWR6"]
             );
         }
         
-        if ($db->total_results() > 0) {
-            return array(
-                'result'=>false,
-                'article'=>$article,
-                'message'=>'이미 존재하는 지식 제목입니다'
-            );
-        }
-        
-        $article['title'] = $http_article_new_title;
-        $query .= "`title`='" . $db->purify($http_article_new_title) . "', ";
+        $article_data["title"] = $http_article_new_title;
+        $db->update("title", $http_article_new_title);
     }
     
     // 퍼미션 유효성 검사
     if ($http_article_change_permission) {
-        if ($http_article_permission > $session->permission) {
+        if ($http_article_permission > $user->permission) {
             return array(
-                'result'=>false,
-                'article'=>$article,
-                'message'=>'자신의 권한보다 지식 수정 권한을 크게 설정할 수 없습니다'
+                "result" => false,
+                "article" => $article_data,
+                "message" => STRINGS["EPWR7"]
             );
         }
         
-        $article['permission'] = $http_article_permission;
-        $query .= "`permission`='" . $http_article_permission . "', ";
+        $article_data["permission"] = $http_article_permission;
+        $db->update("permission", $http_article_permission);
     }
     
-    // 태그. 중간 공백을 하나로 설정한다.
-    $query .= "`tags`='" . $db->purify($http_article_tags) . "', ";
-    $query .= "`content`='" . $db->purify($http_article_content) . "' ";
-    $query .= "WHERE `id`='" . $article['id'] . "';";
+    $db->update("tags", $http_article_tags);
+    $db->update("content", $http_article_content);
+    $db->where("id", "=", $article_data["id"]);
+    $response = $db->go();
     
-    if (!$db->query($query)) {
+    if (!$response) {
         return array(
-            'result'=>false,
-            'article'=>$article,
-            'message'=>'지식 업데이트 중 서버 오류가 발생했습니다'
-        );
-    }
-    
-    // 가장 최근의 revision 레코드 넘버를 가져온다.
-    if (!$db->query("SELECT `revision` FROM " . REVISION_TABLE . " WHERE `article_id`='" . $article['id'] . "' ORDER BY `timestamp` DESC LIMIT 1;")) {
-        return array(
-            'result'=>false,
-            'article'=>$article,
-            'message'=>'수정 기록을 불러오던 중 서버 오류가 발생했습니다'
-        );
-    }
-    
-    $result = $db->get_result();
-    
-    if ($db->total_results() < 1) {
-        $article_recent_revision_number = 0;
-    } else {
-        $article_recent_revision_number = intval($result['revision']);
-    }
-    
-    
-    if (!$db->query("INSERT INTO " . REVISION_TABLE . " (`article_id`, `article_title`, `revision`,"
-        . " `user_name`, `snapshot_content`, `snapshot_tags`, `fluctuation`, `comment`) VALUES ('"
-        . $article_old['id'] . "', '" . $db->purify($article_old['title']) . "', " . ($article_recent_revision_number + 1) . ", '"
-        . $session->name . "', '" . $db->purify($article_old['content']) . "', '" . $db->purify($article_old['tags']) . "', "
-        . (strlen($http_article_content) - strlen($article_old['content'])) . ", '" . $db->purify($http_article_comment) . "');")) {
-        return array(
-            'result'=>false,
-            'message'=>"수정 기록을 추가하던 중 서버 오류가 발생했습니다"
+            "result" => false,
+            "article" => $article_data,
+            "message" => STRINGS["EPWR8"]
         );
     }
 
-    $db->log($session->name, LOG_WRITE, $article['id'] . '/' . ($article_recent_revision_number + 1));
-    $db->close();
+    $recent_revision_data = $db->in(DB_REVISION_TABLE)
+                               ->select("revision")
+                               ->where("article_id", "=", $article_data["id"])
+                               ->order_by("`timestamp` DESC")
+                               ->limit("1")
+                               ->go_and_get();
     
-    navigateTo(HREF_READ . '/' . $article['title'] . '?update=1');
+    if (!$recent_revision_data) {
+        return array(
+            "result" => false,
+            "article" => $article_data,
+            "message" => STRINGS["EPWR9"]
+        );
+    }
+
+    $response = $db->in(DB_REVISION_TABLE)
+                   ->insert("article_id", $article_data["id"])
+                   ->insert("article_title", $article_data["title"])
+                   ->insert("revision", intval($recent_revision_data["revision"]) + 1)
+                   ->insert("user_name", $user->name)
+                   ->insert("snapshot_content", $article_data["content"])
+                   ->insert("snapshot_tags", $article_data["tags"])
+                   ->insert("fluctuation", (strlen($article_data["content"]) - strlen($article_snapshot_data["content"])))
+                   ->insert("comment", $http_article_comment)
+                   ->go();
+
+    if (!$response) {
+        return array(
+            "result" => false,
+            "article" => $article_data,
+            "message" => STRINGS["EPWR10"]
+        );
+    }
+
+    $response = $db->in(DB_LOG_TABLE)
+                   ->insert("behavior", "write")
+                   ->insert("data", $article_data["id"] . "/" . (intval($recent_revision_data["revision"]) + 1))
+                   ->go();
+    
+    $redirect->set(get_theme_path() . HREF_READ . "?t=" . $article_data["title"]);
     
     return array(
-        'result'=>true,
-        'article'=>$article,
-        'message'=>''
+        "redirect" => true
     );
 }
