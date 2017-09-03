@@ -4,7 +4,7 @@
  *
  * @version 1.2
  * @author HyunJun Kim
- * @date 2017. 09. 02
+ * @date 2017. 09. 03
  */
 
 require_once "core.php";
@@ -47,73 +47,56 @@ function process() {
     // 검색 쿼리 취득
     $keywords = explode(" ", $http_query);
     $query = $tag_search_mode ? get_tag_search_query($keywords) : get_content_search_query($keywords);
-    
+    $query .= " LIMIT " . ($http_page * MAX_ARTICLES) . ", " . MAX_ARTICLES . ";";
     
     // 정확히 제목이 일치하는 항목이 있으면 바로 이동
     if (count($keywords) == 1) {
 
         $response = $db->in(DB_ARTICLE_TABLE)
+                       ->select("*")
+                       ->where("title", "=", $keywords[0])
+                       ->go_and_get();
 
-        if (!$db->query("SELECT 1 FROM " . ARTICLE_TABLE . " WHERE `title`="" . $keywords[0] . "";")) {
+        if ($response) {
+            $redirect->set(get_theme_path() . HREF_READ . "?t=" . $response["title"]);
             return array(
-                "result" => false,
-                "message" => "검색 결과를 가져오는데 실패했습니다".("SELECT 1 FROM " . ARTICLE_TABLE . " WHERE `title`="" . $keywords[0] . "";")
+                "redirect" => true
             );
-        }
-        if ($db->total_results() > 0) {
-            navigateTo(HREF_READ . "/" . $keywords[0]);
         }
     }
     
     $start_time = microtime(true);
     
-    // 전체 검색 결과를 얻기 위해 먼저 서치
-    if (!$db->query($query)) {
+    // 검색 수행
+    $search_result_data = $db->custom($query);
+    if (!$search_result_data) {
         return array(
             "result" => false,
-            "message" => "검색 결과를 가져오는데 실패했습니다2"
+            "message" => STRINGS["EPSH1"]
         );
     }
     
-    $elapsed_time   = round(microtime(true) - $start_time, 5);
-    $total_articles = $db->total_results();
-    
-    // 현재 페이지 결과 가져오기
-    $query .= " LIMIT " . ($http_page * MAX_ARTICLES) . ", " . MAX_ARTICLES . ";";
-    
-    if (!$db->query($query)) {
-        return array(
-            "result" => false,
-            "message" => "검색 결과를 가져오는데 실패했습니다3"
-        );
-    }
+    $elapsed_time = round(microtime(true) - $start_time, 5);
 
-    $search_result = array();
-    while ($result = $db->get_result()) {
-        array_push($search_result, $result);
-    }
-    
     return array(
         "result" => true,
-        "search_result" => $search_result,
+        "search_result" => $search_result_data,
         "keywords" => $keywords,
-        "total_results" => $total_articles,
         "elapsed_time" => $elapsed_time
     );
 }
 
-function get_tag_search_query($keywords, $fulltext = FULL_TEXT_SEARCH)
-{
+function get_tag_search_query($keywords, $fulltext = FULL_TEXT_SEARCH) {
     
     // FullText 검색
     if ($fulltext) {
-        $match = "MATCH(`tags`) AGAINST("";
+        $match = "MATCH(`tags`) AGAINST('";
         for ($i = 0; $i < count($keywords); $i++) {
             if (strlen($keywords[$i]) > 0) {
                 $match .= ($i > 0 ? " " : "") . $keywords[$i];
             }
         }
-        $match .= "" IN BOOLEAN MODE)";
+        $match .= "' IN BOOLEAN MODE)";
         
         $query = "SELECT *, ";
         $query .= $match . " AS relevance ";
@@ -137,18 +120,17 @@ function get_tag_search_query($keywords, $fulltext = FULL_TEXT_SEARCH)
     return $query;
 }
 
-function get_content_search_query($keywords, $fulltext = FULL_TEXT_SEARCH)
-{
+function get_content_search_query($keywords, $fulltext = FULL_TEXT_SEARCH) {
     
     // FullText 검색
     if ($fulltext) {
-        $against = "AGAINST("";
+        $against = "AGAINST('";
         for ($i = 0; $i < count($keywords); $i++) {
             if (strlen($keywords[$i]) > 0) {
                 $against .= ($i > 0 ? " " : "") . "*" . $keywords[$i] . "*";
             }
         }
-        $against .= "" IN BOOLEAN MODE)";
+        $against .= "' IN BOOLEAN MODE)";
         
         // 쿼리문 생성
         $query = "SELECT * ";
@@ -172,37 +154,4 @@ function get_content_search_query($keywords, $fulltext = FULL_TEXT_SEARCH)
     }
     
     return $query;
-}
-
-function highlight($text, $keywords)
-{
-    foreach ($keywords as $keyword) {
-        $text = preg_replace("|($keyword)|Ui", "<mark>$1</mark>", $text);
-    }
-    return $text;
-}
-
-function truncate($text, $limit, $break = ".", $pad = "...")
-{
-    if (strlen($text) <= $limit) {
-        return $text;
-    }
-    if (false !== ($breakpoint = strpos($text, $break, $limit))) {
-        if ($breakpoint < strlen($text) - 1) {
-            $text = substr($text, 0, $breakpoint) . $pad;
-        }
-    }
-    return $text;
-}
-
-function parseTags($tags)
-{
-    $chunks = explode(" ", $tags);
-    $tags   = "";
-    for ($i = 0; $i < count($chunks); $i++) {
-        if (strlen($chunks[$i]) > 0) {
-            $tags .= ($i > 0 ? "&nbsp;&nbsp;" : "") . "<a href="" . HREF_SEARCH . "?" . $chunks[$i] . "">#" . $chunks[$i] . "</a>";
-        }
-    }
-    return $tags;
 }

@@ -133,6 +133,7 @@ class Database {
         }
 
         // 쿼리 수행
+        $this->limit("1");
         $query = $this->formulate();
         $this->recent_query = $query;
         $result = $this->connection->query($query);
