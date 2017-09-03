@@ -2,79 +2,74 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 09. 03
  */
 
-require_once 'common.php';
-require_once 'common.db.php';
-require_once 'common.session.php';
+require_once "core.php";
+require_once "core.db.php";
+require_once "core.session.php";
 
-function main()
-{
-    global $session;
-    global $db_connect_info;
-
-    $http_user_name     = trim(strip_tags($_POST['user-name']));
-    $http_user_password = trim($_POST['user-password']);
-    $http_redirect      = empty($_POST['redirect']) ? HREF_MAIN : $_POST['redirect'];
+function process() {
     
-    if ($session->started()) {
-        navigateTo(HREF_MAIN);
+    global $db;
+    global $post;
+    global $user;
+    global $redirect;
+
+    $http_user_name = $post->retrieve("user-name");
+    $http_user_password = $post->retrieve("user-password");
+    $http_redirect = $post->retrieve("redirect") == null ? HREF_MAIN : $post->retrieve("redirect");
+    
+    if ($user->signined()) {
+        $redirect->set(get_theme_path() . $http_redirect);
+        return array(
+            "redirect" => true
+        );
     }
     
     if (empty($http_user_name) || empty($http_user_password)) {
         return array(
-            'result'=>true,
-            'message'=>''
+            "result" => true
         );
     }
 
-    $db = new YwDatabase($db_connect_info);
-    
-    if (!$db->connect()) {
+    $user_data = $db->in(DB_USER_TABLE)
+                    ->select("*")
+                    ->where("name", "=", $http_user_name)
+                    ->go_and_get();
+
+    if (!$user_data) {
         return array(
-            'result'=>false,
-            'message'=>'서버와의 연결에 실패했습니다'
+            "result" => false,
+            "message" => STRINGS["EPSI0"]
         );
     }
     
-    // 아이디가 유효한지 확인합니다.
-    if (!$db->query("SELECT * FROM " . USER_TABLE . " WHERE `name`='" . $db->purify($http_user_name) . "';")) {
+    if (strcmp(hash_password($http_user_password), $user_data["password"]) != 0) {
+
+        $response = $db->in(DB_LOG_TABLE)
+                       ->insert("behavior", "signin")
+                       ->insert("data", "0")
+                       ->go();
+
         return array(
-            'result'=>false,
-            'message'=>'유저 정보를 불러오는데 실패했습니다'
-        );
-    }
-    
-    if ($db->total_results() < 1) {
-        return array(
-            'result'=>false,
-            'message'=>'존재하지 않는 아이디입니다'
-        );
-    }
-    
-    $result = $db->get_result();
-    
-    // 비밀번호가 일치하는지 확인합니다.
-    if (strcmp(passwordHash($http_user_password), $result['password']) != 0) {
-        $db->log($session->ip, LOG_SIGNIN, '0');
-        return array(
-            'result'=>false,
-            'message'=>'비밀번호가 올바르지 않습니다'
+            "result" => false,
+            "message" => STRINGS["EPSI1"]
         );
     }
 
     // 세션 등록
-    $session->start($result['name'], $result['id'], intval($result['permission']));
-    $db->log($session->name, LOG_SIGNIN, '1');
-    $db->close();
+    $user->signin($result["name"], $result["id"], intval($result["permission"]));
+
+    $response = $db->in(DB_LOG_TABLE)
+                   ->insert("behavior", "signin")
+                   ->insert("data", "1")
+                   ->go();
     
-    navigateTo($http_redirect);
-    
+    $redirect->set(get_theme_path() . $http_redirect);
     return array(
-        'result'=>true,
-        'message'=>''
+        "redirect" => true
     );
 }
