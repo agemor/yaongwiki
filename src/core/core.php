@@ -7,7 +7,7 @@
  * @date 2017. 08. 26
  */
 
-require_once "./languages/language.php";
+require_once "./core/languages/language.php";
 require_once "./themes/theme.php";
 
 const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB
