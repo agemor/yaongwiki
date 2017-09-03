@@ -2,15 +2,27 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 09. 03
  */
 
-session_start();
-session_destroy();
+require_once "core.php";
+require_once "core.session.php";
 
-$redirect = !empty($_GET["redirect"]) ? $_GET["redirect"] : "/";
+function process() {
 
-header('Location: '.$redirect);
-?>
+    global $get;
+    global $user;
+    global $redirect;
+
+    $http_redirect = $get->retrieve("redirect") == null ? HREF_MAIN : $get->retrieve("redirect");
+
+    $user->signout();
+
+    $redirect->set(get_theme_path() . $http_redirect);
+
+    return array(
+        "redirect" => true
+    );
+}
