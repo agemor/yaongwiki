@@ -7,12 +7,14 @@
  * @date 2017. 09. 03
  */
 
-require_once "core.php";
-require_once "core.session.php";
+require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.form.php";
+require_once __DIR__ . "/module.redirect.php";
 
 function process() {
 
     global $get;
+    global $redirect;
 
     $http_title = $get->retrieve("t");
 

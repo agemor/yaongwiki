@@ -7,7 +7,7 @@
  * @date 2017. 09. 04
  */
 
-require_once "session.php";
+require_once __DIR__ . "/session.php";
 
 class RedirectManager {
 
@@ -18,7 +18,7 @@ class RedirectManager {
 
         $session = Session::get_session();
 
-        $this->redirect_url = $session.get("redirect_url");
+        $this->redirect_url = $session->get("redirect_url");
 
         $this->session = $session;
     }

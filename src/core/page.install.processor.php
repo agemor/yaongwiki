@@ -7,10 +7,11 @@
  * @date 2017. 08. 26
  */
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
-require_once "core.php";
-require_once "core.session.php";
+require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.db.php";
+require_once __DIR__ . "/module.form.php";
+require_once __DIR__ . "/module.user.php";
+require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     

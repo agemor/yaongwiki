@@ -7,8 +7,10 @@
  * @date 2017. 08. 26
  */
 
-require_once "./core/languages/language.php";
-require_once "./themes/theme.php";
+const CORE_DIRECTORY = __DIR__;
+
+require_once CORE_DIRECTORY . "/languages/language.php";
+require_once dirname(CORE_DIRECTORY) . "/themes/theme.php";
 
 const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB
 const FILE_DIRECTORY = "uploads";
@@ -88,12 +90,10 @@ function permissionInfo($permission)
     }
 }
 
-function get_theme_path()
-{
-    return "./themes/" . THEME . "/";
+function get_theme_path() {
+    return dirname(CORE_DIRECTORY) . "/themes/" . THEME . "/";
 }
 
-function hash_password($password)
-{
+function hash_password($password) {
     return hash("sha512", $password . "yw");
 }

@@ -12,7 +12,7 @@ class Session {
     private static $instance;
 
     private $session_started = false;
-    private $session_state = null;
+    private $session_state = 0;
         
     private function __construct() {
     }
@@ -31,10 +31,11 @@ class Session {
     public function start_session() {
 
         if ($this->session_started == false) {
-            $this->$session_state = session_start();
+            $this->session_started = true;
+            $this->session_state = session_start();
         }
         
-        return $this->$session_state;
+        return $this->session_state;
     }
     
     
@@ -61,6 +62,7 @@ class Session {
     public function destroy() {
 
         if ($this->session_started == true) {
+            $this->session_started = false;
             $this->session_state = !session_destroy();
             unset($_SESSION);
             

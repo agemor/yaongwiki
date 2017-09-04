@@ -7,7 +7,7 @@
  * @date 2017. 09. 04
  */
 
-require_once "session.php";
+require_once __DIR__ . "/session.php";
 
 class FormDataManager {
     
@@ -19,7 +19,7 @@ class FormDataManager {
     public function __construct($form_name) {
 
         $session = Session::get_session();
-
+ 
         $this->values = $session->get($form_name);
         $this->form_name = $form_name;
         $this->session = $session;

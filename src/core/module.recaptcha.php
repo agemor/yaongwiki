@@ -7,7 +7,7 @@
  * @date 2017. 09. 12
  */
 
-require_once "core.recaptcha.account.php";
+require_once __DIR__ . "/module.recaptcha.account.php";
 
 class ReCaptcha {
 

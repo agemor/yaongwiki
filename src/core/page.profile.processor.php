@@ -7,9 +7,10 @@
  * @date 2017. 08. 31
  */
 
-require_once "core.php";
-require_once "core.db.php";
-require_once "core.session.php";
+require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.db.php";
+require_once __DIR__ . "/module.form.php";
+require_once __DIR__ . "/module.user.php";
 
 const MAX_REVISIONS = 20;
 

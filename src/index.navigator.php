@@ -7,16 +7,15 @@
  * @date 2017. 08. 26
  */
 
-require_once "./core/core.php";
+require_once  __DIR__ . "/core/common.php";
+require_once  __DIR__ . "/core/module.db.account.php";
 
-/**
- * Get full URL of current page 
- */
+// 현재 페이지의 전체 URL 구하기
 function get_current_page_url() {
 
     $current_page_url = "http";
 
-    if ($_SERVER["HTTPS"] == "on") {
+    if (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on") {
         $current_page_url .= "s";
     }
 
@@ -31,27 +30,28 @@ function get_current_page_url() {
     return $current_page_url;
 }
 
-/**
- * Translate URL to inner path
- */
+// 받은 URL을 내부 주소로 전환하기
 function to_inner_url($url) {
 
     $parsed_url = parse_url($url);
-    $first_param = explode("&", $parsed_url["query"])[0];
-    $first_param_chunks = explode("=", $first_param);
-    $first_param_key = $first_param_chunks[0];
-    $first_param_value = count($first_param_chunks) > 1 ? $first_param_chunks[1] : null;
 
-    if (DB_HOST == '{DB_HOST}') {
-        $target = "page.install.php";
-    } else if (!array_key_exists($first_param_key, NAVIGATOR_TABLE)) {
-        $target = "index.php";
-    } else {
-        $target = NAVIGATOR_TABLE[$first_param_key]
-        . ($first_param_value != null ? "?value=" . $first_param_value : "");
+    if (empty(DB_HOST)) {
+        $target = "page.test.php";
     }
 
+    elseif (isset($parsed_url["query"])) {
+
+        $first_param = explode("&", $parsed_url["query"])[0];
+        $first_param_key = explode("=", $first_param)[0];
+
+        if (array_key_exists($first_param_key, NAVIGATOR_TABLE)) {
+            $target = NAVIGATOR_TABLE[$first_param_key];
+        } 
+    } 
+
+    else {
+        $target = "index.php";
+    }
+    
     return get_theme_path() . $target;
 }
-
-?>

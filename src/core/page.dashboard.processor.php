@@ -7,15 +7,17 @@
  * @date 2017. 08. 26
  */
 
- require_once "core.php";
- require_once "core.db.php";
- require_once "core.session.php";
+require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.db.php";
+require_once __DIR__ . "/module.form.php";
+require_once __DIR__ . "/module.user.php";
+require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     
     global $db;
     global $post;
-    global $user_data;
+    global $user;
     global $redirect;
 
     $http_user_email = $post->retrieve("user-email");

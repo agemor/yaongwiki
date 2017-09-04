@@ -7,7 +7,7 @@
  * @date 2017. 08. 26
  */
 
-include "core.db.account.php";
+require_once __DIR__ . "/module.db.account.php";
 
 /* 모듈 생성 */
 class Database {

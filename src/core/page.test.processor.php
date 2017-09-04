@@ -4,10 +4,11 @@
  *
  * @version 1.2
  * @author HyunJun Kim
- * @date 2017. 09. 03
+ * @date 2017. 09. 04
  */
 
 require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.db.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
@@ -15,16 +16,11 @@ require_once __DIR__ . "/module.redirect.php";
 function process() {
 
     global $get;
-    global $user;
-    global $redirect;
 
-    $http_redirect = $get->retrieve("redirect") == null ? HREF_MAIN : $get->retrieve("redirect");
-
-    $user->signout();
-
-    $redirect->set(get_theme_path() . $http_redirect);
+    $http_value = $get->retrieve("value");
 
     return array(
-        "redirect" => true
+        "result" => true,
+        "value" => $http_value
     );
 }

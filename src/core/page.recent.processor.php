@@ -7,9 +7,8 @@
  * @date 2017. 09. 12
  */
 
-require_once "core.php";
-require_once "core.db.php";
-require_once "core.session.php";
+require_once __DIR__ . "/common.php";
+require_once __DIR__ . "/module.db.php";
 
 const MAX_RECENT_CHANGED = 30;
 

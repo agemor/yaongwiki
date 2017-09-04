@@ -7,7 +7,7 @@
  * @date 2017. 08. 31
  */
 
-require_once "session.php";
+require_once __DIR__ . "/session.php";
 
 class User {
     
@@ -24,15 +24,14 @@ class User {
     public function __construct() {
 
         $session = Session::get_session();
-
-        if ($session.get("pageview") == null) {
-            $session.set("pageview", array());
+        if ($session->get("pageview") == null) {
+            $session->set("pageview", array());
         }
 
-        $this->name = $session.get("name");
-        $this->id = $session.get("id");
-        $this->permission = $session.get("permission");
-        $this->pageview = $session.get("pageview");
+        $this->name = $session->get("name");
+        $this->id = $session->get("id");
+        $this->permission = $session->get("permission");
+        $this->pageview = $session->get("pageview");
 
         $this->ip = $_SERVER["REMOTE_ADDR"];
         $this->session = $session;
@@ -45,24 +44,24 @@ class User {
         $this->permission = $permission;
         $this->time = time();
         
-        $this->$session.set("name", $name);
-        $this->$session.set("id", $id);
-        $this->$session.set("permission", $permission);
-        $this->$session.set("time", $time);
+        $this->session->set("name", $name);
+        $this->session->set("id", $id);
+        $this->session->set("permission", $permission);
+        $this->session->set("time", $time);
     }
     
     public function signout() {
 
-        $this->$session.set("name", null);
-        $this->$session.set("id", null);
-        $this->$session.set("permission", null);
-        $this->$session.set("time", null);
-        $this->$session.set("pageview", null);
+        $this->session->set("name", null);
+        $this->session->set("id", null);
+        $this->session->set("permission", null);
+        $this->session->set("time", null);
+        $this->session->set("pageview", null);
     }
     
     public function signined() {
 
-        return $this->$session.get("id") !== null;
+        return $this->session->get("id") !== null;
     }
     
     public function visit($article_id) {
@@ -72,7 +71,7 @@ class User {
         }
 
         array_push($this->pageview, $article_id);
-        $this->$session.set("pageview", $this->pageview);
+        $this->session->set("pageview", $this->pageview);
 
         return true;
     }
@@ -80,7 +79,7 @@ class User {
     public function set_permission($permission) {
 
         $this->permission = $permission;
-        $this->$session.set("permission", $permission);
+        $this->session->set("permission", $permission);
     }
     
 }

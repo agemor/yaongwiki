@@ -7,7 +7,7 @@
  * @date 2017. 09. 12
  */
 
-include "core.email.account.php";
+require_once __DIR__ . "/module.email.account.php";
 
 CONST EMAIL_ENCODING = "utf-8";
 

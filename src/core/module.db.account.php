@@ -13,8 +13,8 @@ const DB_USER_PASSWORD = "";
 const DB_NAME = "";
 const DB_TABLE_PREFIX = "";
 
-const DB_USER_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_users`';
-const DB_ARTICLE_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_articles`';
-const DB_FILE_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_files`';
-const DB_REVISION_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_revisions`';
-const DB_LOG_TABLE = '`' . DB_NAME . '`.`' . TABLE_PREFIX . 'yaongwiki_logs`';
+const DB_USER_TABLE = '`' . DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_users`';
+const DB_ARTICLE_TABLE = '`' . DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_articles`';
+const DB_FILE_TABLE = '`' . DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_files`';
+const DB_REVISION_TABLE = '`' . DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_revisions`';
+const DB_LOG_TABLE = '`' . DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_logs`';
