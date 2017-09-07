@@ -10,6 +10,7 @@
 const CORE_DIRECTORY = __DIR__;
 
 require_once CORE_DIRECTORY . "/languages/language.php";
+require_once CORE_DIRECTORY . "/languages/" . LANGUAGE . ".php";
 require_once dirname(CORE_DIRECTORY) . "/themes/theme.php";
 
 const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB

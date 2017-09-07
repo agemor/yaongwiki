@@ -8,14 +8,12 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.db.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     
-    global $db;
     global $post;
     global $user;
     global $redirect;
@@ -41,7 +39,7 @@ function process() {
     if ($connection->connect_errno) {
         return array(
             "result" => false,
-            "message" => STRINGS["EPIN0"] . "(" . $connection->connect_error . ")"
+            "message" => STRINGS["EPIN0"] . " (" . $connection->connect_error . ")"
         );
     }
     
@@ -51,7 +49,7 @@ function process() {
     if (!$connection->multi_query($query)) {
         return array(
             "result" => false,
-            "message" => STRINGS["EPIN1"] . "(" . $connection->connect_error . ")"
+            "message" => STRINGS["EPIN1"] . " (" . $connection->connect_error . ")"
         );
     }
     

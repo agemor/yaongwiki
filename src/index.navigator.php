@@ -36,7 +36,7 @@ function to_inner_url($url) {
     $parsed_url = parse_url($url);
 
     if (empty(DB_HOST)) {
-        $target = "page.test.php";
+        $target = "page.install.php";
     }
 
     elseif (isset($parsed_url["query"])) {
