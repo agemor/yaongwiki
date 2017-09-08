@@ -43,7 +43,7 @@ function process() {
         );
     }
     
-    $query = file_get_contents("./core.db.schema.sql");
+    $query = file_get_contents(__DIR__ . "/module.db.schema.sql");
     $query = str_replace("[PREFIX]", $http_db_prefix, $query);
     
     if (!$connection->multi_query($query)) {
@@ -69,9 +69,9 @@ function process() {
         "DB_TABLE_PREFIX = \"" . $http_db_prefix . "\""
     );
     
-    $filecontent = file_get_contents("core.db.account.php");
+    $filecontent = file_get_contents(__DIR__ . "/module.db.account.php");
     $filecontent = preg_replace($config_keywords, $settings, $filecontent);
-    file_put_contents("core.db.account.php", $filecontent);
+    file_put_contents(__DIR__ . "/module.db.account.php", $filecontent);
     
     $redirect->set(get_theme_path() . HREF_MAIN);
     return array(
