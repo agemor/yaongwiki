@@ -16,6 +16,8 @@ services:
         - MYSQL_DATABASE=yaong-wiki
         - MYSQL_USER=yaong-wiki
         - MYSQL_PASSWORD=yaong-wiki
+      ports:
+       - "3306:3306"
 
     webserver:
       image: nginx:latest

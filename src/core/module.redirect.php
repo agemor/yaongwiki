@@ -24,15 +24,15 @@ class RedirectManager {
     }
 
     function set($url) {
-        $this->redirect_url = $redirect_url;
-        $this->session->set("redirect_url", $redirect_url);
+        $this->redirect_url = $url;
+        $this->session->set("redirect_url", $url);
     }
 
     function redirect() {
 
-        header("Location: " . $redirect_url);
+        header("Location: " . $this->redirect_url);
 
-        $redirect_url = null;
+        $this->redirect_url = null;
         $this->session->set("redirect_url", null);
 
         exit();

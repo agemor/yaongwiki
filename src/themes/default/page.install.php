@@ -11,6 +11,10 @@ require_once CORE_DIRECTORY . "/page.install.processor.php";
 
 $page = process();
 
+if ($page["redirect"] == true) {
+    //$redirect->redirect();  
+}
+
 $page["title"] = "YaongWiki Installation";
 
 require_once __DIR__ . "/frame.header.php";
