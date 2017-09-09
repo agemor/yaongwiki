@@ -24,7 +24,8 @@ require_once __DIR__ . "/frame.header.php";
   <?php } ?>
   <div class="row my-4">
     <div class="col-md-6">
-		<a href="/?recent">View recently edited articles</a>
+		<a href="/?recent">View recently edited articles</a><br/>
+		<a href="/?create">Create new article</a>
 	  </div>
 		<div class="col-md-6">
 	  </div>

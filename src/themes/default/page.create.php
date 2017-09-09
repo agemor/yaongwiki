@@ -11,6 +11,10 @@ require_once CORE_DIRECTORY . "/page.create.processor.php";
 
 $page = process();
 
+if ($page["redirect"] == true) {
+    $redirect->redirect();  
+}
+
 $page["title"] = "Create Article";
 
 require_once __DIR__ . "/frame.header.php";
@@ -22,7 +26,7 @@ require_once __DIR__ . "/frame.header.php";
     Create Article
     <h2>
   </div>
-  <?php if ($page["result"] !== true) { ?>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
   </div>
@@ -31,8 +35,8 @@ require_once __DIR__ . "/frame.header.php";
     <div class="row my-4">
       <div class="col-md-6">
         <p>Before you create a new article, please check that:
-          <br/>1. Check whether there are no similar or identical posts.
-          <br/>1. Make sure it's not too narrow topic.
+          <br/>1. Whether there are no similar or identical posts.
+          <br/>2. Make sure it's not too narrow topic.
         </p>
         <div class="form-group">
           <label for="titleInput">Title</label>

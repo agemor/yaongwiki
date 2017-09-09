@@ -30,6 +30,10 @@ class RedirectManager {
 
     function redirect() {
 
+        if ($this->redirect_url == null) {
+            return;
+        }
+
         header("Location: " . $this->redirect_url);
 
         $this->redirect_url = null;
