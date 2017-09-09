@@ -12,7 +12,7 @@ require_once CORE_DIRECTORY . "/page.install.processor.php";
 $page = process();
 
 if ($page["redirect"] == true) {
-    //$redirect->redirect();  
+    $redirect->redirect();  
 }
 
 $page["title"] = "YaongWiki Installation";
@@ -25,7 +25,7 @@ require_once __DIR__ . "/frame.header.php";
     YaongWiki Installation
     <h2>
   </div>
-  <?php if ($page["result"] !== true) { ?>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
   </div>

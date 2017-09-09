@@ -7,9 +7,30 @@
  * @date 2016. 01. 31
  */
 
-require_once 'common.php';
+$page["title"] = "YaongWiki";
+ 
+require_once __DIR__ . "/frame.header.php";
+?>
+<div class="container">
+  <div class="title my-4">
+    <h2>
+    Main Page
+    <h2>
+  </div>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+  <div class="alert alert-danger" role="alert">
+    <?php echo($page["message"]);?>
+  </div>
+  <?php } ?>
+  <div class="row my-4">
+    <div class="col-md-6">
+		<a href="/?recent">View recently edited articles</a>
+	  </div>
+		<div class="col-md-6">
+	  </div>
+	</div>
+</div>
 
-if (DB_HOST == '{DB_HOST}')
-	include 'page.install.php';
-else include 'page.main.php';
+<?php
+require_once __DIR__ . "/frame.footer.php";
 ?>
