@@ -17,7 +17,7 @@ ALTER TABLE `[PREFIX]yaongwiki_articles`
 ALTER TABLE `[PREFIX]yaongwiki_articles`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yaongwiki_files` (
+CREATE TABLE `[PREFIX]yaongwiki_files` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
   `type` varchar(50) NOT NULL,
@@ -32,7 +32,7 @@ ALTER TABLE `[PREFIX]yaongwiki_files`
 ALTER TABLE `[PREFIX]yaongwiki_files`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yaongwiki_logs` (
+CREATE TABLE `[PREFIX]yaongwiki_logs` (
   `id` int(10) UNSIGNED NOT NULL,
   `ip` varbinary(16) NOT NULL,
   `user_name` varchar(100) NOT NULL,
@@ -47,7 +47,7 @@ ALTER TABLE `[PREFIX]yaongwiki_logs`
 ALTER TABLE `[PREFIX]yaongwiki_logs`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE `yaongwiki_revisions` (
+CREATE TABLE `[PREFIX]yaongwiki_revisions` (
   `id` int(10) UNSIGNED NOT NULL,
   `article_title` varchar(200) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
@@ -66,7 +66,7 @@ ALTER TABLE `[PREFIX]yaongwiki_revisions`
 ALTER TABLE `[PREFIX]yaongwiki_revisions`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-  CREATE TABLE `yaongwiki_users` (
+  CREATE TABLE `[PREFIX]yaongwiki_users` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(200) NOT NULL,

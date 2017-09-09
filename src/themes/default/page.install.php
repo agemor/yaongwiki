@@ -59,8 +59,8 @@ require_once __DIR__ . "/frame.header.php";
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <label for="exampleFormControlTextarea1">Terms of Use</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="20" readonly>
+          <label for="termsTextArea">Terms of Use</label>
+          <textarea class="form-control" id="termsTextArea" rows="20" readonly>
           51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
           Everyone is permitted to copy and distribute verbatim copies
           of this license document, but changing it is not allowed.

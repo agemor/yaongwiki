@@ -12,8 +12,7 @@ require_once CORE_DIRECTORY . "/page.signin.processor.php";
 $page = process();
 
 if (isset($page["redirect"]) && $page["redirect"] == true) {
-		var_dump($page);
-    //$redirect->redirect();  
+    $redirect->redirect();  
 }
 
 $page["title"] = "YaongWiki Sign In";

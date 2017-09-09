@@ -23,7 +23,7 @@ function process() {
 
     $http_user_name = $post->retrieve("user-name");
     $http_user_password = $post->retrieve("user-password");
-    $http_redirect = $get->retrieve("redirect") == null ? $post->retrieve("redirect") : $get->retrieve("redirect");
+    $http_redirect = $get->retrieve("redirect") == null ? "/" : $get->retrieve("redirect");
     
     if ($user->signined()) {
         $redirect->set($http_redirect);
@@ -46,7 +46,7 @@ function process() {
     if (!$user_data) {
         return array(
             "result" => false,
-            "message" => STRINGS["EPSI0"]
+            "message" => STRINGS["EPSI0"] . $db->rq()
         );
     }
     

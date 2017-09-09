@@ -14,6 +14,8 @@ require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.recaptcha.php";
 require_once __DIR__ . "/module.redirect.php";
 
+const ENABLE_RECAPTCHA = false;
+
 function process() {
     
     global $db;
@@ -23,7 +25,7 @@ function process() {
     global $recaptcha;
 
     if ($user->signined()) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+        $redirect->set("/");
         return array(
             "redirect" => true
         );
@@ -31,8 +33,9 @@ function process() {
 
     $http_user_name = $post->retrieve("user-name");
     $http_user_password = $post->retrieve("user-password");
-    $http_user_password_re = $post->retrieve("user-password-res");
+    $http_user_password_re = $post->retrieve("user-password-re");
     $http_user_email = $post->retrieve("user-email");
+    $http_recaptch_response = $post->retrieve("g-recaptcha-response");
     
     if (empty($http_user_name) || empty($http_user_password) || empty($http_user_email)) {
         return array(
@@ -47,7 +50,7 @@ function process() {
         );
     }
     
-    if (strlen($http_user_password) < 5) {
+    if (strlen($http_user_password) < 4) {
         return array(
             "result" => false,
             "message" => STRINGS["EPSU1"]
@@ -67,8 +70,8 @@ function process() {
             "message" => STRINGS["EPSU3"]
         );
     }
-    
-    if (!getReCaptcha()) {
+
+    if (ENABLE_RECAPTCHA && !$recaptcha->verify($http_recaptch_response)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPSU4"]
@@ -115,7 +118,7 @@ function process() {
                    ->insert("data", $http_user_name)
                    ->go();
     
-    $redirect->set(get_theme_path() . HREF_SIGNIN);
+    $redirect->set("/?signin");
     return array(
         "redirect" => true
     );

@@ -47,10 +47,10 @@ function process() {
     $query = str_replace("[PREFIX]", $http_db_prefix, $query);
     
     if (!$connection->multi_query($query)) {
-        /*return array(
+        return array(
             "result" => false,
             "message" => STRINGS["EPIN1"]
-        );*/
+        );
     }
     
     $config_keywords = array(
@@ -72,8 +72,8 @@ function process() {
     $filecontent = file_get_contents(__DIR__ . "/module.db.account.php");
     $filecontent = preg_replace($config_keywords, $settings, $filecontent);
     file_put_contents(__DIR__ . "/module.db.account.php", $filecontent);
-    var_dump($filecontent);
-    $redirect->set(get_theme_path() . HREF_MAIN);
+    
+    $redirect->set("/");
     return array(
         "redirect" => true
     );
