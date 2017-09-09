@@ -17,15 +17,16 @@ function process() {
     
     global $db;
     global $post;
+    global $get;
     global $user;
     global $redirect;
 
     $http_user_name = $post->retrieve("user-name");
     $http_user_password = $post->retrieve("user-password");
-    $http_redirect = $post->retrieve("redirect") == null ? HREF_MAIN : $post->retrieve("redirect");
+    $http_redirect = $get->retrieve("redirect") == null ? $post->retrieve("redirect") : $get->retrieve("redirect");
     
     if ($user->signined()) {
-        $redirect->set(get_theme_path() . $http_redirect);
+        $redirect->set($http_redirect);
         return array(
             "redirect" => true
         );
@@ -70,7 +71,7 @@ function process() {
                    ->insert("data", "1")
                    ->go();
     
-    $redirect->set(get_theme_path() . $http_redirect);
+    $redirect->set($http_redirect);
     return array(
         "redirect" => true
     );

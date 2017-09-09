@@ -11,7 +11,7 @@ require_once CORE_DIRECTORY . "/page.create.processor.php";
 
 $page = process();
 
-if ($page["redirect"] == true) {
+if (isset($page["redirect"]) && $page["redirect"] == true) {
     $redirect->redirect();  
 }
 

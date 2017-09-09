@@ -31,7 +31,6 @@ require_once __DIR__ . "/frame.header.php";
 	  </div>
 	</div>
 </div>
-
 <?php
 require_once __DIR__ . "/frame.footer.php";
 ?>
