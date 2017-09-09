@@ -2,9 +2,9 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 09. 09
  */
 
 $page["title"] = "YaongWiki";
