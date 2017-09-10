@@ -30,6 +30,12 @@ function process() {
         );
     }
 
+    if (empty($http_article_title)) {
+        return array(
+            "result" => true
+        );
+    }
+
     // 제목 길이가 너무 짧을 경우
     if (strlen(preg_replace("/\s+/", "", $http_article_title)) < 2) {
         return array(
@@ -51,15 +57,7 @@ function process() {
                    ->where("title", "=", $http_article_title)
                    ->go_and_get();
     
-    if (!$response) {
-        return array(
-            "result" => false,
-            "message" => STRINGS["EPCR2"]
-        );
-    }
-    
-    // 이미 존재하는 제목일 경우
-    if ($db->total_results() > 0) {
+    if ($response) {
         return array(
             "result" => false,
             "title" => $http_article_title,
