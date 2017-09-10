@@ -30,7 +30,7 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-	<form action="/?signin" method="post">
+	<form action="/?signin&redirect=<?php echo($get->retrieve('redirect'));?>" method="post">
 		<div class="row my-4">
 			<div class="col-md-6">
 				<p>Please enter your account name and password.</p>
