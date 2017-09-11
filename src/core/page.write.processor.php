@@ -38,14 +38,15 @@ function process() {
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        $redirect->set("/");
+        
+        $redirect->set("./");
         return array(
             "redirect" => true
         );
     }
     
-    if ($user->signined()) {
-        $redirect->set(get_theme_path() . HREF_WRITE . "?redirect=" . ($read_by_id ? "&i=" . $http_article_id : "&t=" . $http_article_title));
+    if (!$user->signined()) {
+        $redirect->set("./?signin&redirect=./?write" . ($read_by_id ? "%26i=" . $http_article_id : "%26t=" . $http_article_title));
         return array(
             "redirect" => true
         );
@@ -114,7 +115,7 @@ function process() {
                            ->go();
         }
         
-        $redirect->set(get_theme_path() . HREF_READ . "?t=" . $article_data["title"]);
+        $redirect->set("./?read&t=" . $article_data["title"]);
         return array(
             "redirect" => true
         );
@@ -231,7 +232,7 @@ function process() {
                    ->insert("data", $article_data["id"] . "/" . (intval($recent_revision_data["revision"]) + 1))
                    ->go();
     
-    $redirect->set("/?read&t=" . $article_data["title"]);
+    $redirect->set("./?read&t=" . $article_data["title"]);
     
     return array(
         "redirect" => true

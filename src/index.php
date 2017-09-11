@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 
 define("YAONGWIKI_DIR", "");
 define("YAONGWIKI_ROOT", __DIR__ . YAONGWIKI_DIR);
- 
+
 require_once YAONGWIKI_ROOT . "/navigator.php";
 require_once YAONGWIKI_ROOT . "/core/module.form.php";
 

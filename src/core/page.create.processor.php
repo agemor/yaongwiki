@@ -98,7 +98,7 @@ function process() {
                    ->insert("data", $http_article_title)
                    ->go();
 
-    $redirect->set("./?write&" . "?t=" . $http_article_title);
+    $redirect->set("./?write&" . "t=" . $http_article_title);
     
     return array(
         "redirect" => true
