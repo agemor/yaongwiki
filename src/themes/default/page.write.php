@@ -19,9 +19,31 @@ $page["title"] = "Write Article";
 
 require_once __DIR__ . "/frame.header.php";
 ?>
+<link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/simplemde.min.css" rel="stylesheet">
+<script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/simplemde.min.js"></script>
 
-<link href="themes/default/css/simplemde.min" rel="stylesheet">
-<script src="themes/default/js/simplemde.min.js"></script>
+
+
+<div class="container">
+  <div class="title my-4">
+    <h2>
+    <?php echo($page["article"]["title"]);?>
+    <h2>
+  </div>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+  <div class="alert alert-danger" role="alert">
+    <?php echo($page["message"]);?>
+  </div>
+  <?php } ?>
+  <textarea id="editor" name="article-content"></textarea>
+
+
+
+</div>
+
+<script>
+var editor = new SimpleMDE({ element: document.getElementById("editor") });
+</script>
 
 <div class="container">
 
@@ -57,7 +79,7 @@ require_once __DIR__ . "/frame.header.php";
   
     <div class="form-group">
       <label for="content">내용</label>
-      <textarea id="editor" name="article-content" required><?php echo $page_response['article']['content'];?></textarea>
+      <textarea id="editorc" name="article-content" required><?php echo $page_response['article']['content'];?></textarea>
       <script src="./js/editor.js"></script>
     </div>
 
