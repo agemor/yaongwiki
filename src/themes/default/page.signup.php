@@ -7,7 +7,7 @@
  * @date 2017. 09. 09
  */
 
-require_once CORE_DIRECTORY . "/page.signup.processor.php";
+require_once YAONGWIKI_CORE . "/page.signup.processor.php";
 
 $page = process();
 

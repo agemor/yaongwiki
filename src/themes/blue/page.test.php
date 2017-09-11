@@ -7,7 +7,7 @@
  * @date 2017. 09. 05
  */
 
-include_once CORE_DIRECTORY . "/page.test.processor.php";
+include_once YAONGWIKI_CORE . "/page.test.processor.php";
 include_once __DIR__ . "/frame.header.php";
 ?>
 

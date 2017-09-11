@@ -7,7 +7,7 @@
  * @date 2017. 09. 08
  */
 
-require_once CORE_DIRECTORY . "/page.create.processor.php";
+require_once YAONGWIKI_CORE . "/page.create.processor.php";
 
 $page = process();
 

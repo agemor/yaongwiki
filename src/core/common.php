@@ -7,11 +7,11 @@
  * @date 2017. 08. 26
  */
 
-const CORE_DIRECTORY = __DIR__;
-
-require_once CORE_DIRECTORY . "/languages/language.php";
-require_once CORE_DIRECTORY . "/languages/" . LANGUAGE . ".php";
-require_once dirname(CORE_DIRECTORY) . "/themes/theme.php";
+define("YAONGWIKI_CORE", __DIR__);
+ 
+require_once YAONGWIKI_CORE . "/languages/language.php";
+require_once YAONGWIKI_CORE . "/languages/" . LANGUAGE . ".php";
+require_once dirname(YAONGWIKI_CORE) . "/themes/theme.php";
 
 const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB
 const FILE_DIRECTORY = "uploads";
@@ -92,7 +92,7 @@ function permissionInfo($permission)
 }
 
 function get_theme_path() {
-    return dirname(CORE_DIRECTORY) . "/themes/" . THEME . "/";
+    return dirname(YAONGWIKI_CORE) . "/themes/" . THEME . "/";
 }
 
 function hash_password($password) {
