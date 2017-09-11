@@ -31,7 +31,7 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-  <form action="/" method="post">
+  <form action="/?create" method="post">
     <div class="row my-4">
       <div class="col-md-6">
         <p>Before you create a new article, please check that:

@@ -46,7 +46,7 @@ function process() {
     if (!$user_data) {
         return array(
             "result" => false,
-            "message" => STRINGS["EPSI0"] . $db->rq()
+            "message" => STRINGS["EPSI0"]
         );
     }
     
@@ -64,7 +64,7 @@ function process() {
     }
 
     // 세션 등록
-    $user->signin($result["name"], $result["id"], intval($result["permission"]));
+    $user->signin($user_data["name"], $user_data["id"], intval($user_data["permission"]));
 
     $response = $db->in(DB_LOG_TABLE)
                    ->insert("behavior", "signin")
@@ -72,6 +72,7 @@ function process() {
                    ->go();
     
     $redirect->set($http_redirect);
+   
     return array(
         "redirect" => true
     );

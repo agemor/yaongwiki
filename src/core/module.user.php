@@ -47,7 +47,7 @@ class User {
         $this->session->set("name", $name);
         $this->session->set("id", $id);
         $this->session->set("permission", $permission);
-        $this->session->set("time", $time);
+        $this->session->set("time", $this->time);
     }
     
     public function signout() {
