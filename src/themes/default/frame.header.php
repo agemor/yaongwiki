@@ -7,8 +7,8 @@
     <title><?php echo($page["title"]);?></title>
 
     <!-- Bootstrap CSS -->
-    <link href="themes/default/css/bootstrap.min.css" rel="stylesheet">
-    <link href="themes/default/css/default.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/bootstrap.min.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/default.css" rel="stylesheet">
   </head>
   <body>
 

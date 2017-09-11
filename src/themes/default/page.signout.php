@@ -10,7 +10,7 @@
 session_start();
 session_destroy();
 
-$redirect = !empty($_GET["redirect"]) ? $_GET["redirect"] : "/";
+$redirect = !empty($_GET["redirect"]) ? $_GET["redirect"] : "./";
 
 header('Location: '.$redirect);
 ?>

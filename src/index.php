@@ -6,12 +6,16 @@
  * @author HyunJun Kim
  * @date 2017. 08. 26
  */
- ini_set('display_errors', 1);
- ini_set('display_startup_errors', 1);
- error_reporting(E_ALL);
 
-require_once __DIR__ . "/core/module.form.php";
-require_once __DIR__ . "/index.navigator.php";
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+define("YAONGWIKI_DIR", "");
+define("YAONGWIKI_ROOT", __DIR__ . YAONGWIKI_DIR);
+ 
+require_once YAONGWIKI_ROOT . "/navigator.php";
+require_once YAONGWIKI_ROOT . "/core/module.form.php";
 
 $post->set($_POST);
 $get->set($_GET);

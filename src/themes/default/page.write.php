@@ -20,10 +20,8 @@ $page["title"] = "Write Article";
 require_once __DIR__ . "/frame.header.php";
 ?>
 
-<link href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
-<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.3/summernote.css" rel="stylesheet">
-<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.7.3/summernote.js"></script>
-<script src="./js/editor-locale.js"></script>
+<link href="themes/default/css/simplemde.min" rel="stylesheet">
+<script src="themes/default/js/simplemde.min.js"></script>
 
 <div class="container">
 

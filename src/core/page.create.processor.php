@@ -24,7 +24,7 @@ function process() {
 
     // 로그인 되어 있지 않을 경우
     if (!$user->signined()) {
-        $redirect->set("/?signin&redirect=/?create");
+        $redirect->set("./?signin&redirect=./?create");
         return array(
             "redirect" => true
         );
@@ -98,7 +98,7 @@ function process() {
                    ->insert("data", $http_article_title)
                    ->go();
 
-    $redirect->set("/?write&" . "?t=" . $http_article_title);
+    $redirect->set("./?write&" . "?t=" . $http_article_title);
     
     return array(
         "redirect" => true

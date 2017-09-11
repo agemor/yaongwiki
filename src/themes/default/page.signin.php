@@ -30,7 +30,7 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-	<form action="/?signin&redirect=<?php echo($get->retrieve('redirect'));?>" method="post">
+	<form action="./?signin&redirect=<?php echo($get->retrieve('redirect'));?>" method="post">
 		<div class="row my-4">
 			<div class="col-md-6">
 				<p>Please enter your account name and password.</p>
@@ -43,7 +43,7 @@ require_once __DIR__ . "/frame.header.php";
 					<input type="password" name="user-password" class="form-control" id="passwordInput" required>
 				</div>
 				<button type="submit" class="btn btn-primary">Sign in</button>
-				<a href="/" class="btn btn-default">Go back</a>
+				<a href="./" class="btn btn-default">Go back</a>
 			</div>
 			<div class="col-md-6">
 				<p>If you do not have an account, <a href="/?signup">Create an account</a>.</p>

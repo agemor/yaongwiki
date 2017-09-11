@@ -25,7 +25,7 @@ function process() {
     global $recaptcha;
 
     if ($user->signined()) {
-        $redirect->set("/");
+        $redirect->set("./");
         return array(
             "redirect" => true
         );
@@ -118,7 +118,7 @@ function process() {
                    ->insert("data", $http_user_name)
                    ->go();
     
-    $redirect->set("/?signin");
+    $redirect->set("./?signin");
     return array(
         "redirect" => true
     );

@@ -7,8 +7,8 @@
  * @date 2017. 08. 26
  */
 
-require_once  __DIR__ . "/core/common.php";
-require_once  __DIR__ . "/core/module.db.account.php";
+require_once YAONGWIKI_ROOT . "/core/common.php";
+require_once YAONGWIKI_ROOT . "/core/module.db.account.php";
 
 // 현재 페이지의 전체 URL 구하기
 function get_current_page_url() {
@@ -50,7 +50,7 @@ function to_inner_url($url) {
     } 
 
     else {
-        $target = "index.php";
+        $target = "page.main.php";
     }
     
     return get_theme_path() . $target;

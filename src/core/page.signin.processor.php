@@ -23,7 +23,7 @@ function process() {
 
     $http_user_name = $post->retrieve("user-name");
     $http_user_password = $post->retrieve("user-password");
-    $http_redirect = $get->retrieve("redirect") == null ? "/" : $get->retrieve("redirect");
+    $http_redirect = $get->retrieve("redirect") == null ? "./" : $get->retrieve("redirect");
     
     if ($user->signined()) {
         $redirect->set($http_redirect);

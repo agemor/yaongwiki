@@ -18,11 +18,11 @@ function process() {
     global $user;
     global $redirect;
 
-    $http_redirect = $get->retrieve("redirect") == null ? HREF_MAIN : $get->retrieve("redirect");
+    $http_redirect = $get->retrieve("redirect") == null ? "./" : $get->retrieve("redirect");
 
     $user->signout();
 
-    $redirect->set(get_theme_path() . $http_redirect);
+    $redirect->set($http_redirect);
 
     return array(
         "redirect" => true
