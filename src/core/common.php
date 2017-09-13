@@ -59,37 +59,13 @@ const NAVIGATOR_TABLE = array(
     "recent" => HREF_RECENT
 );
 
-function permissionInfo($permission)
-{
-    switch ($permission) {
-        case 0:
-            return array(
-                "description" => "Reader",
-                "color" => "info"
-            );
-        case 1:
-            return array(
-                "description" => "Editor",
-                "color" => "warning"
-            );
-        case 2:
-            return array(
-                "description" => "Moderator",
-                "color" => "success"
-            );
-        case 3:
-            return array(
-                "description" => "Administrator",
-                "color" => "danger"
-            );
-        default:
-            return array(
-                "description" => "System Administrator",
-                "color" => "primary"
-            );
-            
-    }
-}
+const PERMISSION_TABLE = array(
+    0 => "Reader",
+    1 => "Editor",
+    2 => "Moderator",
+    3 => "Admistrator",
+    4 => "System Admistrator"
+);
 
 function get_theme_path() {
     return dirname(YAONGWIKI_CORE) . "/themes/" . THEME . "/";
