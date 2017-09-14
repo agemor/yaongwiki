@@ -77,6 +77,8 @@ function process() {
                        ->go();
     }
     
+    $article_data["tags"] = parse_tags($article_data["tags"]);
+
     return array(
         "result" => true,
         "article" => $article_data
@@ -85,4 +87,16 @@ function process() {
 
 function starts_with($haystack, $needle) {
     return $needle === "" || strrpos($haystack, $needle, - strlen($haystack)) !== false;
+}
+
+function parse_tags($tags_string) {
+    $tags = explode(",", $tags_string);
+    $new_tags = array();
+    for ($i = 0; $i < count($tags); $i++) {
+        $tag = trim($tags[$i]);
+        if ($tag != "") {
+            array_push($new_tags, $tag);
+        }
+    }
+    return $new_tags;
 }
