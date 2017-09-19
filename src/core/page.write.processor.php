@@ -122,7 +122,7 @@ function process() {
     }
     
     // 글 내용 필터링
-    if ($session->permission < PERMISSION_NO_FILTERING) {
+    if ($user->permission < PERMISSION_NO_FILTERING) {
         $http_article_content = $purifier->purify($http_article_content);
     }
     
@@ -163,6 +163,7 @@ function process() {
         }
         
         $article_data["title"] = $http_article_new_title;
+        $db->in(DB_ARTICLE_TABLE);
         $db->update("title", $http_article_new_title);
     }
     

@@ -39,9 +39,6 @@ require_once __DIR__ . "/frame.header.php";
     Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo($get->retrieve("from"));?></a>.
   </div>
   <?php } ?>
-  <div class="text-content">
-  <?php echo($page["article"]["content"]);?><br/>
-  </div>
   <ol class="breadcrumb">
   <?php 
   if (count($page["article"]["tags"]) == 0) { ?>
@@ -51,6 +48,9 @@ require_once __DIR__ . "/frame.header.php";
     <li class="breadcrumb-item"><a href="./?search&q=@<?php echo($page["article"]["tags"][$i]);?>"><?php echo($page["article"]["tags"][$i]);?></a></li>
   <?php } ?>
   </ol>
+  <div class="text-content my-4">
+  <?php echo($page["article"]["content"]);?><br/>
+  </div>
 </div>
 <?php
 require_once __DIR__ . "/frame.footer.php";

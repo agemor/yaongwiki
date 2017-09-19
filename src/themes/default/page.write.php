@@ -61,16 +61,16 @@ require_once __DIR__ . "/frame.header.php";
       <?php } ?>
       <div class="form-group">
         <label for="contentInput">Content</label>
-        <textarea id="editor" name="article-content" class="form-control" id="contentInput" ><?php echo($post->retrieve('article-content'));?></textarea>
+        <textarea id="editor" name="article-content" class="form-control" id="contentInput"><?php echo($page["article"]["content"]);?></textarea>
       </div>
       <div class="form-group">
         <label for="tagsInput">Tags</label>
-        <input type="text" name="article-tags" class="form-control" id="tagsInput" value="<?php echo($post->retrieve('article-tags'));?>" required>
+        <input type="text" name="article-tags" class="form-control" id="tagsInput" value="<?php echo($page["article"]["tags"]);?>" required>
         <small id="tagsInputHelper" class="text-muted">Separate it with a commas.</small>
       </div>
       <div class="form-group">
         <label for="commentInput">Comment</label>
-        <input type="text" name="article-comment" class="form-control" id="commentInput" value="<?php echo($post->retrieve('article-comment'));?>" required>
+        <input type="text" name="article-comment" class="form-control" id="commentInput" required>
         <small id="commentInputHelper" class="text-muted">Reason for why you changed this article.</small>
       </div>
       <input type="hidden" name="article-title" value="<?php echo($page["article"]["title"]);?>">

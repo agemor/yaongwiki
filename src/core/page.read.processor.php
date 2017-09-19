@@ -12,6 +12,7 @@ require_once __DIR__ . "/module.db.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
+require_once __DIR__ . "/libs/parsedown.php";
 
 const REDIRECT_KEYWORD = "#redirect";
 
@@ -22,6 +23,8 @@ function process() {
     global $user;
     global $redirect;
 
+    $parsedown = new Parsedown();
+    
     $http_article_title = $get->retrieve("t");
     $http_article_id = $get->retrieve("i");
     $http_no_redirect = $get->retrieve("no-redirect") != null;
@@ -77,6 +80,7 @@ function process() {
                        ->go();
     }
     
+    $article_data["content"] = $parsedown->text($article_data["content"]);
     $article_data["tags"] = parse_tags($article_data["tags"]);
 
     return array(
