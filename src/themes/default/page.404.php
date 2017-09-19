@@ -2,26 +2,46 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 09. 08
  */
 
-require_once 'common.php';
+require_once YAONGWIKI_CORE . "/page.create.processor.php";
 
-$page_title = "존재하지 않는 페이지";
-$page_location = HREF_404;
+$page = process();
 
-include 'frame.header.php';?>
+if (isset($page["redirect"]) && $page["redirect"] == true) {
+    $redirect->redirect();  
+}
+
+$page["title"] = "Page Not Found";
+
+require_once __DIR__ . "/frame.header.php";
+?>
 
 <div class="container">
-  <h1><a style="text-decoration: none;" href="#">존재하지 않는 페이지</a></h1>
-  <br/>
-  <hr/>
-  <blockquote>
-    <p>이 페이지는 존재하지 않습니다. 다른 곳으로 이동했거나 삭제됐을 수 있습니다.</p>
-    <footer>술먹고 상경대 반가를 부르는 <cite> - 어떤 학생</cite></footer>
-  </blockquote>
+  <div class="title my-4">
+    <h2>
+    Page Not Found
+    <h2>
+  </div>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+  <div class="alert alert-danger" role="alert">
+    <?php echo($page["message"]);?>
+  </div>
+  <?php } ?>
+  <form action="./?create" method="post">
+    <div class="row my-4">
+      <div class="col-md-6">
+        <p>
+          Sorry, this page<em><?php echo(" ". $get->retrieve("t"));?></em> does not exist. It may be removed or renamed. You can try another search keyword.
+        </p>
+        <a href="./" class="btn btn-default">Go Main Page</a>
+      </div>
+    </div>
+  </form>
 </div>
-
-<?php include 'frame.footer.php';?>
+<?php
+require_once __DIR__ . "/frame.footer.php";
+?>

@@ -43,6 +43,7 @@ require_once __DIR__ . "/frame.header.php";
           <input type="text" name="article-title" class="form-control" id="titleInput" value="<?php echo($post->retrieve('article-title'));?>" required>
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
+        <a href="./" class="btn btn-default">Cancel</a>
       </div>
       <div class="col-md-6">
       </div>

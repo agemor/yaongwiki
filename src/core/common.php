@@ -54,7 +54,7 @@ const NAVIGATOR_TABLE = array(
     "revision" => HREF_REVISION,
     "dashboard" => HREF_DASHBOARD,
     "profile" => HREF_PROFILE,
-    "404" => HREF_404,
+    "page-not-found" => HREF_404,
     "suggest" => HREF_SUGGEST,
     "recent" => HREF_RECENT
 );

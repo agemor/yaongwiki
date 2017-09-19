@@ -38,7 +38,6 @@ function process() {
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        
         $redirect->set("./");
         return array(
             "redirect" => true
@@ -78,17 +77,9 @@ function process() {
         );
     }
     
-    // 편집 모드
-    if (empty($http_article_content)) {
-        return array(
-            "result" => true,
-            "article" => $article_data,
-        );
-    }
-    
     // 글 삭제
     if ($http_article_delete) {
-        if (intval($article_data["permission"]) > PERMISSION_DELETE_ARTICLE) {
+        if ($user->permission < PERMISSION_DELETE_ARTICLE) {
             return array(
                 "result" => false,
                 "article" => $article_data,
@@ -121,6 +112,14 @@ function process() {
         );
     }
     
+    // 편집 모드
+    if (empty($http_article_content)) {
+        return array(
+            "result" => true,
+            "article" => $article_data,
+        );
+    }
+
     // 글 내용 필터링
     if ($user->permission < PERMISSION_NO_FILTERING) {
         $http_article_content = $purifier->purify($http_article_content);

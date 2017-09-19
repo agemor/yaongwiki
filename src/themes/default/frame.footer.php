@@ -1,4 +1,5 @@
-<footer class="footer">
+    <div style="padding: 15px"></div>
+    <footer class="footer">
       <div class="container">
         <p class="text-muted my-3">YaongWiki</p></div>
       </div>

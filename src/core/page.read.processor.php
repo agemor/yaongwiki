@@ -32,7 +32,7 @@ function process() {
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+        $redirect->set("./");
         return array(
             "redirect" => true
         );
@@ -50,7 +50,7 @@ function process() {
     
     if (!$article_data) {
         if (!$read_by_id) {
-            $redirect->set(get_theme_path() . HREF_SUGGEST . "?t=" . $http_article_title);
+            $redirect->set("./?page-not-found&t=" . $http_article_title);
             return array(
                 "redirect" => true
             );
@@ -65,7 +65,7 @@ function process() {
     $stripped_content = trim(strip_tags($article_data["content"]));
 
     if (!$http_no_redirect && starts_with($stripped_content, REDIRECT_KEYWORD)) {
-        $redirect->set(get_theme_path() . HREF_READ . "?t=" . $trim(explode(" ", $stripped_content)[1]) . "?from=" . $article_data["title"]);
+        $redirect->set("./?read&t=" . $trim(explode(" ", $stripped_content)[1]) . "?from=" . $article_data["title"]);
         return array(
             "redirect" => true
         );

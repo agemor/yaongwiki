@@ -36,7 +36,7 @@ require_once __DIR__ . "/frame.header.php";
   </div>
   <?php } ?>
 
-  <form action="./?write" method="post">
+  <form action="./?write" method="post" name="form">
     <fieldset<?php echo($have_permission ? "" : " disabled");?>>
       <div class="form-group">
         <label for="titleInput">Title</label>
@@ -80,14 +80,23 @@ require_once __DIR__ . "/frame.header.php";
     <?php if ($have_permission && $user->permission >= PERMISSION_DELETE_ARTICLE) { ?>
     <button type="button" class="btn btn-danger" onclick="deleteAlert(this);">Delete</button>
     <?php } ?>
-    <a href="./" class="btn btn-default">Cancel</a>
+    <a href="./?read&t=<?php echo($page["article"]["title"]);?>" class="btn btn-default">Cancel</a>
   </form>
 </div>
 <script>
 var editor = new SimpleMDE({ element: document.getElementById("editor") });
 
 function deleteAlert(e) {
-    alert('이 옵션을 누르면 지식이 영구적으로 삭제됩니다.');
+    if(!confirm("Are you sure to delete this article?")) {
+        return;
+    }
+    var writeForm = document.forms["form"];
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "article-delete";
+    input.value = "true";
+    writeForm.appendChild(input);
+    writeForm.submit();
 }
 </script>
 <?php
