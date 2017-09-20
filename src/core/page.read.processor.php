@@ -68,12 +68,13 @@ function process() {
             "redirect" => true
         );
     }
-    
+
     // 조회수 증가
     if ($user->visit(intval($article_data["id"]))) {
+        
         $response = $db->in(DB_ARTICLE_TABLE)
-                       ->update("hits", "`hits`+1")
-                       ->update("today_hits", "`today_hits`+1")
+                       ->update("hits", "`hits`+1", true)
+                       ->update("today_hits", "`today_hits`+1", true)
                        ->where("id", "=", $article_data["id"])
                        ->go();
     }
