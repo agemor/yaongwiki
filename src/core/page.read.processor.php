@@ -51,13 +51,11 @@ function process() {
     if (!$article_data) {
         if (!$read_by_id) {
             $redirect->set("./?page-not-found&t=" . $http_article_title);
-            return array(
-                "redirect" => true
-            );
+        } else {
+            $redirect->set("./?page-not-found");
         }
         return array(
-            "result" => false,
-            "message" => STRINGS["EPRD0"]
+            "redirect" => true
         );
     }
     

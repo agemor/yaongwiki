@@ -40,7 +40,6 @@ require_once __DIR__ . "/frame.header.php";
         <th class="text-center" style="width: 25%">Title</th>
         <th class="text-center" style="width: 15%">Editor</th>
         <th class="text-center" style="width: 10%">Fluctuation</th>
-        <th class="text-center" style="width: 10%">Compare</th>
         <th class="text-center" style="width: 20%">Date</th>
       </tr>
     </thead>
@@ -54,15 +53,14 @@ require_once __DIR__ . "/frame.header.php";
 
         foreach ($page["recent"]  as $result) {
             echo '<tr>';
-            echo '<td><a href="'.HREF_REVISION.'?i='.$result["id"].'&j='.$next_id.'">'.$result["id"].'</a></td>';
-            echo '<td><a href="'.HREF_READ.'/'.$result["article_id"].'">'.$result["article_title"].'</a></td>';
-        
+            echo '<td><a href="./?revision&i='.$result["id"].'">'.$result["id"].'</a></td>';
+            echo '<td><a href="./?read&i='.$result["article_id"].'">'.$result["article_title"].'</a></td>';
 
+            echo '<td><a href="./?profile&name='.$result["user_name"].'"">'.$result["user_name"].'</a>';
             if (strlen($result["comment"]) > 0) {
-                echo '<td><a href="'.HREF_PROFILE.'/'.$result["user_name"].'"">'.$result["user_name"].'</a><br>('.$result["comment"].')</td>';
-            } else {
-                echo '<td><a href="'.HREF_PROFILE.'/'.$result["user_name"].'"">'.$result["user_name"].'</a></td>';
+                echo '<br>('.$result["comment"].')';
             }
+            echo '</td>';
         
             $fluctuation = intval($result["fluctuation"]);    
             if($fluctuation > 0) {
@@ -72,9 +70,6 @@ require_once __DIR__ . "/frame.header.php";
             } else {
                 echo '<td><span style="color:red">-'.abs($fluctuation).'</span>';
             }
-            echo '</td>';
-            echo '<td> <a href="'.HREF_REVISION.'?i='.$result["id"].'&j='.$next_id.'" class="btn btn-xs btn-default">Compare</a>';
-           
             echo '</td>';
             echo '<td>'.$result["timestamp"].'</td>';
             echo '</tr>';
