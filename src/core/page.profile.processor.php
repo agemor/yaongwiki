@@ -9,6 +9,7 @@
 
 require_once __DIR__ . "/common.php";
 require_once __DIR__ . "/module.db.php";
+require_once __DIR__ . "/module.redirect.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 
@@ -19,6 +20,7 @@ function process() {
     global $db;
     global $post;
     global $get;
+    global $redirect;
     global $user;
 
     $http_user_name = $get->retrieve("name") == null ? $post->retrieve("user-name") : $get->retrieve("name");
@@ -97,6 +99,11 @@ function process() {
                        ->insert("behavior", "update-user-info")
                        ->insert("data", $http_user_info)
                        ->go();
+
+        $redirect->set("./?profile&name=" . $user_data["name"]);
+        return array(
+            "redirect" => true
+        );
     }
 
     return array(

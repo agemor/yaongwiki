@@ -113,8 +113,7 @@ window.onload = function() {
                 intro.insertBefore(introText, introButton);
                 introButton.textContent = "Edit";
             } else {
-                // 폼 전송
-                post("./?profile", {
+                post("./?profile&name=<?php echo($page["user"]["name"]);?>", {
                     "user-name": "<?php echo($page["user"]["name"]);?>",
                     "user-info": introInput.value
                 });
@@ -144,9 +143,7 @@ function post(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
-
 </script>
-
 
 <?php
 require_once __DIR__ . "/frame.footer.php";
