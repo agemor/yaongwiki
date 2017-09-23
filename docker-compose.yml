@@ -3,25 +3,25 @@ services:
 
     memcached:
       image: memcached:latest
-      container_name: yaong-wiki-memcached
+      container_name: yaongwiki-memcached
 
     mariadb:
       image: mariadb:10.1
-      container_name: yaong-wiki-mariadb
+      container_name: yaongwiki-mariadb
       working_dir: /application
       volumes:
         - ./src:/application
       environment:
-        - MYSQL_ROOT_PASSWORD=yaong-wiki
-        - MYSQL_DATABASE=yaong-wiki
-        - MYSQL_USER=yaong-wiki
-        - MYSQL_PASSWORD=yaong-wiki
+        - MYSQL_ROOT_PASSWORD=yaongwiki
+        - MYSQL_DATABASE=yaongwiki
+        - MYSQL_USER=yaongwiki
+        - MYSQL_PASSWORD=yaongwiki
       ports:
        - "3306:3306"
 
     webserver:
       image: nginx:latest
-      container_name: yaong-wiki-webserver
+      container_name: yaongwiki-webserver
       working_dir: /application
       volumes:
           - ./src:/application
@@ -31,7 +31,7 @@ services:
     
     php-fpm:
       build: docker/php-fpm
-      container_name: yaong-wiki-php-fpm
+      container_name: yaongwiki-php-fpm
       working_dir: /application
       volumes:
         - ./src:/application
@@ -39,11 +39,11 @@ services:
 
     phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      container_name: yaong-wiki-phpmyadmin
+      container_name: yaongwiki-phpmyadmin
       links:
         - mariadb
       environment:
-        PMA_HOST: yaong-wiki-mariadb
+        PMA_HOST: yaongwiki-mariadb
         PMA_PORT: 3306
       ports:
         - '8002:80'

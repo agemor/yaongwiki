@@ -21,12 +21,10 @@ function process() {
     global $redirect;
     
     $http_revision_id = $get->retrieve("i");
-    $http_revision_target_id = $get->retrieve("j");
+    $http_revision_target_id = $get->retrieve("j") !== null ? $get->retrieve("j") : 0;
     $http_rollback = !empty($get->retrieve("rollback"));
-    
-    $compare_to_original = intval($http_revision_target_id) == 0;
-    
-    if (empty($http_revision_id) || !isset($http_revision_target_id)) {
+        
+    if (empty($http_revision_id)) {
         $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
             "redirect" => true
@@ -43,6 +41,11 @@ function process() {
             "result" => false,
             "message" => STRINGS["EPRV0"]
         );
+    }
+
+    // 비교 대상이 정해지지 않았다면 바로 이전의 버전과 비교
+    if ($http_revision_target_id == 0) {
+        $http_revision_target_id = intval($revision_data["predecessor_id"]);
     }
     
     $article_data = $db->in(DB_ARTICLE_TABLE)
@@ -73,30 +76,27 @@ function process() {
             );
         }
 
-        $response = $db->in(DB_REVISION_TABLE)
-                       ->select("revision")
-                       ->where("article_id", "=", $article_data["id"])
-                       ->order_by("`timestamp` DESC")
-                       ->limit("1")
-                       ->go_and_get();
-
-        $response_1 = $db->in(DB_ARTICLE_TABLE)
-                         ->update("content", $revision_data["snapshot_content"])
-                         ->update("tags", $revision_data["snapshot_tags"])
-                         ->update("title", $revision_data["article_title"])
-                         ->where("id", $article_data["id"])
-                         ->go();
-
         $response_2 = $db->in(DB_REVISION_TABLE)
                          ->insert("article_id", $article_data["id"])
                          ->insert("article_title", $article_data["title"])
-                         ->insert("revision", intval($response["revision"]) + 1)
+                         ->insert("predecessor_id", $article_data["latest_revision_id"])
+                         ->insert("revision", intval($article_data["revisions"]) + 1)
                          ->insert("user_name", $user->name)
                          ->insert("snapshot_content", $article_data["content"])
                          ->insert("snapshot_tags", $article_data["tags"])
                          ->insert("fluctuation", (strlen($revision_data["snapshot_content"]) - strlen($article_data["content"])))
                          ->insert("comment", $revision_data["revision"] . "으로부터 복구함")
                          ->go();
+                         
+        $recent_revision_id = $db->last_insert_id();
+
+        $response_1 = $db->in(DB_ARTICLE_TABLE)
+                         ->update("latest_revision_id", $recent_revision_id)
+                         ->update("content", $revision_data["snapshot_content"])
+                         ->update("tags", $revision_data["snapshot_tags"])
+                         ->update("title", $revision_data["article_title"])
+                         ->where("id", $article_data["id"])
+                         ->go();                 
 
         if (!$response_1 || !$response_2) {
             return array(
@@ -111,18 +111,15 @@ function process() {
         );
     }
     
-    // 비교 대상 지정
-    if ($compare_to_original) {
-        $comparison_data = array(
-            "id" => "0",
-            "article_title" => $article_data["title"],
-            "revision" => "Now",
-            "snapshot_content" => $article_data["content"],
-            "snapshot_tags" => $article_data["tags"],
-            "timestamp" => $article_data["timestamp"],
-        );
-    } else {
-        $comparison_data = $db->in(DB_REVISION_TABLE)->select("*")->where("id", "=", $http_revision_target_id);
+    $comparison_data = null;
+
+    // 가장 초기 버전이라면
+    if ($http_revision_target_id != 0) {
+
+        $comparison_data = $db->in(DB_REVISION_TABLE)
+                              ->select("*")
+                              ->where("id", "=", $http_revision_target_id);
+                              
         if (!$comparison_data) {
             return array(
                 "result" => false,

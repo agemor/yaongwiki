@@ -56,7 +56,8 @@ const NAVIGATOR_TABLE = array(
     "profile" => HREF_PROFILE,
     "page-not-found" => HREF_404,
     "suggest" => HREF_SUGGEST,
-    "recent" => HREF_RECENT
+    "recent" => HREF_RECENT,
+    "phpinfo" => "page.phpinfo.php"
 );
 
 const PERMISSION_TABLE = array(
