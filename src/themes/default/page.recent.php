@@ -45,31 +45,31 @@ require_once __DIR__ . "/frame.header.php";
     </thead>
     <tbody class="text-center">
       <?php
-        if (count($page["recent"] ) < 1) {
+        if (!isset($page["recent"]) || count($page["recent"]) < 1) {
             echo '<tr><td colspan="6">No record</td></tr>';
-        } 
-        $next_id = 0;
-        foreach ($page["recent"]  as $result) {
-            echo '<tr>';
-            echo '<td><a href="./?revision&i=' . $result["id"] . '">' . $result["id"] . '</a></td>';
-            echo '<td><a href="./?read&i=' . $result["article_id"] . '">' . $result["article_title"] . '</a></td>';
-            echo '<td><a href="./?profile&name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a>';
-            if (strlen($result["comment"]) > 0) {
-                echo '<br>(' . $result["comment"] . ')';
+        } else {
+            foreach ($page["recent"]  as $result) {
+                echo '<tr>';
+                echo '<td><a href="./?revision&i=' . $result["id"] . '">' . $result["id"] . '</a></td>';
+                echo '<td><a href="./?read&i=' . $result["article_id"] . '">' . $result["article_title"] . '</a></td>';
+                echo '<td><a href="./?profile&name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a>';
+                if (strlen($result["comment"]) > 0) {
+                    echo '<br>(' . $result["comment"] . ')';
+                }
+                echo '</td>';
+                $fluctuation = intval($result["fluctuation"]);    
+                if($fluctuation > 0) {
+                    echo '<td><span style="color:green">+' . $fluctuation . '</span>';
+                } else if ($fluctuation == 0) {
+                    echo '<td><span style="color:grey">-</span>';
+                } else {
+                    echo '<td><span style="color:red">-' . abs($fluctuation) . '</span>';
+                }
+                echo '</td>';
+                echo '<td>' . $result["timestamp"] . '</td>';
+                echo '</tr>';
+                $next_id = $result["id"];
             }
-            echo '</td>';
-            $fluctuation = intval($result["fluctuation"]);    
-            if($fluctuation > 0) {
-                echo '<td><span style="color:green">+' . $fluctuation . '</span>';
-            } else if ($fluctuation == 0) {
-                echo '<td><span style="color:grey">-</span>';
-            } else {
-                echo '<td><span style="color:red">-' . abs($fluctuation) . '</span>';
-            }
-            echo '</td>';
-            echo '<td>' . $result["timestamp"] . '</td>';
-            echo '</tr>';
-            $next_id = $result["id"];
         }?>
     </tbody>
   </table>
