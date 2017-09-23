@@ -67,8 +67,10 @@ require_once __DIR__ . "/frame.header.php";
           <input class="form-check-input" type="checkbox" value="" required> I agree the terms of use
           </label>
         </div>
-        <button type="submit" class="btn btn-primary">Sign up</button>
-        <a href="/" class="btn btn-default">Go back</a>
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary">Sign up</button>
+          <a href="/" class="btn btn-default">Go back</a>
+        </div>
       </div>
     </div>
   </form>
