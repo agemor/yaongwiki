@@ -130,6 +130,9 @@ function process() {
 
     $db->in(DB_ARTICLE_TABLE);
     
+    $change_title = false;
+    $change_permission = false;
+
     // 제목 유효성 검사
     if (!empty($http_article_new_title) && strcmp($http_article_new_title, $article_data["title"]) != 0) {
         if (strlen(preg_replace("/\s+/", "", $http_article_new_title)) < 2) {
@@ -160,10 +163,8 @@ function process() {
                 "message" => STRINGS["EPWR6"]
             );
         }
-        
         $article_data["title"] = $http_article_new_title;
-        $db->in(DB_ARTICLE_TABLE);
-        $db->update("title", $http_article_new_title);
+        $change_title = true;
     }
     
     // 퍼미션 유효성 검사
@@ -175,20 +176,42 @@ function process() {
                 "message" => STRINGS["EPWR7"]
             );
         }
-        
         $article_data["permission"] = $http_article_permission;
-        $db->update("permission", $http_article_permission);
+        $change_permission = true;
     }
     
+    $response = $db->in(DB_USER_TABLE)
+                   ->update("total_contributions", "`total_contributions` + 1", true)
+                   ->where("id", "=", $user->id)
+                   ->go();
+
+    $response = $db->in(DB_REVISION_TABLE)
+                   ->insert("article_id", $article_data["id"])
+                   ->insert("article_title", $article_data["title"])
+                   ->insert("predecessor_id", $article_data["latest_revision_id"])
+                   ->insert("revision", intval($article_data["revisions"]) + 1)
+                   ->insert("user_name", $user->name)
+                   ->insert("snapshot_content", $article_data["content"])
+                   ->insert("snapshot_tags", $article_data["tags"])
+                   ->insert("fluctuation", (strlen($article_data["content"]) - strlen($article_snapshot_data["content"])))
+                   ->insert("comment", $http_article_comment)
+                   ->go();
+
+    $recent_revision_id = $db->last_insert_id();
+
+    $db->in(DB_ARTICLE_TABLE);
+    if ($change_permission) {
+        $db->update("permission", $http_article_permission);
+    }
+    if ($change_title) {
+        $db->update("title", $http_article_new_title);
+    }
     $db->update("tags", $http_article_tags);
+    $db->update("latest_revision_id", $recent_revision_id);
+    $db->update("content", $http_article_content);
     $db->update("revisions", "`revisions` + 1", true);
     $db->update("content", $http_article_content);
     $db->where("id", "=", $article_data["id"]);
-    $response = $db->go();
-
-    $db->in(DB_USER_TABLE);
-    $db->update("total_contributions", "`total_contributions` + 1", true);
-    $db->where("id", "=", $user->id);
     $response = $db->go();
 
     if (!$response) {
@@ -198,32 +221,6 @@ function process() {
             "message" => STRINGS["EPWR8"]
         );
     }
-
-    $recent_revision_data = $db->in(DB_REVISION_TABLE)
-                               ->select("revision")
-                               ->where("article_id", "=", $article_data["id"])
-                               ->order_by("`timestamp` DESC")
-                               ->limit("1")
-                               ->go_and_get();
-    
-    if (!$recent_revision_data) {
-        return array(
-            "result" => false,
-            "article" => $article_data,
-            "message" => STRINGS["EPWR9"]
-        );
-    }
-
-    $response = $db->in(DB_REVISION_TABLE)
-                   ->insert("article_id", $article_data["id"])
-                   ->insert("article_title", $article_data["title"])
-                   ->insert("revision", intval($recent_revision_data["revision"]) + 1)
-                   ->insert("user_name", $user->name)
-                   ->insert("snapshot_content", $article_data["content"])
-                   ->insert("snapshot_tags", $article_data["tags"])
-                   ->insert("fluctuation", (strlen($article_data["content"]) - strlen($article_snapshot_data["content"])))
-                   ->insert("comment", $http_article_comment)
-                   ->go();
 
     if (!$response) {
         return array(
@@ -235,7 +232,7 @@ function process() {
 
     $response = $db->in(DB_LOG_TABLE)
                    ->insert("behavior", "write")
-                   ->insert("data", $article_data["id"] . "/" . (intval($recent_revision_data["revision"]) + 1))
+                   ->insert("data", $article_data["id"] . "/" . (intval($article_data["revisions"]) + 1))
                    ->go();
     
     $redirect->set("./?read&t=" . $article_data["title"]);

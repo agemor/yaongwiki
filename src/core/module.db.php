@@ -73,6 +73,10 @@ class Database {
         return array();
     }
 
+    public function last_insert_id() {
+        return $this->connection->insert_id;
+    }
+
     /* 응답 반환이 필요하지 않은 쿼리문을 수행한다 */
     public function go() {
 

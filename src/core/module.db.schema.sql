@@ -4,6 +4,7 @@ CREATE TABLE `[PREFIX]yaongwiki_articles` (
   `content` text NOT NULL,
   `tags` varchar(500) NOT NULL,
   `revisions` int(11) NOT NULL DEFAULT '0',
+  `latest_revision_id` int(11) NOT NULL,
   `hits` int(11) UNSIGNED NOT NULL,
   `today_hits` int(11) UNSIGNED NOT NULL,
   `permission` int(11) UNSIGNED NOT NULL DEFAULT '0',
@@ -50,6 +51,7 @@ ALTER TABLE `[PREFIX]yaongwiki_logs`
 
 CREATE TABLE `[PREFIX]yaongwiki_revisions` (
   `id` int(10) UNSIGNED NOT NULL,
+  `predecessor_id` int(11) NOT NULL,
   `article_title` varchar(200) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
   `revision` int(10) UNSIGNED NOT NULL,

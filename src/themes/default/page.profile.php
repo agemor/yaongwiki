@@ -83,7 +83,7 @@ require_once __DIR__ . "/frame.header.php";
   <nav>
     <ul class="pagination">
       <?php
-        $total_pages = intval($page["user"]["total_contributions"]) / MAX_REVISIONS;
+        $total_pages = ceil((intval($page["user"]["total_contributions"])) / (float) MAX_REVISIONS);
         if ($total_pages > 1) {
             for ($i = 0; $i < $total_pages; $i++) {
                 $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");

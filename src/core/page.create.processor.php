@@ -65,10 +65,6 @@ function process() {
         );
     }
     
-    $response_1 = $db->in(DB_ARTICLE_TABLE)
-                     ->insert("title", $http_article_title)
-                     ->go();
-
     $response = $db->in(DB_ARTICLE_TABLE)
                    ->select("*")
                    ->where("title", "=", $http_article_title)
@@ -83,6 +79,13 @@ function process() {
                      ->insert("snapshot_tags", "")
                      ->insert("fluctuation", "0")
                      ->insert("comment", "새로 만들어짐")
+                     ->go();
+    
+    $initial_revision_id = $db->last_insert_id();
+                     
+    $response_1 = $db->in(DB_ARTICLE_TABLE)
+                     ->insert("title", $http_article_title)
+                     ->insert("latest_revision_id", $initial_revision_id)
                      ->go();
 
     if (!$response_1 || !$response_2) {
