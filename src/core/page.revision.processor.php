@@ -25,7 +25,7 @@ function process() {
     $http_rollback = !empty($get->retrieve("rollback"));
         
     if (empty($http_revision_id)) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+        $redirect->set("./");
         return array(
             "redirect" => true
         );
@@ -76,7 +76,7 @@ function process() {
             );
         }
 
-        $response_2 = $db->in(DB_REVISION_TABLE)
+        $response_1 = $db->in(DB_REVISION_TABLE)
                          ->insert("article_id", $article_data["id"])
                          ->insert("article_title", $article_data["title"])
                          ->insert("predecessor_id", $article_data["latest_revision_id"])
@@ -90,7 +90,7 @@ function process() {
                          
         $recent_revision_id = $db->last_insert_id();
 
-        $response_1 = $db->in(DB_ARTICLE_TABLE)
+        $response_2 = $db->in(DB_ARTICLE_TABLE)
                          ->update("latest_revision_id", $recent_revision_id)
                          ->update("content", $revision_data["snapshot_content"])
                          ->update("tags", $revision_data["snapshot_tags"])
@@ -118,8 +118,9 @@ function process() {
 
         $comparison_data = $db->in(DB_REVISION_TABLE)
                               ->select("*")
-                              ->where("id", "=", $http_revision_target_id);
-                              
+                              ->where("id", "=", $http_revision_target_id)
+                              ->go_and_get();
+
         if (!$comparison_data) {
             return array(
                 "result" => false,

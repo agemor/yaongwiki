@@ -65,12 +65,7 @@ function process() {
         );
     }
     
-    $response = $db->in(DB_ARTICLE_TABLE)
-                   ->select("*")
-                   ->where("title", "=", $http_article_title)
-                   ->go_and_get();
-
-    $response_2 = $db->in(DB_REVISION_TABLE)
+    $response_1 = $db->in(DB_REVISION_TABLE)
                      ->insert("article_id", $response["id"])
                      ->insert("article_title", $http_article_title)
                      ->insert("revision", "0")
@@ -83,10 +78,17 @@ function process() {
     
     $initial_revision_id = $db->last_insert_id();
                      
-    $response_1 = $db->in(DB_ARTICLE_TABLE)
+    $response_2 = $db->in(DB_ARTICLE_TABLE)
                      ->insert("title", $http_article_title)
                      ->insert("latest_revision_id", $initial_revision_id)
                      ->go();
+    
+    $article_id = $db->last_insert_id();
+
+    $response = $db->in(DB_REVISION_TABLE)
+                   ->update("article_id", $article_id)
+                   ->where("id", "=", $initial_revision_id)
+                   ->go();
 
     if (!$response_1 || !$response_2) {
         return array(

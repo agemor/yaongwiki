@@ -41,18 +41,50 @@ require_once __DIR__ . "/frame.header.php";
 
   <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link active" href="#">Content view</a>
+    <a class="nav-link active" href="#">Diff view</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Markdown view</a>
+    <a class="nav-link" href="#">Original view</a>
   </li>
 </ul>
 
-<div>
-<?php echo($page["revision"]["snapshot_content"]);?>
+<pre id="display"></pre>
 
-</div>
+<div id="revContent" style="display:none"><?php echo($page["revision"]["snapshot_content"]);?></div>
+<div id="revCompContent" style="display:none"><?php echo($page["comparison_target"]["snapshot_content"]);?></div>
 
+<script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/diff.js"></script>
+
+<script>
+
+window.onload = function() {
+
+    var revContent = document.getElementById("revContent");
+    var revCompContent = document.getElementById("revCompContent");
+    var display = document.getElementById("display");
+    var fragment = document.createDocumentFragment();
+
+    var diff = JsDiff.diffChars(revCompContent.textContent, revContent.textContent);
+
+    var color = '', span = null;
+    
+    diff.forEach(function(part){
+    // green for additions, red for deletions
+    // grey for common parts
+    color = part.added ? 'green' :
+        part.removed ? 'red' : 'grey';
+    span = document.createElement('span');
+    span.style.color = color;
+    span.appendChild(document
+        .createTextNode(part.value));
+    fragment.appendChild(span);
+    });
+
+    display.appendChild(fragment);
+
+}
+
+</script>
 
 </div>
 
