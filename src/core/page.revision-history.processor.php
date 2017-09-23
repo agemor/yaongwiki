@@ -13,6 +13,8 @@ require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
 
+const MAX_REVISIONS = 5;
+
 function process() {
     
     global $db;
@@ -68,6 +70,6 @@ function process() {
         "result" => true,
         "page" => $http_revisions_page,
         "article" => $article_data,
-        "revisions" => $revisions_data,
+        "history" => $revisions_data,
     );
 }

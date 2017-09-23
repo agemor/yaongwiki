@@ -3,6 +3,7 @@ CREATE TABLE `[PREFIX]yaongwiki_articles` (
   `title` varchar(100) NOT NULL,
   `content` text NOT NULL,
   `tags` varchar(500) NOT NULL,
+  `revisions` int(11) NOT NULL DEFAULT '0',
   `hits` int(11) UNSIGNED NOT NULL,
   `today_hits` int(11) UNSIGNED NOT NULL,
   `permission` int(11) UNSIGNED NOT NULL DEFAULT '0',

@@ -181,6 +181,7 @@ function process() {
     }
     
     $db->update("tags", $http_article_tags);
+    $db->update("revisions", "`revisions` + 1", true);
     $db->update("content", $http_article_content);
     $db->where("id", "=", $article_data["id"]);
     $response = $db->go();

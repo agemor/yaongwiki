@@ -27,13 +27,14 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["article"]["title"]);?>
     <small class="text-muted"> (Views: <?php echo($page["article"]["hits"]);?>)</small>
     <h2>
-    <div class="text-right">
+    </div>
+    <div class="text-right mb-3">
       <div class="btn-group" role="group">
-        <a class="btn btn-default" href="./?revisions&i=<?php echo($page['article']['id']);?>" >Revision history</a>
         <a class="btn btn-default" href="./?write&i=<?php echo($page['article']['id']);?>" >Edit article</a>
+        <a class="btn btn-default" href="./?revision-history&i=<?php echo($page['article']['id']);?>" >Revision history</a>
       </div>
     </div>
-  </div>
+  
   <?php if ($get->retrieve("from") !== null) { ?>
   <div class="alert alert-info" role="alert">
     Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo($get->retrieve("from"));?></a>.
