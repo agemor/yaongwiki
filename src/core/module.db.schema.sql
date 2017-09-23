@@ -73,6 +73,7 @@ ALTER TABLE `[PREFIX]yaongwiki_revisions`
   `email` varchar(200) NOT NULL,
   `password` varchar(200) NOT NULL,
   `permission` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `total_contributions` int(11) NOT NULL DEFAULT '0',
   `code` varchar(50) DEFAULT NULL,
   `info` varchar(1500) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP

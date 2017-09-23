@@ -13,7 +13,7 @@ require_once __DIR__ . "/module.redirect.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 
-const MAX_REVISIONS = 20;
+const MAX_REVISIONS = 5;
 
 function process() {
     

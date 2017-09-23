@@ -78,11 +78,14 @@ require_once __DIR__ . "/frame.header.php";
   <nav>
     <ul class="pagination">
       <?php
-        for ($i = 0; $i < intval($page["article"]["revisions"]) / MAX_REVISIONS; $i++) {
-            $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");
-            $li_href = "./?revision-history&i=" . $page["article"]["id"] . "&p=" . $i;
-            $li_text = $i + 1;
-            echo('<li class="' . $li_class . '"><a class="page-link" href="' . $li_href . '">' . $li_text . '</a></li>');
+        $total_pages = intval($page["article"]["revisions"]) / MAX_REVISIONS;
+        if ($total_pages > 1) {
+          for ($i = 0; $i < $total_pages; $i++) {
+              $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");
+              $li_href = "./?revision-history&i=" . $page["article"]["id"] . "&p=" . $i;
+              $li_text = $i + 1;
+              echo('<li class="' . $li_class . '"><a class="page-link" href="' . $li_href . '">' . $li_text . '</a></li>');
+          }
         }
         ?>
     </ul>

@@ -185,7 +185,12 @@ function process() {
     $db->update("content", $http_article_content);
     $db->where("id", "=", $article_data["id"]);
     $response = $db->go();
-    
+
+    $db->in(DB_USER_TABLE);
+    $db->update("total_contributions", "`total_contributions` + 1", true);
+    $db->where("id", "=", $user->id);
+    $response = $db->go();
+
     if (!$response) {
         return array(
             "result" => false,

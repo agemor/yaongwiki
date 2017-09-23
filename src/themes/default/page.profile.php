@@ -79,6 +79,23 @@ require_once __DIR__ . "/frame.header.php";
         }?>
     </tbody>
   </table>
+
+  <nav>
+    <ul class="pagination">
+      <?php
+        $total_pages = intval($page["user"]["total_contributions"]) / MAX_REVISIONS;
+        if ($total_pages > 1) {
+            for ($i = 0; $i < $total_pages; $i++) {
+                $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");
+                $li_href = "./?profile&name=" . $page["user"]["name"] . "&p=" . $i;
+                $li_text = $i + 1;
+                echo('<li class="' . $li_class . '"><a class="page-link" href="' . $li_href . '">' . $li_text . '</a></li>');
+            }
+        }
+        ?>
+    </ul>
+  </nav>
+
 </div>
 <script>
 
