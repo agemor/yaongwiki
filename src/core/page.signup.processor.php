@@ -118,8 +118,8 @@ function process() {
                    ->insert("data", $http_user_name)
                    ->go();
     
-    $redirect->set("./?signin");
     return array(
-        "redirect" => true
+        "result" => true,
+        "message" => "success"
     );
 }

@@ -9,7 +9,7 @@
 
 require_once __DIR__ . "/module.email.account.php";
 
-CONST EMAIL_ENCODING = "utf-8";
+CONST EMAIL_ENCODING = "ISO-8859-1";
 
 class Email {
 
@@ -17,13 +17,13 @@ class Email {
 
     public function __construct() {
 
-        $headers  = "From: " . EMAIL_FROM_NAME . " <" . EMAIL_FROM . ">\n";
-        $headers .= "X-Sender: " . EMAIL_FROM_NAME . " <" . EMAIL_FROM . ">\n";
-        $headers .= 'X-Mailer: PHP/' . phpversion();
-        $headers .= "X-Priority: 3\n";
-        $headers .= "Return-Path: " . EMAIL_FROM . "\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=" . EMAIL_ENCODING . "\n";
+        $headers  = "From: " . EMAIL_FROM_NAME . " <" . EMAIL_FROM . ">" . PHP_EOL;
+        $headers .= "X-Sender: " . EMAIL_FROM_NAME . " <" . EMAIL_FROM . ">" . PHP_EOL;
+        $headers .= 'X-Mailer: PHP/' . phpversion() . PHP_EOL;
+        $headers .= "X-Priority: 3" . PHP_EOL;
+        $headers .= "Return-Path: " . EMAIL_FROM . PHP_EOL;
+        $headers .= "MIME-Version: 1.0"  . PHP_EOL;
+        $headers .= "Content-Type: text/html; charset=" . EMAIL_ENCODING  . PHP_EOL;
 
         $this->headers = $headers;
     }

@@ -15,6 +15,8 @@ require_once __DIR__ . "/module.email.php";
 require_once __DIR__ . "/module.recaptcha.php";
 require_once __DIR__ . "/module.redirect.php";
 
+const ENABLE_RECAPTCHA = false;
+
 function process() {
     
     global $db;
@@ -47,8 +49,7 @@ function process() {
         );
     }
     
-    // reCAPTCHA
-    if (!$recaptcha->verify($http_recaptcha)) {
+    if (ENABLE_RECAPTCHA && !$recaptcha->verify($http_recaptch_response)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPRS1"]
@@ -103,6 +104,6 @@ function process() {
     
     return array(
         "result" => true,
-        "message" => STRINGS["EPRS5"]
+        "message" => "success"
     );
 }

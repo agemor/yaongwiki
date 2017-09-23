@@ -30,6 +30,12 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
+  <?php
+  if (isset($page["message"]) && $page["message"] == "success") { ?>
+
+  <p>Sign up successful! You can now <a href="./?signin">sign in</a>.</p>
+    
+  <?php } else { ?>
   <form action="/?signup" method="post">
     <div class="row my-4">
       <div class="col-md-6">
@@ -69,11 +75,12 @@ require_once __DIR__ . "/frame.header.php";
         </div>
         <div class="mt-3">
           <button type="submit" class="btn btn-primary">Sign up</button>
-          <a href="/" class="btn btn-default">Go back</a>
+          <a href="./?signin" class="btn btn-default">Go back</a>
         </div>
       </div>
     </div>
   </form>
+  <?php } ?>
 </div>
 <?php
 require_once __DIR__ . "/frame.footer.php";
