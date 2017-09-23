@@ -8,9 +8,4 @@
  */
 
 CONST THEME = "default";
-
-function get_core_directory() {
-    
-}
-
 ?>

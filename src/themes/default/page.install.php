@@ -12,7 +12,7 @@ require_once YAONGWIKI_CORE . "/page.install.processor.php";
 $page = process();
 
 if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+    $redirect->redirect();
 }
 
 $page["title"] = "YaongWiki Installation";
@@ -30,6 +30,14 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
+
+  <?php
+  if (isset($page["message"]) && $page["message"] == "success") { ?>
+
+  <p>Installation was successful. YaongWiki is all set!</p>
+  <p>You can manage this site from <a href="./?dashboard">dashboard</a>, or <a href="./">go main page</a> to take a look.</p>
+    
+  <?php } else { ?>
   <form action="/" method="post">
     <div class="row my-4">
       <div class="col-md-6">
@@ -87,10 +95,13 @@ require_once __DIR__ . "/frame.header.php";
           <input class="form-check-input" type="checkbox" value="" required> I agree the terms of use
           </label>
         </div>
-        <button type="submit" class="btn btn-primary">Start Setup</button>
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary">Start Setup</button>
+        </div>
       </div>
     </div>
   </form>
+  <?php } ?>
 </div>
 <?php
 require_once __DIR__ . "/frame.footer.php";

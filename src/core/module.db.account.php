@@ -7,7 +7,7 @@
  * @date 2017. 08. 26
  */
 
-const DB_HOST = "172.18.0.6:3306";
+const DB_HOST = "172.18.0.3:3306";
 const DB_USER_NAME = "root";
 const DB_USER_PASSWORD = "yaong-wiki";
 const DB_NAME = "yaong-wiki";

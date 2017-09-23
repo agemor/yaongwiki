@@ -23,7 +23,7 @@ const PERMISSION_DELETE_ARTICLE = 1;
 
 const TITLE_AFFIX = " - YaongWiki";
 
-const HREF_MAIN = "";
+const HREF_MAIN = "page.main.php";
 const HREF_SIGNIN = "page.signin.php";
 const HREF_SIGNUP = "page.signup.php";
 const HREF_SIGNOUT = "page.signout.php";

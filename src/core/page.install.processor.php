@@ -73,8 +73,8 @@ function process() {
     $filecontent = preg_replace($config_keywords, $settings, $filecontent);
     file_put_contents(__DIR__ . "/module.db.account.php", $filecontent);
     
-    $redirect->set("./");
     return array(
-        "redirect" => true
+        "result" => true,
+        "message" => "success"
     );
 }
