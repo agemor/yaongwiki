@@ -12,7 +12,8 @@ require_once __DIR__ . "/module.db.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
- 
+require_once __DIR__ . "/libs/parsedown.php";
+
 function process() {
 
     global $db;
@@ -20,6 +21,8 @@ function process() {
     global $user;
     global $redirect;
     
+    $parsedown = new Parsedown();
+
     $http_revision_id = $get->retrieve("i");
     $http_revision_target_id = $get->retrieve("j") !== null ? $get->retrieve("j") : 0;
     $http_rollback = !empty($get->retrieve("rollback"));
@@ -129,9 +132,25 @@ function process() {
         }
     }
     
+    $article_data["content"] = $parsedown->text($article_data["content"]);
+    $article_data["tags"] = parse_tags($article_data["tags"]);
+
     return array(
         "result" => true,
         "comparison_target" => $comparison_data,
         "revision" => $revision_data,
+        "article" => $article_data
     );
+}
+
+function parse_tags($tags_string) {
+    $tags = explode(",", $tags_string);
+    $new_tags = array();
+    for ($i = 0; $i < count($tags); $i++) {
+        $tag = trim($tags[$i]);
+        if ($tag != "") {
+            array_push($new_tags, $tag);
+        }
+    }
+    return $new_tags;
 }
