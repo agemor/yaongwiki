@@ -30,7 +30,7 @@ require_once __DIR__ . "/frame.header.php";
   <div class="text-right mb-3">
       <div class="btn-group" role="group">
         <a class="btn btn-default" href="./?read&i=<?php echo($page['revision']['article_id']);?>" >Read article</a>
-        <a class="btn btn-default" href="./?revision-history&i=<?php echo($page['revision']['article_id']);?>">Rollback to this version</a>
+        <a class="btn btn-default" href="./?revision&i=<?php echo($page['revision']['id']);?>&rollback=true">Rollback to this version</a>
         <a class="btn btn-default" href="./?revision-history&i=<?php echo($page['revision']['article_id']);?>">Revision History</a>
       </div>
     </div>
@@ -42,10 +42,10 @@ require_once __DIR__ . "/frame.header.php";
 
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a id="originalViewButton" class="tab-button nav-link" href="#original" onclick="switchView(event, 'originalView')">Original view</a>
+      <a id="originalViewButton" class="tab-button nav-link" href="#" onclick="switchView(event, 'originalView')">Original view</a>
     </li>
     <li class="nav-item">
-      <a id="diffViewButton" class="tab-button nav-link active" href="#diff" onclick="switchView(event, 'diffView')">Diff view</a>
+      <a id="diffViewButton" class="tab-button nav-link active" href="#" onclick="switchView(event, 'diffView')">Diff view</a>
     </li>
   </ul>
 
@@ -102,7 +102,7 @@ window.onload = function() {
 
     diffViewButton.onclick = function(event) {
         if (!diffCalculated) {
-            diffViewContentDisplay.appendChild(getDiffElement(revContentText.textContent, revCompContentText.textContent));
+            diffViewContentDisplay.appendChild(getDiffElement(revCompContentText.textContent, revContentText.textContent));
             displayLineNumbers();
             diffCalculated = true;
         }
@@ -110,7 +110,7 @@ window.onload = function() {
     }
     originalViewButton.onclick = function(event) { switchView(event, "originalViewContent");}
 
-    originalViewButton.click();
+    switchView(null, "originalViewContent");
 }
 
 function getDiffElement(text1, text2) {
@@ -147,7 +147,7 @@ function displayLineNumbers() {
     }
 }
 
-function switchView(evt, viewName) {
+function switchView(event, viewName) {
     var i, tabcontent, tablinks;
 
     tabcontent = document.getElementsByClassName("tab-content");
@@ -161,7 +161,9 @@ function switchView(evt, viewName) {
     }
 
     document.getElementById(viewName).style.display = "block";
-    evt.currentTarget.className += " active";
+    if (event != null) {
+      evt.currentTarget.className += " active";
+    }
 }
 
 </script>

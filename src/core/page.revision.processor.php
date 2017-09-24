@@ -98,7 +98,7 @@ function process() {
                          ->update("content", $revision_data["snapshot_content"])
                          ->update("tags", $revision_data["snapshot_tags"])
                          ->update("title", $revision_data["article_title"])
-                         ->where("id", $article_data["id"])
+                         ->where("id", "=", $article_data["id"])
                          ->go();                 
 
         if (!$response_1 || !$response_2) {
@@ -108,7 +108,7 @@ function process() {
             );
         }
         
-        $redirect->set(get_theme_path() . HREF_READ . "?i=" . $article_data["id"]);
+        $redirect->set("./read?i=" . $article_data["id"]);
         return array(
             "redirect" => true
         );
@@ -132,8 +132,8 @@ function process() {
         }
     }
     
-    $article_data["content"] = $parsedown->text($article_data["content"]);
-    $article_data["tags"] = parse_tags($article_data["tags"]);
+    $article_data["content"] = $parsedown->text($revision_data["snapshot_content"]);
+    $article_data["tags"] = parse_tags($revision_data["snapshot_tags"]);
 
     return array(
         "result" => true,
