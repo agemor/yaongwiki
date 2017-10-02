@@ -26,16 +26,13 @@ function process() {
     $http_user_name = $get->retrieve("name") == null ? $post->retrieve("user-name") : $get->retrieve("name");
     $http_user_info = strip_tags($post->retrieve("user-info"));
     $http_user_commit_page = $get->retrieve("p") == null ? 0 : intval($get->retrieve("p"));
-
-    if (empty($http_user_name)) {
-        return array(
-            "result" => false,
-            "message" => STRINGS["EPPF0"]
-        );
-    }
     
-    if (strlen($http_user_name) < 2) {
+    if (empty($http_user_name) || strlen($http_user_name) < 2) {
+
+        $redirect->set("./?page-not-found");
+        
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPPF0"]
         );
@@ -47,7 +44,11 @@ function process() {
                    ->go_and_get();
 
     if (!$user_data) {
+
+        $redirect->set("./?page-not-found");
+        
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPPF0"]
         );
