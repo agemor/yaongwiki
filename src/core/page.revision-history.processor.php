@@ -29,7 +29,7 @@ function process() {
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+        $redirect->set("./");
         return array(
             "redirect" => true
         );
@@ -46,7 +46,11 @@ function process() {
     $article_data = $db->limit("0")->go_and_get();
     
     if (!$article_data) {
+
+        $redirect->set("./?page-not-found");
+        
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPRV1"]
         );
@@ -60,7 +64,11 @@ function process() {
                          ->go_and_get_all();
 
     if (!$revisions_data) {
+
+        $redirect->set("./?page-not-found");
+        
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPRV0"]
         );

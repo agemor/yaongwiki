@@ -40,7 +40,11 @@ function process() {
                         ->go_and_get();
     
     if (!$revision_data) {
+        
+        $redirect->set("./?page-not-found");
+        
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPRV0"]
         );
@@ -57,7 +61,11 @@ function process() {
                        ->go_and_get();
     
     if (!$article_data) {
+
+        $redirect->set("./?page-not-found");
+
         return array(
+            "redirect" => true,
             "result" => false,
             "message" => STRINGS["EPRV1"]
         );
