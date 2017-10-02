@@ -13,6 +13,9 @@ require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
 
+const FULL_TEXT_SEARCH = false;
+const MAX_ARTICLES = 10;
+
 function process() {
     
     global $db;
@@ -50,7 +53,7 @@ function process() {
     $keywords = explode(" ", $http_query);
     $query = $tag_search_mode ? get_tag_search_query($keywords) : get_content_search_query($keywords);
     $query .= " LIMIT " . ($http_page * MAX_ARTICLES) . ", " . MAX_ARTICLES . ";";
-    
+
     // 정확히 제목이 일치하는 항목이 있으면 바로 이동
     if (count($keywords) == 1) {
 
@@ -71,14 +74,16 @@ function process() {
     
     // 검색 수행
     $search_result_data = $db->custom($query);
+    $elapsed_time = round(microtime(true) - $start_time, 5);
+
     if (!$search_result_data) {
         return array(
-            "result" => false,
-            "message" => STRINGS["EPSH1"]
+            "result" => true,
+            "search_result" => array(),
+            "keywords" => $keywords,
+            "elapsed_time" => $elapsed_time
         );
     }
-    
-    $elapsed_time = round(microtime(true) - $start_time, 5);
 
     return array(
         "result" => true,
@@ -102,18 +107,18 @@ function get_tag_search_query($keywords, $fulltext = FULL_TEXT_SEARCH) {
         
         $query = "SELECT *, ";
         $query .= $match . " AS relevance ";
-        $query .= "FROM " . ARTICLE_TABLE . " ";
+        $query .= "FROM `" . DB_ARTICLE_TABLE . "` ";
         $query .= "WHERE " . $match . " ";
         $query .= "ORDER BY (relevance * `hits`) DESC";
     }
     
     // 일반 검색
     else {
-        $query = "SELECT * FROM " . ARTICLE_TABLE . " WHERE ";
+        $query = "SELECT * FROM `" . DB_ARTICLE_TABLE . "` WHERE ";
         for ($i = 0; $i < count($keywords); $i++) {
             if (strlen($keywords[$i]) > 0) {
                 $query .= ($i > 0 ? " OR " : "");
-                $query .= "`tags` LIKE "%" . $keywords[$i] . "%"";
+                $query .= '`tags` LIKE "%' . $keywords[$i] . '%"';
             }
         }
         $query .= " ORDER BY `hits` DESC";
@@ -136,20 +141,20 @@ function get_content_search_query($keywords, $fulltext = FULL_TEXT_SEARCH) {
         
         // 쿼리문 생성
         $query = "SELECT * ";
-        $query .= "FROM " . ARTICLE_TABLE . " ";
+        $query .= "FROM `" . DB_ARTICLE_TABLE . "` ";
         $query .= "WHERE MATCH(`title`, `content`) " . $against . " ";
         $query .= "ORDER BY `hits` DESC";
     }
     
     // 일반 검색
     else {
-        $query = "SELECT * FROM " . ARTICLE_TABLE . " WHERE ";
+        $query = "SELECT * FROM `" . DB_ARTICLE_TABLE . "` WHERE ";
         for ($i = 0; $i < count($keywords); $i++) {
             if (strlen($keywords[$i]) > 0) {
                 $query .= ($i > 0 ? " OR " : "");
-                $query .= "`title` LIKE" . ""%" . $keywords[$i] . "%" OR";
-                $query .= "`content` LIKE" . ""%" . $keywords[$i] . "%" OR";
-                $query .= "`tags` LIKE" . ""%" . $keywords[$i] . "%"";
+                $query .= '`title` LIKE "%' . $keywords[$i] . '%" OR ';
+                $query .= '`content` LIKE "%' . $keywords[$i] . '%" OR ';
+                $query .= '`tags` LIKE "%' . $keywords[$i] . '%"';
             }
         }
         $query .= " ORDER BY `hits` DESC";
