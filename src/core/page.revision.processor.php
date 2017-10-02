@@ -79,21 +79,24 @@ function process() {
             );
         }
 
+        $revision_comment = strtr(STRINGS["SPRV0"], array("{REVISION}" => "#". $revision_data["id"]));
+
         $response_1 = $db->in(DB_REVISION_TABLE)
                          ->insert("article_id", $article_data["id"])
                          ->insert("article_title", $article_data["title"])
                          ->insert("predecessor_id", $article_data["latest_revision_id"])
                          ->insert("revision", intval($article_data["revisions"]) + 1)
                          ->insert("user_name", $user->name)
-                         ->insert("snapshot_content", $article_data["content"])
-                         ->insert("snapshot_tags", $article_data["tags"])
+                         ->insert("snapshot_content", $revision_data["snapshot_content"])
+                         ->insert("snapshot_tags", $revision_data["snapshot_tags"])
                          ->insert("fluctuation", (strlen($revision_data["snapshot_content"]) - strlen($article_data["content"])))
-                         ->insert("comment", $revision_data["revision"] . "으로부터 복구함")
+                         ->insert("comment", $revision_comment)
                          ->go();
                          
         $recent_revision_id = $db->last_insert_id();
 
         $response_2 = $db->in(DB_ARTICLE_TABLE)
+                         ->update("revisions", "`revisions` + 1", true)
                          ->update("latest_revision_id", $recent_revision_id)
                          ->update("content", $revision_data["snapshot_content"])
                          ->update("tags", $revision_data["snapshot_tags"])
@@ -108,7 +111,7 @@ function process() {
             );
         }
         
-        $redirect->set("./read?i=" . $article_data["id"]);
+        $redirect->set("./?read&i=" . $article_data["id"]);
         return array(
             "redirect" => true
         );
