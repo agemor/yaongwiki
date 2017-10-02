@@ -15,10 +15,44 @@ if (isset($page["redirect"]) && $page["redirect"] == true) {
     $redirect->redirect();  
 }
 
-$page["title"] = "Search results for " . implode($page["keywords"], " ");
+$page["title"] = "Search Results for " . implode($page["keywords"], " ");
+
+
+const CONTENT_PREVIEW_LENGTH =100;
+
+
 
 require_once __DIR__ . "/frame.header.php";
 ?>
+
+<div class="container">
+  <div class="title my-4">
+    <h2>
+    Search Results for <em><?php echo(implode($page["keywords"], " "));?></em>
+    </h2>
+    </div>
+    <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+    <div class="alert alert-danger" role="alert">
+      <?php echo($page["message"]);?>
+    </div>
+    <?php } ?>
+  <div style="padding: 20px"></div>
+
+  <div class="alert alert-light" role="alert">
+    Found <?php echo(count($page["search_result"]));?> results. (<?php echo($page["elapsed_time"]);?>sec)
+  </div>
+
+  <?php foreach ($page['search_result'] as $result) {
+        echo '<div class="col-md-12">';
+        echo '<h4><a href="'.HREF_READ.'/'.$result["title"].'">'.$result["title"].'</a> <span class="badge">+'.$result["hits"].'</span></h4>';
+        echo '<p>'.highlight(truncate(strip_tags($result["content"]), CONTENT_PREVIEW_LENGTH), $page['keywords']).'</p>';
+        echo '<h5>'.parseTags($result["tags"]).'</h5><br/>';
+        echo '</div>';
+  }?>
+
+
+</div>
+
 
 <div class="container">
 
@@ -70,4 +104,17 @@ require_once __DIR__ . "/frame.header.php";
   <div class="well well-sm">원하는 지식이 없다면, <a href="<?php echo HREF_CREATE;?>"><b>직접 지식을 추가</b></a>해 보세요</div>
 </div>
 
-<?php include 'frame.footer.php';?>
+<?php
+
+function parseTags($tags) {
+  $chunks = explode(' ', $tags);
+  $tags   = "";
+  for ($i = 0; $i < count($chunks); $i++) {
+      if (strlen($chunks[$i]) > 0)
+          $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '?' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
+  }
+  return $tags;
+}
+
+
+include 'frame.footer.php';?>

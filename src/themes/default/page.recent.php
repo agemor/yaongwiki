@@ -28,10 +28,10 @@ require_once __DIR__ . "/frame.header.php";
     </h2>
     </div>
     <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
-  <div class="alert alert-danger" role="alert">
-    <?php echo($page["message"]);?>
-  </div>
-  <?php } ?>
+    <div class="alert alert-danger" role="alert">
+      <?php echo($page["message"]);?>
+    </div>
+    <?php } ?>
   <div style="padding: 20px"></div>
   <table class="table table-hover">
     <thead>

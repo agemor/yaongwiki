@@ -162,3 +162,22 @@ function get_content_search_query($keywords, $fulltext = FULL_TEXT_SEARCH) {
     
     return $query;
 }
+
+function highlight($text, $keywords) {
+    foreach ($keywords as $keyword) {
+        $text = preg_replace("|($keyword)|Ui", "<mark>$1</mark>", $text);
+    }
+    return $text;
+}
+  
+function truncate($text, $limit, $break = ".", $pad = "...") {
+    if (strlen($text) <= $limit) {
+        return $text;
+    }
+    if (false !== ($breakpoint = strpos($text, $break, $limit))) {
+        if ($breakpoint < strlen($text) - 1) {
+            $text = substr($text, 0, $breakpoint) . $pad;
+        }
+    }
+    return $text;
+}
