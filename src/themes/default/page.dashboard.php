@@ -11,8 +11,9 @@ require_once YAONGWIKI_CORE . "/page.dashboard.processor.php";
 
 $page = process();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
 $page["title"] = "Dashboard";
@@ -86,7 +87,7 @@ require_once __DIR__ . "/frame.header.php";
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($page["user"]["login_history"] as $result) { ?>
+                <?php foreach ($page["user"]["logs"] as $result) { ?>
                 <tr>
                   <td><?php echo($result["timestamp"]);?></td>
                   <td><?php echo(empty($result["ip"]) ? "127.0.0.1" : $result["ip"]);?></td>

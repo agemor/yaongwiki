@@ -8,51 +8,45 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     
-    global $db;
-    global $post;
-    global $user;
-    global $redirect;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_user_email = $post->retrieve("user-email");
-    $http_user_password = $post->retrieve("user-password");
-    $http_user_new_password = $post->retrieve("user-new-password");
-    $http_user_new_password_re = $post->retrieve("user-new-password-re");
-    $http_user_password_drop = $post->retrieve("user-drop-password");
+    $http_user_email = $http_vars->get("user-email");
+    $http_user_password = $http_vars->get("user-password");
+    $http_user_new_password = $http_vars->get("user-new-password");
+    $http_user_new_password_re = $http_vars->get("user-new-password-re");
+    $http_user_password_drop = $http_vars->get("user-drop-password");
 
-    $page_focus = 0;
-    
-    // 로그인 되어 있지 않을 경우
-    if (!$user->signined()) {
-        $redirect->set("./?signin&redirect=./?dashboard");
+    // 로그인되어 있지 않을 경우
+    if (!$user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?signin&redirect=./?dashboard"
+        );
+    }
+
+    if (!$db->connect()) {
+        return array(
+            "result" => false,
+            "redirect" => "./?out-of-service",
+            "message" => STRINGS["ESDB0"]
         );
     }
     
     $user_data = $db->in(DB_USER_TABLE)
                     ->select("*")
-                    ->where("id", "=", $user->id)
-                    ->go_and_get();
+                    ->where("id", "=", $user->get("id"))
+                    ->go_and_get();    
 
-    if (!$user_data) {
-        return array(
-            "result" => false,
-            "message" => STRINGS["EPDH0"]
-        );
-    }
-    
     // 최근 3일간 로그인 기록 가져오기
     $response = $db->in(DB_LOG_TABLE)
                    ->select("*")
-                   ->where("user_name", "=", $user_data["name"], "AND")
-                   ->where("behavior", "=", "signin", "AND")
+                   ->where("user_name", "=", $user->get("name"), "AND")
                    ->where("timestamp", ">=", "(CURDATE() - INTERVAL 3 DAY)", "AND", true)
                    ->order_by("`timestamp` DESC")
                    ->limit("30")
@@ -61,31 +55,29 @@ function process() {
     if (!$response) {
         return array(
             "result" => false,
-            "user" => $user_data,
-            "message" => STRINGS["EPDH1"]
+            "message" => STRINGS["EPDH1"],
+            "user" => $user_data
         );
     }
-
-    $user_data["login_history"] = $response;
+   
+    $user_data["logs"] = $response;
     
     // 이메일 변경
     if (!empty($http_user_email)) {
-        $page_focus = 1;
         
         if (!filter_var($http_user_email, FILTER_VALIDATE_EMAIL)) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH2"]
+                "message" => STRINGS["EPDH2"],
+                "user" => $user_data
             );
         }
         
         if (strcmp($user_data["email"], $http_user_email) == 0) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH3"]
-                
+                "message" => STRINGS["EPDH3"],
+                "user" => $user_data
             );
         }
 
@@ -97,8 +89,8 @@ function process() {
         if ($response) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH4"]
+                "message" => STRINGS["EPDH4"],
+                "user" => $user_data
             );
         }
 
@@ -110,25 +102,18 @@ function process() {
         if (!$response) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH5"]
+                "message" => STRINGS["EPDH5"],
+                "user" => $user_data
             );
         }
-        
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("behavior", "change-email")
-                       ->insert("data", $user_data["email"] . ":" . $http_user_email)
-                       ->go();
+
+        $log->create($user->get("name"), "change-email", $user_data["email"] . ":" . $http_user_email);
         
         $user_data["email"] = $http_user_email;
         
-        $redirect->set("./?signout");
-
         return array(
-            "redirect" => true,
             "result" => true,
-            "user" => $user_data,
-            "message" => STRINGS["EPDH6"]
+            "redirect" => "./?signout",            
         );
     }
     
@@ -139,16 +124,16 @@ function process() {
         if (strcmp($http_user_new_password, $http_user_new_password_re) != 0) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH7"]
+                "message" => STRINGS["EPDH7"],
+                "user" => $user_data
             );
         }
         
         if (strlen($http_user_new_password) < 4) {
             return array(
                 "result" => false,
+                "message" => STRINGS["EPDH8"],
                 "user" => $user_data,
-                "message" => STRINGS["EPDH8"]
             );
         }
         
@@ -156,67 +141,54 @@ function process() {
 
         $response = $db->in(DB_USER_TABLE)
                        ->update("password", $http_user_new_password)
-                       ->where("id", "=", $user_data["id"])
+                       ->where("id", "=", $user->get("id"))
                        ->go();
         
         if (!$response) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH10"]
+                "message" => STRINGS["EPDH10"],
+                "user" => $user_data
             );
         }
         
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("user_name", $user->name)
-                       ->insert("behavior", "password-change")
-                       ->insert("data", "*")
-                       ->go();
-        
-        $redirect->set("./?signout");
+        $log->create($user->get("name"), "change-password", "");
 
         return array(
-            "redirect" => true,
             "result" => true,
-            "user" => $user_data,
-            "message" => STRINGS["EPDH11"]
+            "redirect" => "./?signout",
         );
     }
     
     // 계정 삭제
     if (!empty($http_user_password_drop)) {
-        $page_focus = 3;
         
         if (strcmp($user_data["password"], hash_password($http_user_password_drop)) != 0) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH9"]
+                "message" => STRINGS["EPDH9"],
+                "user" => $user_data
             );
         }
 
         $response = $db->in(USER_TABLE)
                        ->delete()
-                       ->where("id", "=", $user_data["id"])
+                       ->where("id", "=", $user->get("id"))
                        ->go();
         
         if (!$response) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH12"]
+                "message" => STRINGS["EPDH12"],
+                "user" => $user_data
             );
         }
-        
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("behavior", "account-delete")
-                       ->insert("data", $user_data["name"])
-                       ->go();
-        
-        $redirect->set("./?signout");
 
+        $log->create($user->get("name"), "delete-account", "");
+        
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => "./?signout"
         );
     }
 

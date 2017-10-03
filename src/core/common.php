@@ -76,6 +76,10 @@ const PERMISSION_TABLE = array(
     4 => "System Admistrator"
 );
 
+function redirect($url) {
+    header("Location: " . $url);
+}
+
 function get_theme_path() {
     return dirname(YAONGWIKI_CORE) . "/themes/" . THEME . "/";
 }
