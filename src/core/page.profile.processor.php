@@ -9,7 +9,7 @@
 
 require_once __DIR__ . "/common.php";
 
-function process($contributions_per_page = 10) {
+function process($max_displayed_in_one_page = 10) {
     
     $db = Database::get_instance();
     $user = UserManager::get_instance();
@@ -53,7 +53,7 @@ function process($contributions_per_page = 10) {
                     ->select("*")
                     ->where("user_name", "=", $http_user_name)
                     ->order_by("`timestamp` DESC")
-                    ->limit(($http_user_commit_page * $contributions_per_page) . "," . $contributions_per_page)
+                    ->limit(($http_user_commit_page * $max_displayed_in_one_page) . "," . $max_displayed_in_one_page)
                     ->go_and_get_all();
     
     if (!$contribution_data) {

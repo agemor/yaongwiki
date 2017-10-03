@@ -8,33 +8,28 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.email.php";
-require_once __DIR__ . "/module.recaptcha.php";
-require_once __DIR__ . "/module.redirect.php";
 
 const ENABLE_RECAPTCHA = false;
 
 function process() {
     
-    global $db;
-    global $post;
-    global $user;
-    global $email;
-    global $redirect;
-    global $recaptcha;
-    
-    if ($user->signined()) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
+    $recaptcha = ReCaptchaManager::get_instance();
+    $email = EmailManager::get_instance();
+    $settings = SettingsManager::get_instance();
+          
+    $http_user_email = $http_vars->get("user-email");
+    $http_recaptcha = $http_vars->get("g-recaptcha-response");
+
+    if ($user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./"
         );
     }
-    
-    $http_user_email = $post->retrieve("user-email");
-    $http_recaptcha = $post->retrieve("g-recaptcha-response");
 
     if (empty($http_user_email)) {
         return array(
@@ -48,22 +43,20 @@ function process() {
             "message" => STRINGS["EPRS0"]
         );
     }
+
+    if (!$db->connect()) {
+        return array(
+            "result" => false,
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
+        );
+    }
     
-    if (ENABLE_RECAPTCHA && !$recaptcha->verify($http_recaptch_response)) {
+    $recaptcha_enable = (strtolower($settings->get("recaptcha_enable")) == "true");
+    if ($recaptcha_enable && !$recaptcha->verify($settings->get("recaptcha_private_key"), $http_recaptch_response)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPRS1"]
-        );
-    }
-
-    if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
-        return array(
-            "redirect" => true,
-            "result" => false,
-            "message" => STRINGS["ESDB0"]
         );
     }
     
@@ -108,11 +101,7 @@ function process() {
         );
     }
     
-    $response = $db->in(DB_LOG_TABLE)
-                   ->insert("user_name", $user_data["name"]) 
-                   ->insert("behavior", "reset")
-                   ->insert("data", "*")
-                   ->go();
+    $log->create($user_data["name"], "reset", "");
     
     return array(
         "result" => true,

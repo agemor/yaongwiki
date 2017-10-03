@@ -8,29 +8,22 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.redirect.php";
-require_once __DIR__ . "/module.user.php";
 
 const MAX_RECENT_CHANGED = 30;
 
-function process() {
+function process($max_displayed_in_one_page = 30) {
     
-    global $db;
-    global $redirect;
+    $db = Database::get_instance();
 
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
 
-    $response = $db->custom("SELECT * FROM `" . DB_REVISION_TABLE . "` WHERE `id` IN (SELECT MAX(`id`) FROM `" . DB_REVISION_TABLE . "` GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . MAX_RECENT_CHANGED . ";");
+    $response = $db->custom("SELECT * FROM `" . DB_REVISION_TABLE . "` WHERE `id` IN (SELECT MAX(`id`) FROM `" . DB_REVISION_TABLE . "` GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . $max_displayed_in_one_page . ";");
     
     if (!$response) {
         return array(

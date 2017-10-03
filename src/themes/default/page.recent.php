@@ -10,12 +10,14 @@
 require_once YAONGWIKI_CORE . "/page.recent.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "Recent Articles";
+$page["title"] = "Recent Edits" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

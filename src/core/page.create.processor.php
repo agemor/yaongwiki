@@ -44,8 +44,8 @@ function process() {
     if (!$db->connect()) {
         return array(
             "result" => false,
-            "redirect" => "./?out-of-service",
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
     
