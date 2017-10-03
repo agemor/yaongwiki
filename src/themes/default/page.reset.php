@@ -10,12 +10,15 @@
 require_once YAONGWIKI_CORE . "/page.reset.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
+$http_vars = HttpVarsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "Reset Password";
+$page["title"] = "Reset Password" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -42,12 +45,12 @@ require_once __DIR__ . "/frame.header.php";
 				<p>Please enter your email address when you signed up. Your new password will be sent to this email address.</p>
 				<div class="form-group">
 					<label for="emailInput">Email Address</label>
-					<input type="text" name="user-email" class="form-control" id="emailInput" value="<?php echo($post->retrieve('user-email'));?>" required>
+					<input type="text" name="user-email" class="form-control" id="emailInput" value="<?php echo($http_vars->get("user-email"));?>" required>
 				</div>
                 <div class="my-3">
                     <label for="recaptchInput">Recaptcha</label>
                     <script src='https://www.google.com/recaptcha/api.js'></script>
-                    <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_PUBLIC_KEY;?>" ></div>
+                    <div class="g-recaptcha" data-sitekey="<?php echo($settings->get("recaptcha_public_key"));?>" ></div>
                 </div>
 				<button type="submit" class="btn btn-primary mt-1">Request new password</button>
 				<a href="./?signin" class="btn btn-default">Go back</a>

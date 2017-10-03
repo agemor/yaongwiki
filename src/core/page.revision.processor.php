@@ -8,40 +8,33 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 require_once __DIR__ . "/libs/parsedown.php";
 
 function process() {
 
-    global $db;
-    global $get;
-    global $user;
-    global $redirect;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
     
     $parsedown = new Parsedown();
 
-    $http_revision_id = $get->retrieve("i");
-    $http_revision_target_id = $get->retrieve("j") !== null ? $get->retrieve("j") : 0;
-    $http_rollback = !empty($get->retrieve("rollback"));
+    $http_revision_id = $http_vars->get("i");
+    $http_revision_target_id = $http_vars->get("j") !== null ? $http_vars->get("j") : 0;
+    $http_rollback = !empty($http_vars->get("rollback"));
         
     if (empty($http_revision_id)) {
-        $redirect->set("./");
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?page-not-found"
         );
     }
 
     if (!$db->connect()) {
-
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
     
@@ -51,13 +44,10 @@ function process() {
                         ->go_and_get();
     
     if (!$revision_data) {
-        
-        $redirect->set("./?page-not-found");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["EPRV0"]
+            "message" => STRINGS["EPRV0"],
+            "redirect" => "./?page-not-found"
         );
     }
 
@@ -72,26 +62,23 @@ function process() {
                        ->go_and_get();
     
     if (!$article_data) {
-
-        $redirect->set("./?page-not-found");
-
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["EPRV1"]
+            "message" => STRINGS["EPRV1"],
+            "redirect" => "./?page-not-found"
         );
     }
     
     // 특정 버전으로 글 되돌리기
     if ($http_rollback) {
-        if (!$user->signined()) {
-            $redirect->set(get_theme_path() . HREF_MAIN);
+        if (!$user->authorized()) {
             return array(
-                "redirect" => true
+                "result" => false,
+                "redirect" => "./?signin"
             );
         }
         
-        if ($user->permission < intval($article_data["permission"])) {
+        if ($user->get("permission") < intval($article_data["permission"])) {
             return array(
                 "result" => false,
                 "message" => STRINGS["EPRV2"]
@@ -105,7 +92,7 @@ function process() {
                          ->insert("article_title", $article_data["title"])
                          ->insert("predecessor_id", $article_data["latest_revision_id"])
                          ->insert("revision", intval($article_data["revisions"]) + 1)
-                         ->insert("user_name", $user->name)
+                         ->insert("user_name", $user->get("name"))
                          ->insert("snapshot_content", $revision_data["snapshot_content"])
                          ->insert("snapshot_tags", $revision_data["snapshot_tags"])
                          ->insert("fluctuation", (strlen($revision_data["snapshot_content"]) - strlen($article_data["content"])))
@@ -130,9 +117,9 @@ function process() {
             );
         }
         
-        $redirect->set("./?read&i=" . $article_data["id"]);
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => "./?read&i=" . $article_data["id"]
         );
     }
     

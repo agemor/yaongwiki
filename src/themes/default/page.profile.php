@@ -9,7 +9,9 @@
 
 require_once YAONGWIKI_CORE . "/page.profile.processor.php";
 
-$page = process();
+const MAX_DISPLAY = 10;
+
+$page = process(MAX_DISPLAY);
 $settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
@@ -85,7 +87,7 @@ require_once __DIR__ . "/frame.header.php";
   <nav>
     <ul class="pagination">
       <?php
-        $total_pages = ceil((intval($page["user"]["total_contributions"])) / (float) MAX_REVISIONS);
+        $total_pages = ceil((intval($page["user"]["total_contributions"])) / (float) MAX_DISPLAY);
         if ($total_pages > 1) {
             for ($i = 0; $i < $total_pages; $i++) {
                 $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");

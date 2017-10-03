@@ -9,13 +9,17 @@
 
 require_once YAONGWIKI_CORE . "/page.revision-history.processor.php";
 
-$page = process();
+const MAX_DISPLAY = 10;
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+$page = process(MAX_DISPLAY);
+$settings = SettingsManager::get_instance();
+
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "Revision History: " . $page["article"]["title"];
+$page["title"] = "Revision History: " . $page["article"]["title"] . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -78,7 +82,7 @@ require_once __DIR__ . "/frame.header.php";
   <nav>
     <ul class="pagination">
       <?php
-        $total_pages = ceil((intval($page["article"]["revisions"]) + 1) / (float) MAX_REVISIONS);
+        $total_pages = ceil((intval($page["article"]["revisions"]) + 1) / (float) MAX_DISPLAY);
         if ($total_pages > 1) {
           for ($i = 0; $i < $total_pages; $i++) {
               $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");

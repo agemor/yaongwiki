@@ -9,8 +9,6 @@
 
 require_once __DIR__ . "/common.php";
 
-const ENABLE_RECAPTCHA = false;
-
 function process() {
     
     $db = Database::get_instance();

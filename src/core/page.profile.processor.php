@@ -18,7 +18,7 @@ function process($max_displayed_in_one_page = 10) {
 
     $http_user_name = $http_vars->get("user-name");
     $http_user_info = $http_vars->get("user-info");
-    $http_user_commit_page = $http_vars->get("p");
+    $http_user_commit_page = intval($http_vars->get("p") !== null ? $http_vars->get("p") : "0");
     
     if (empty($http_user_name) || strlen($http_user_name) < 2) {
         return array(
