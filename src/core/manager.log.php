@@ -35,12 +35,12 @@ class LogManager {
             return false;
         }
 
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("user_name", $name)
-                       ->insert("ip", $_SERVER["REMOTE_ADDR"])
-                       ->insert("behavior", $behavior)
-                       ->insert("data", $data)
-                       ->go();
+        $response = $this->db->in(DB_LOG_TABLE)
+                              ->insert("user_name", $name)
+                              ->insert("ip", $_SERVER["REMOTE_ADDR"])
+                              ->insert("behavior", $behavior)
+                              ->insert("data", $data)
+                              ->go();
 
         return $response;
     }

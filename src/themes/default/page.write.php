@@ -10,14 +10,17 @@
 require_once YAONGWIKI_CORE . "/page.write.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
+$http_vars = HttpVarsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "Edit Article";
+$page["title"] = "Edit Article" . " - " . $settings->get("site_title");
 
-$have_permission = $user->permission >= intval($page["article"]["permission"]);
+$have_permission = $user->get("permission") >= intval($page["article"]["permission"]);
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -43,12 +46,12 @@ require_once __DIR__ . "/frame.header.php";
         <input type="text" name="article-new-title" class="form-control" id="titleInput" value="<?php echo($page["article"]["title"]);?>" required>
       </div>
 
-      <?php if ($have_permission && $user->permission > 0) { ?>
+      <?php if ($have_permission && $user->get("permission") > 0) { ?>
       <div class="form-group">
         <label for="id">Editable Permission</label>
         <select name="article-permission" class="form-control" id="permission">
         <?php
-          for ($i = 0; $i < min($user->permission, count(PERMISSION_TABLE)); $i++) {
+          for ($i = 0; $i < min($user->get("permission"), count(PERMISSION_TABLE)); $i++) {
               if ($i == intval($page["article"]["permission"])) {
                   echo '<option value="'. $i . '" selected>' . PERMISSION_TABLE[$i] . '</option>';
               } else {
@@ -77,7 +80,7 @@ require_once __DIR__ . "/frame.header.php";
       <input type="hidden" name="article-id" value="<?php echo($page["article"]["id"]);?>">
     </fieldset>
     <button type="submit" class="btn btn-primary">Save</button>
-    <?php if ($have_permission && $user->permission >= PERMISSION_DELETE_ARTICLE) { ?>
+    <?php if ($have_permission && $user->get("permission") >= PERMISSION_DELETE_ARTICLE) { ?>
     <button type="button" class="btn btn-danger" onclick="deleteAlert(this);">Delete</button>
     <?php } ?>
     <a href="./?read&t=<?php echo($page["article"]["title"]);?>" class="btn btn-default">Cancel</a>

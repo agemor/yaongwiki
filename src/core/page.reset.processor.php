@@ -91,8 +91,10 @@ function process() {
     
     $email_subject = STRINGS["SPRS0"];
     $email_content = strtr(STRINGS["SPRS1"], $email_content_table);
+    $email_name = $settings->get("email_name");
+    $email_address = $settings->get("email_address");
 
-    if (!$email->send($http_user_email, $email_subject, $email_content)) {
+    if (!$email->send($email_address, $email_name, $http_user_email, $email_subject, $email_content)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPRS4"]

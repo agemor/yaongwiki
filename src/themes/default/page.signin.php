@@ -18,7 +18,7 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = "Sign in" . " - " . $settings.get("site_title");
+$page["title"] = "Sign in" . " - " . $settings->get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

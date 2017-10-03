@@ -8,57 +8,50 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.purifier.php";
-require_once __DIR__ . "/module.redirect.php";
 
 const DELETE_REVISIONS = false;
 
 function process() {
     
-    global $db;
-    global $post;
-    global $get;
-    global $user;
-    global $redirect;
-    global $purifier;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
+    $recaptcha = ReCaptchaManager::get_instance();
+    $email = EmailManager::get_instance();
+    $settings = SettingsManager::get_instance();
 
-    $http_article_title = $post->retrieve("article-title") !== null ? $post->retrieve("article-title") : $get->retrieve("t");
-    $http_article_id = $post->retrieve("article-id") !== null ? $post->retrieve("article-id") : $get->retrieve("i");
-    $http_article_new_title = strip_tags($post->retrieve("article-new-title"));
-    $http_article_content = $post->retrieve("article-content");
-    $http_article_tags = preg_replace("!\s+!", " ", strip_tags($post->retrieve("article-tags")));
-    $http_article_delete = $post->retrieve("article-delete") !== null;
-    $http_article_change_permission = $post->retrieve("article-permission") !== null;
-    $http_article_permission = $http_article_change_permission ? abs(intval($post->retrieve("article-permission"))) : 0;
-    $http_article_comment = strip_tags($post->retrieve("article-comment"));
+    $http_article_title = $http_vars->get("article-title") !== null ? $http_vars->get("article-title") : $http_vars->get("t");
+    $http_article_id = $http_vars->get("article-id") !== null ? $http_vars->get("article-id") : $http_vars->get("i");
+    $http_article_new_title = strip_tags($http_vars->get("article-new-title"));
+    $http_article_content = $http_vars->get("article-content");
+    $http_article_tags = preg_replace("!\s+!", " ", strip_tags($http_vars->get("article-tags")));
+    $http_article_delete = $http_vars->get("article-delete") !== null;
+    $http_article_change_permission = $http_vars->get("article-permission") !== null;
+    $http_article_permission = $http_article_change_permission ? abs(intval($http_vars->get("article-permission"))) : 0;
+    $http_article_comment = strip_tags($http_vars->get("article-comment"));
     
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        $redirect->set("./");
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?page-not-found"
         );
     }
     
-    if (!$user->signined()) {
-        $redirect->set("./?signin&redirect=./?write" . ($read_by_id ? "%26i=" . $http_article_id : "%26t=" . $http_article_title));
+    if (!$user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?signin&redirect=./?write" . ($read_by_id ? "%26i=" . $http_article_id : "%26t=" . $http_article_title)
         );
     }
 
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
     
@@ -80,7 +73,7 @@ function process() {
         );
     }
     
-    if (intval($article_data["permission"]) > $user->permission) {
+    if (intval($article_data["permission"]) > $user->get("permission")) {
         return array(
             "result" => false,
             "article" => $article_data,
@@ -90,7 +83,7 @@ function process() {
     
     // 글 삭제
     if ($http_article_delete) {
-        if ($user->permission < PERMISSION_DELETE_ARTICLE) {
+        if ($user->get("permission") < PERMISSION_DELETE_ARTICLE) {
             return array(
                 "result" => false,
                 "article" => $article_data,
@@ -117,9 +110,9 @@ function process() {
                            ->go();
         }
         
-        $redirect->set("./?read&t=" . $article_data["title"]);
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => "./?read&t=" . $article_data["title"]
         );
     }
     
@@ -132,8 +125,8 @@ function process() {
     }
 
     // 글 내용 필터링
-    if ($user->permission < PERMISSION_NO_FILTERING) {
-        $http_article_content = $purifier->purify($http_article_content);
+    if ($user->get("permission") < PERMISSION_NO_FILTERING) {
+        $http_article_content = $http_article_content;
     }
     
     $article_data["content"] = $http_article_content;
@@ -180,7 +173,7 @@ function process() {
     
     // 퍼미션 유효성 검사
     if ($http_article_change_permission) {
-        if ($http_article_permission > $user->permission) {
+        if ($http_article_permission > $user->get("permission")) {
             return array(
                 "result" => false,
                 "article" => $article_data,
@@ -247,9 +240,8 @@ function process() {
                    ->insert("data", $article_data["id"] . "/" . (intval($article_data["revisions"]) + 1))
                    ->go();
     
-    $redirect->set("./?read&t=" . $article_data["title"]);
-    
     return array(
-        "redirect" => true
+        "result" => true,
+        "redirect" => "./?read&t=" . $article_data["title"]
     );
 }

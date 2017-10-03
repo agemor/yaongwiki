@@ -21,15 +21,9 @@ require_once YAONGWIKI_CORE . "/languages/language.php";
 require_once YAONGWIKI_CORE . "/languages/" . LANGUAGE . ".php";
 require_once dirname(YAONGWIKI_CORE) . "/themes/theme.php";
 
-const FILE_MAXIMUM_SIZE = 10 * 1024 * 1024; // 10MB
-const FILE_DIRECTORY = "uploads";
-const FILE_AVALIABLE_EXTENSIONS = array("jpg", "jpeg", "png", "gif", "svg", "tiff", "bmp");
-
 const PERMISSION_NO_FILTERING = 3;
 const PERMISSION_CHANGE_TITLE = 1;
 const PERMISSION_DELETE_ARTICLE = 1;
-
-const TITLE_AFFIX = " - YaongWiki";
 
 const HREF_MAIN = "page.main.php";
 const HREF_SIGNIN = "page.signin.php";

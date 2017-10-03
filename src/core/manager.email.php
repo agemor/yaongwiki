@@ -7,8 +7,6 @@
  * @date 2017. 09. 12
  */
 
-require_once __DIR__ . "/module.email.account.php";
-
 CONST EMAIL_ENCODING = "ISO-8859-1";
 
 class EmailManager {

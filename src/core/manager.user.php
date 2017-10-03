@@ -30,8 +30,8 @@ class UserManager {
             $this->anonymous_signin();
         }
 
-        $this->user_data = $session->get("user_data");
-        $this->page_view = $session->get("page_view");
+        $this->user_data = $this->session->get("user_data");
+        $this->page_view = $this->session->get("page_view");
     }
 
     public static function get_instance() {

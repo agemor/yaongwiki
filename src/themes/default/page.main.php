@@ -12,7 +12,7 @@ require_once YAONGWIKI_CORE . "/page.main.processor.php";
 $page = process();
 $settings = SettingsManager::get_instance();
 
-$page["title"] = $settings.get("site_title");
+$page["title"] = $settings->get("site_title");
  
 require_once __DIR__ . "/frame.header.php";
 ?>

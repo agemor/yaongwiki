@@ -19,7 +19,7 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = "Profile of " . $page["user"]["name"] . " - " . $settings.get("site_title");
+$page["title"] = "Profile of " . $page["user"]["name"] . " - " . $settings->get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

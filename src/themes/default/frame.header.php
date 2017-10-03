@@ -1,8 +1,3 @@
-<?php
-require_once YAONGWIKI_CORE . "/module.user.php";
-require_once YAONGWIKI_CORE . "/module.form.php";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,9 +31,9 @@ require_once YAONGWIKI_CORE . "/module.form.php";
           User
         </a>
         <div class="dropdown-menu" aria-labelledby="userDropdownLink">
-        <?php if ($user->signined()) { ?>
+        <?php if (UserManager::get_instance()->authorized()) { ?>
           <a class="dropdown-item" href="./?dashboard">Dashboard</a>
-          <a class="dropdown-item" href="./?profile&user-name=<?php echo($user->name);?>">My profile</a>
+          <a class="dropdown-item" href="./?profile&user-name=<?php echo($user->get("name"));?>">My profile</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="./?signout">Sign out</a>
         <?php } else { ?>
@@ -50,7 +45,7 @@ require_once YAONGWIKI_CORE . "/module.form.php";
       </ul>
       <form action="./" method="get" class="form-inline my-2 my-lg-0">
         <input name="search" type="hidden" value="">
-        <input name="q" class="form-control mr-sm-2" type="text" placeholder="Keyword" value="<?php echo($get->retrieve("q"));?>" required>
+        <input name="q" class="form-control mr-sm-2" type="text" placeholder="Keyword" value="<?php echo(HttpVarsManager::get_instance()->get("q"));?>" required>
         <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>
