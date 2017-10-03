@@ -48,3 +48,7 @@ html {
     display:block;
     clear:both;
   }
+
+  .borderless td, .borderless th {
+    border: none;
+}

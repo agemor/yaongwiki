@@ -30,7 +30,7 @@ function process() {
     
     // 로그인 되어 있지 않을 경우
     if (!$user->signined()) {
-        $redirect->set(get_theme_path() . HREF_MAIN);
+        $redirect->set("./?signin&redirect=./?dashboard");
         return array(
             "redirect" => true
         );
@@ -62,7 +62,7 @@ function process() {
         return array(
             "result" => false,
             "user" => $user_data,
-            "message" => STRINGS["EPDH1"] . $db->rq()
+            "message" => STRINGS["EPDH1"]
         );
     }
 
@@ -76,7 +76,7 @@ function process() {
             return array(
                 "result" => false,
                 "user" => $user_data,
-                "message"=> STRINGS["EPDH2"]
+                "message" => STRINGS["EPDH2"]
             );
         }
         
@@ -85,6 +85,7 @@ function process() {
                 "result" => false,
                 "user" => $user_data,
                 "message" => STRINGS["EPDH3"]
+                
             );
         }
 
@@ -121,7 +122,10 @@ function process() {
         
         $user_data["email"] = $http_user_email;
         
+        $redirect->set("./?signout");
+
         return array(
+            "redirect" => true,
             "result" => true,
             "user" => $user_data,
             "message" => STRINGS["EPDH6"]
@@ -148,16 +152,7 @@ function process() {
             );
         }
         
-        $http_user_password = hash_password($http_user_password);
         $http_user_new_password = hash_password($http_user_new_password);
-
-        if (strcmp($user_data["password"], $http_user_password) != 0) {
-            return array(
-                "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPDH9"]
-            );
-        }
 
         $response = $db->in(DB_USER_TABLE)
                        ->update("password", $http_user_new_password)
@@ -173,11 +168,15 @@ function process() {
         }
         
         $response = $db->in(DB_LOG_TABLE)
+                       ->insert("user_name", $user->name)
                        ->insert("behavior", "password-change")
                        ->insert("data", "*")
                        ->go();
         
+        $redirect->set("./?signout");
+
         return array(
+            "redirect" => true,
             "result" => true,
             "user" => $user_data,
             "message" => STRINGS["EPDH11"]
@@ -214,7 +213,7 @@ function process() {
                        ->insert("data", $user_data["name"])
                        ->go();
         
-        $redirect->set(get_theme_path() . HREF_SIGNOUT);
+        $redirect->set("./?signout");
 
         return array(
             "redirect" => true

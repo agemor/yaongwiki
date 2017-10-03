@@ -74,7 +74,3 @@ require_once 'common.php';?>
     </tbody>
   </table>
 </div>
-<?php
-    if (isset($_GET['auth'])) {
-        echo '<script type="text/javascript">alert("재학생 인증에 성공하였습니다.");</script>';
-}?>
