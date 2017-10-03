@@ -36,9 +36,10 @@ const HREF_REVISION_HISTORY = "page.revision-history.php";
 const HREF_REVISION = "page.revision.php";
 const HREF_DASHBOARD = "page.dashboard.php";
 const HREF_PROFILE = "page.profile.php";
-const HREF_404 = "page.404.php";
+const HREF_404 = "page.page-not-found.php";
 const HREF_SUGGEST = "page.suggest.php";
 const HREF_RECENT = "page.recent.php";
+const HREF_500 = "page.out-of-service.php";
 
 const NAVIGATOR_TABLE = array(
     "main" => HREF_MAIN,
@@ -57,6 +58,7 @@ const NAVIGATOR_TABLE = array(
     "page-not-found" => HREF_404,
     "suggest" => HREF_SUGGEST,
     "recent" => HREF_RECENT,
+    "out-of-service" => HREF_500,
     "phpinfo" => "page.phpinfo.php"
 );
 

@@ -50,6 +50,17 @@ function process() {
             "redirect" => true
         );
     }
+
+    if (!$db->connect()) {
+        
+        $redirect->set("./?out-of-service");
+        
+        return array(
+            "redirect" => true,
+            "result" => false,
+            "message" => STRINGS["ESDB0"]
+        );
+    }
     
     $db->in(DB_ARTICLE_TABLE)->select("*");
 

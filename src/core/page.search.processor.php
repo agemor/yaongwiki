@@ -54,6 +54,17 @@ function process() {
     $query = $tag_search_mode ? get_tag_search_query($keywords) : get_content_search_query($keywords);
     $query .= " LIMIT " . ($http_page * MAX_ARTICLES) . ", " . MAX_ARTICLES . ";";
 
+    if (!$db->connect()) {
+        
+        $redirect->set("./?out-of-service");
+        
+        return array(
+            "redirect" => true,
+            "result" => false,
+            "message" => STRINGS["ESDB0"]
+        );
+    }
+
     // 정확히 제목이 일치하는 항목이 있으면 바로 이동
     if (count($keywords) == 1) {
 

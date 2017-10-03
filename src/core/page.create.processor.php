@@ -51,6 +51,17 @@ function process() {
             "message"=> STRINGS["EPCR1"]
         );
     }
+
+    if (!$db->connect()) {
+        
+        $redirect->set("./?out-of-service");
+        
+        return array(
+            "redirect" => true,
+            "result" => false,
+            "message" => STRINGS["ESDB0"]
+        );
+    }
     
     $response = $db->in(DB_ARTICLE_TABLE)
                    ->select("*")

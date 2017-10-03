@@ -33,6 +33,17 @@ function process() {
             "redirect" => true
         );
     }
+
+    if (!$db->connect()) {
+        
+        $redirect->set("./?out-of-service");
+        
+        return array(
+            "redirect" => true,
+            "result" => false,
+            "message" => STRINGS["ESDB0"]
+        );
+    }
     
     $revision_data = $db->in(DB_REVISION_TABLE)
                         ->select("*")

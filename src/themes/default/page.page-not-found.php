@@ -7,10 +7,6 @@
  * @date 2017. 09. 08
  */
 
-require_once YAONGWIKI_CORE . "/page.create.processor.php";
-
-$page = process();
-
 if (isset($page["redirect"]) && $page["redirect"] == true) {
     $redirect->redirect();  
 }
@@ -31,7 +27,6 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-  <form action="./?create" method="post">
     <div class="row my-4">
       <div class="col-md-6">
         <p>
@@ -40,7 +35,6 @@ require_once __DIR__ . "/frame.header.php";
         <a href="./" class="btn btn-default">Go Main Page</a>
       </div>
     </div>
-  </form>
 </div>
 <?php
 require_once __DIR__ . "/frame.footer.php";
