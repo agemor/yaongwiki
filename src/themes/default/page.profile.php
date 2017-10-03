@@ -10,12 +10,14 @@
 require_once YAONGWIKI_CORE . "/page.profile.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "Profile of " . $page["user"]["name"];
+$page["title"] = "Profile of " . $page["user"]["name"] . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -87,7 +89,7 @@ require_once __DIR__ . "/frame.header.php";
         if ($total_pages > 1) {
             for ($i = 0; $i < $total_pages; $i++) {
                 $li_class = "page-item" . (intval($page["page"]) == $i ? " active" : "");
-                $li_href = "./?profile&name=" . $page["user"]["name"] . "&p=" . $i;
+                $li_href = "./?profile&user-name=" . $page["user"]["name"] . "&p=" . $i;
                 $li_text = $i + 1;
                 echo('<li class="' . $li_class . '"><a class="page-link" href="' . $li_href . '">' . $li_text . '</a></li>');
             }
@@ -130,7 +132,7 @@ window.onload = function() {
                 intro.insertBefore(introText, introButton);
                 introButton.textContent = "Edit";
             } else {
-                post("./?profile&name=<?php echo($page["user"]["name"]);?>", {
+                post("./?profile&user-name=<?php echo($page["user"]["name"]);?>", {
                     "user-name": "<?php echo($page["user"]["name"]);?>",
                     "user-info": introInput.value
                 });

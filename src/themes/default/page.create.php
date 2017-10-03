@@ -10,13 +10,14 @@
 require_once YAONGWIKI_CORE . "/page.create.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
     exit();
 }
 
-$page["title"] = "Create Article";
+$page["title"] = "Create" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

@@ -8,7 +8,6 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.user.php";
 
 function process() {
 

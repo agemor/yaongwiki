@@ -38,7 +38,7 @@ require_once YAONGWIKI_CORE . "/module.form.php";
         <div class="dropdown-menu" aria-labelledby="userDropdownLink">
         <?php if ($user->signined()) { ?>
           <a class="dropdown-item" href="./?dashboard">Dashboard</a>
-          <a class="dropdown-item" href="./?profile&name=<?php echo($user->name);?>">My profile</a>
+          <a class="dropdown-item" href="./?profile&user-name=<?php echo($user->name);?>">My profile</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="./?signout">Sign out</a>
         <?php } else { ?>

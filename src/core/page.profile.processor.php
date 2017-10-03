@@ -8,44 +8,31 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.redirect.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
 
-const MAX_REVISIONS = 5;
-
-function process() {
+function process($contributions_per_page = 10) {
     
-    global $db;
-    global $post;
-    global $get;
-    global $redirect;
-    global $user;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_user_name = $get->retrieve("name") == null ? $post->retrieve("user-name") : $get->retrieve("name");
-    $http_user_info = strip_tags($post->retrieve("user-info"));
-    $http_user_commit_page = $get->retrieve("p") == null ? 0 : intval($get->retrieve("p"));
+    $http_user_name = $http_vars->get("user-name");
+    $http_user_info = $http_vars->get("user-info");
+    $http_user_commit_page = $http_vars->get("p");
     
     if (empty($http_user_name) || strlen($http_user_name) < 2) {
-
-        $redirect->set("./?page-not-found");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["EPPF0"]
+            "message" => STRINGS["EPPF0"],
+            "redirect" => "./?page-not-found",
         );
     }
     
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
 
@@ -55,13 +42,10 @@ function process() {
                    ->go_and_get();
 
     if (!$user_data) {
-
-        $redirect->set("./?page-not-found");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["EPPF0"]
+            "message" => STRINGS["EPPF0"],
+            "redirect" => "./?page-not-found",
         );
     }
     
@@ -69,14 +53,14 @@ function process() {
                     ->select("*")
                     ->where("user_name", "=", $http_user_name)
                     ->order_by("`timestamp` DESC")
-                    ->limit(($http_user_commit_page * MAX_REVISIONS) . "," . MAX_REVISIONS)
+                    ->limit(($http_user_commit_page * $contributions_per_page) . "," . $contributions_per_page)
                     ->go_and_get_all();
     
     if (!$contribution_data) {
         return array(
             "result" => false,
-            "user" => $user_data,
-            "message" => STRINGS["EPPF1"]
+            "message" => STRINGS["EPPF1"],
+            "user" => $user_data
         );
     }
 
@@ -84,38 +68,32 @@ function process() {
 
     // 자기소개 업데이트
     if (!empty($http_user_info)) {
-        if ($user->id != $user_data["id"]) {
+        if ($user->get("id") != $user_data["id"]) {
             return array(
                 "result" => false,
-                "user" => $user_data,
-                "message" => STRINGS["EPPF2"]
+                "message" => STRINGS["EPPF2"],
+                "user" => $user_data
             );
         }
 
         $response = $db->in(DB_USER_TABLE)
-                       ->update("info", $http_user_info)
+                       ->update("info", strip_tags($http_user_info))
                        ->where("id", "=", $user_data["id"])
                        ->go();
 
         if (!$response) {
             return array(
                 "result" => false,
+                "message" => STRINGS["EPPF2"],
                 "user" => $user_data,
-                "message" => STRINGS["EPPF2"]
             );
         }
 
-        $user_data["info"] = $http_user_info;
+        $log->create($user->get("name"), "update-user-info", strip_tags($http_user_info));
 
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("user_name", $user_data["name"]) 
-                       ->insert("behavior", "update-user-info")
-                       ->insert("data", $http_user_info)
-                       ->go();
-
-        $redirect->set("./?profile&name=" . $user_data["name"]);
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => "./?profile&user-name=" . $user_data["name"]
         );
     }
 

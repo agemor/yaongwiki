@@ -56,7 +56,7 @@ require_once __DIR__ . "/frame.header.php";
             foreach ($page["history"]  as $result) {
                 echo '<tr>';
                 echo '<td><a href="./?revision&i=' . $result["id"] . '">' . $result["id"] . '</a></td>';
-                echo '<td><a href="./?profile&name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a></td>';
+                echo '<td><a href="./?profile&user-name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a></td>';
                 echo '<td>' . $result["comment"] . '</td>';
                 
                 $fluctuation = intval($result["fluctuation"]);    

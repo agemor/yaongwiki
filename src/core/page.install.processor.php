@@ -8,21 +8,16 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     
-    global $post;
-    global $user;
-    global $redirect;
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_db_host = $post->retrieve("db-host");
-    $http_db_name = $post->retrieve("db-name");
-    $http_db_user = $post->retrieve("db-user");
-    $http_db_password = $post->retrieve("db-password");
-    $http_db_prefix = $post->retrieve("db-prefix");
+    $http_db_host = $http_vars->get("db-host");
+    $http_db_name = $http_vars->get("db-name");
+    $http_db_user = $http_vars->get("db-user");
+    $http_db_password = $http_vars->get("db-password");
+    $http_db_prefix = $http_vars->get("db-prefix");
     
     if (empty($http_db_prefix)) {
         $http_db_prefix = "";

@@ -52,7 +52,7 @@ require_once __DIR__ . "/frame.header.php";
                 echo '<tr>';
                 echo '<td><a href="./?revision&i=' . $result["id"] . '">' . $result["id"] . '</a></td>';
                 echo '<td><a href="./?read&i=' . $result["article_id"] . '">' . $result["article_title"] . '</a></td>';
-                echo '<td><a href="./?profile&name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a>';
+                echo '<td><a href="./?profile&user-name=' . $result["user_name"] . '"">' . $result["user_name"] . '</a>';
                 if (strlen($result["comment"]) > 0) {
                     echo '<br>(' . $result["comment"] . ')';
                 }

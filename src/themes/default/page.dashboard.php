@@ -10,13 +10,14 @@
 require_once YAONGWIKI_CORE . "/page.dashboard.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
     exit();
 }
 
-$page["title"] = "Dashboard";
+$page["title"] = "Dashboard" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -57,7 +58,7 @@ require_once __DIR__ . "/frame.header.php";
         <div class="card-body">
           <dl class="row" style="margin-bottom: 0px">
             <dt class="col-sm-3 text-truncate">Name</dt>
-            <dd class="col-sm-9"><a href="./?profile&name=<?php echo($page["user"]["name"]);?>"><?php echo($page["user"]["name"]);?></a></dd>
+            <dd class="col-sm-9"><a href="./?profile&user-name=<?php echo($page["user"]["name"]);?>"><?php echo($page["user"]["name"]);?></a></dd>
             <dt class="col-sm-3 text-truncate">Email</dt>
             <dd class="col-sm-9"><?php echo($page["user"]["email"]);?></dd>
             <dt class="col-sm-3 text-truncate">Registered Date</dt>

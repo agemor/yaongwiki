@@ -8,44 +8,36 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 require_once __DIR__ . "/libs/parsedown.php";
 
 const REDIRECT_KEYWORD = "#redirect";
 
 function process() {
 
-    global $db;
-    global $get;
-    global $user;
-    global $redirect;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
 
     $parsedown = new Parsedown();
     
-    $http_article_title = $get->retrieve("t");
-    $http_article_id = $get->retrieve("i");
-    $http_no_redirect = $get->retrieve("no-redirect") != null;
+    $http_article_title = $http_vars->get("t");
+    $http_article_id = $http_vars->get("i");
+    $http_no_redirect = $http_vars->get("no-redirect") != null;
     
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        $redirect->set("./");
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?page-not-found"
         );
     }
 
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
     
@@ -74,9 +66,9 @@ function process() {
     $stripped_content = trim(strip_tags($article_data["content"]));
 
     if (!$http_no_redirect && starts_with($stripped_content, REDIRECT_KEYWORD)) {
-        $redirect->set("./?read&t=" . $trim(explode(" ", $stripped_content)[1]) . "?from=" . $article_data["title"]);
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => "./?read&t=" . $trim(explode(" ", $stripped_content)[1]) . "?from=" . $article_data["title"]
         );
     }
 
