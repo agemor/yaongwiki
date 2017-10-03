@@ -2,15 +2,16 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.2
  * @author HyunJun Kim
- * @date 2016. 01. 31
+ * @date 2017. 10. 04
  */
 
-session_start();
-session_destroy();
+require_once YAONGWIKI_CORE . "/page.signout.processor.php";
 
-$redirect = !empty($_GET["redirect"]) ? $_GET["redirect"] : "./";
+$page = process();
 
-header('Location: '.$redirect);
-?>
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
+}

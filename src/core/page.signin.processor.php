@@ -8,27 +8,22 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
 function process() {
     
-    global $db;
-    global $post;
-    global $get;
-    global $user;
-    global $redirect;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_user_name = $post->retrieve("user-name");
-    $http_user_password = $post->retrieve("user-password");
-    $http_redirect = $get->retrieve("redirect") == null ? "./" : $get->retrieve("redirect");
+    $http_user_name = $http_vars->get("user-name");
+    $http_user_password = $http_vars->get("user-password");
+    $http_redirect = $http_vars->get("redirect") != null ? $http_vars->get("redirect") : "./";
     
-    if ($user->signined()) {
-        $redirect->set($http_redirect);
+    if ($user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => $http_redirect
         );
     }
     
@@ -39,13 +34,10 @@ function process() {
     }
 
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
-            "message" => STRINGS["ESDB0"]
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
 
@@ -63,11 +55,7 @@ function process() {
     
     if (strcmp(hash_password($http_user_password), $user_data["password"]) != 0) {
 
-        $response = $db->in(DB_LOG_TABLE)
-                       ->insert("user_name", $user_data["name"])
-                       ->insert("behavior", "signin")
-                       ->insert("data", "0")
-                       ->go();
+        $log->create($user_data["name"], "signin", "0");
 
         return array(
             "result" => false,
@@ -77,16 +65,10 @@ function process() {
 
     // 세션 등록
     $user->signin($user_data["name"], $user_data["id"], intval($user_data["permission"]));
-
-    $response = $db->in(DB_LOG_TABLE)
-                   ->insert("user_name", $user_data["name"])
-                   ->insert("behavior", "signin")
-                   ->insert("data", "1")
-                   ->go();
-    
-    $redirect->set($http_redirect);
+    $log->create($user_data["name"], "signin", "1");
    
     return array(
-        "redirect" => true
+        "result" => true,
+        "redirect" => $http_redirect
     );
 }

@@ -8,29 +8,30 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
-const FULL_TEXT_SEARCH = false;
-const MAX_ARTICLES = 10;
-
-function process() {
+function process($max_displayed_in_one_page = 10) {
     
-    global $db;
-    global $get;
-    global $post;
-    global $user;
-    global $redirect;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
+    $settings = SettingsManager::get_instance();
 
-    $http_query = $get->retrieve("q") !== null ? $get->retrieve("q") : $post->retrieve("q");
-    $http_page  = intval($get->retrieve("p") !== null ? $get->retrieve("p") : "0");
+    $http_query = $http_vars->get("q");
+    $http_page = intval($http_vars->get("p") !== null ? $http_vars->get("p") : "0");
     
     if (empty($http_query)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPSH0"]
+        );
+    }
+
+    if (!$db->connect()) {
+        return array(
+            "result" => false,
+            "message" => STRINGS["ESDB0"],
+            "redirect" => "./?out-of-service"
         );
     }
     
@@ -49,21 +50,13 @@ function process() {
         );
     }
     
+    // full-text 서치 모드
+    $fulltext_enable = strtolower($settings->get("search_fulltext_enable")) == "true";
+
     // 검색 쿼리 취득
     $keywords = explode(" ", $http_query);
-    $query = $tag_search_mode ? get_tag_search_query($keywords) : get_content_search_query($keywords);
-    $query .= " LIMIT " . ($http_page * MAX_ARTICLES) . ", " . MAX_ARTICLES . ";";
-
-    if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
-        return array(
-            "redirect" => true,
-            "result" => false,
-            "message" => STRINGS["ESDB0"]
-        );
-    }
+    $query = $tag_search_mode ? get_tag_search_query($keywords, $fulltext_enable) : get_content_search_query($keywords, $fulltext_enable);
+    $query .= " LIMIT " . ($http_page * $max_displayed_in_one_page) . ", " . $max_displayed_in_one_page . ";";
 
     // 정확히 제목이 일치하는 항목이 있으면 바로 이동
     if (count($keywords) == 1) {
@@ -74,9 +67,9 @@ function process() {
                        ->go_and_get();
 
         if ($response) {
-            $redirect->set("?read&t=" . $response["title"]);
             return array(
-                "redirect" => true
+                "result" => true,
+                "redirect" => "?read&t=" . $response["title"]
             );
         }
     }

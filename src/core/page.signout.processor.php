@@ -8,23 +8,18 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
 function process() {
 
-    global $get;
-    global $user;
-    global $redirect;
+    $user = UserManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_redirect = $get->retrieve("redirect") == null ? "./" : $get->retrieve("redirect");
+    $http_redirect = $http_vars->get("redirect") != null ? $http_vars->get("redirect") : "./";
 
     $user->signout();
 
-    $redirect->set($http_redirect);
-
     return array(
-        "redirect" => true
+        "result" => true,
+        "redirect" => $http_redirect
     );
 }

@@ -10,12 +10,15 @@
 require_once YAONGWIKI_CORE . "/page.signin.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
+$http_vars = HttpVarsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "YaongWiki Sign In";
+$page["title"] = "Sign in" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -30,13 +33,13 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-	<form action="./?signin&redirect=<?php echo($get->retrieve('redirect'));?>" method="post">
+	<form action="./?signin&redirect=<?php echo($http_vars->get("redirect"));?>" method="post">
 		<div class="row my-4">
 			<div class="col-md-6">
 				<p>Please enter your account name and password.</p>
 				<div class="form-group">
 					<label for="nameInput">User Name</label>
-					<input type="text" name="user-name" class="form-control" id="nameInput" value="<?php echo($post->retrieve('user-name'));?>" required>
+					<input type="text" name="user-name" class="form-control" id="nameInput" value="<?php echo($http_vars->get("user-name"));?>" required>
 				</div>
 				<div class="form-group">
 					<label for="passwordInput">User Password</label>

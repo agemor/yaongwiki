@@ -10,12 +10,14 @@
 require_once YAONGWIKI_CORE . "/page.revision.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = $page["revision"]["article_title"] . " (Revision " .$page["revision"]["revision"]. ")";
+$page["title"] = $page["revision"]["article_title"] . " (Revision " .$page["revision"]["revision"]. ")" . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

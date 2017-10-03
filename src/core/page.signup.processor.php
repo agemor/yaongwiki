@@ -8,35 +8,30 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.recaptcha.php";
-require_once __DIR__ . "/module.redirect.php";
 
 const ENABLE_RECAPTCHA = false;
 
 function process() {
     
-    global $db;
-    global $post;
-    global $user;
-    global $redirect;
-    global $recaptcha;
+    $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
+    $recaptcha = ReCaptchaManager::get_instance();
 
-    if ($user->signined()) {
-        $redirect->set("./");
+    $http_user_name = $http_vars->get("user-name");
+    $http_user_password = $http_vars->get("user-password");
+    $http_user_password_re = $http_vars->get("user-password-re");
+    $http_user_email = $http_vars->get("user-email");
+    $http_recaptch_response = $http_vars->get("g-recaptcha-response");
+    
+    if ($user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./"
         );
     }
 
-    $http_user_name = $post->retrieve("user-name");
-    $http_user_password = $post->retrieve("user-password");
-    $http_user_password_re = $post->retrieve("user-password-re");
-    $http_user_email = $post->retrieve("user-email");
-    $http_recaptch_response = $post->retrieve("g-recaptcha-response");
-    
     if (empty($http_user_name) || empty($http_user_password) || empty($http_user_email)) {
         return array(
             "result" => true
@@ -71,7 +66,8 @@ function process() {
         );
     }
 
-    if (ENABLE_RECAPTCHA && !$recaptcha->verify($http_recaptch_response)) {
+    $recaptcha_enable = (strtolower($settings->get("recaptcha_enable")) == "true");
+    if ($recaptcha_enable && !$recaptcha->verify($settings->get("recaptcha_private_key"), $http_recaptch_response)) {
         return array(
             "result" => false,
             "message" => STRINGS["EPSU4"]
@@ -113,11 +109,7 @@ function process() {
         );
     }
     
-    $response = $db->in(DB_LOG_TABLE)
-                   ->insert("user_name", $http_user_name)
-                   ->insert("behavior", "signup")
-                   ->insert("data", $http_user_name)
-                   ->go();
+    $log->create($http_user_name, "signup", "");
     
     return array(
         "result" => true,

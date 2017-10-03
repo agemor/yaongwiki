@@ -8,16 +8,12 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
 
 function process() {
 
-    global $get;
+    $http_vars = HttpVarsManager::get_instance();
 
-    $http_value = $get->retrieve("value");
+    $http_value = $http_vars->get("value");
 
     return array(
         "result" => true,

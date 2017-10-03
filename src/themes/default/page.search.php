@@ -9,16 +9,18 @@
 
 require_once YAONGWIKI_CORE . "/page.search.processor.php";
 
-$page = process();
-
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
-}
-
-$page["title"] = "Search Results for " . implode($page["keywords"], " ");
-
+const MAX_DISPLAY = 10;
 const CONTENT_PREVIEW_LENGTH =100;
 
+$page = process(MAX_DISPLAY);
+$settings = SettingsManager::get_instance();
+
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
+}
+
+$page["title"] = "Search Results for " . implode($page["keywords"], " ") . " - " . $settings.get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
