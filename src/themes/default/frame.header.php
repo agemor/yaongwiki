@@ -33,7 +33,7 @@
         <div class="dropdown-menu" aria-labelledby="userDropdownLink">
         <?php if (UserManager::get_instance()->authorized()) { ?>
           <a class="dropdown-item" href="./?dashboard">Dashboard</a>
-          <a class="dropdown-item" href="./?profile&user-name=<?php echo($user->get("name"));?>">My profile</a>
+          <a class="dropdown-item" href="./?profile&user-name=<?php echo(UserManager::get_instance()->get("name"));?>">My profile</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="./?signout">Sign out</a>
         <?php } else { ?>

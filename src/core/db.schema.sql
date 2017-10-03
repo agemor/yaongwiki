@@ -89,6 +89,36 @@ ALTER TABLE `[PREFIX]yaongwiki_users`
 ALTER TABLE `[PREFIX]yaongwiki_users`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
+CREATE TABLE `[PREFIX]yaongwiki_settings` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `value` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `default_value` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `comment` varchar(150) CHARACTER SET utf8 NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `yaongwiki_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+INSERT INTO `[PREFIX]yaongwiki_settings` (`id`, `name`, `value`, `default_value`, `comment`) VALUES
+(1, 'administrator', 'admin', 'admin', 'System administrator'),
+(2, 'site_title', 'YaongWiki', 'YaongWiki', 'Site title'),
+(3, 'site_description', 'Yet another wiki site', '', 'Site description'),
+(4, 'site_keywords', '', '', 'Site keywords'),
+(5, 'site_language', 'en-US', 'en-US', 'Site language'),
+(6, 'site_theme', 'default', 'default', 'Site theme'),
+(7, 'site_main_article', 'Main', 'Main', 'Site main article'),
+(8, 'file_directory', 'uploads', 'uploads', 'File upload directory'),
+(9, 'file_maximum_size', '10485760', '10485760', 'Upload file maximum size'),
+(10, 'file_allowed_extensions', 'jpg, jpeg, png, gif, svg, tiff, bmp', 'jpg, jpeg, png, gif, svg, tiff, bmp', 'Upload file allowed extensions'),
+(11, 'search_fulltext_enable', 'false', 'false', 'Fulltext search'),
+(12, 'notice_email_address', 'noreply@yaongwiki.org', 'noreply@yaongwiki.org', 'Notice email address'),
+(13, 'notice_email_name', 'YaongWiki', 'YaongWiki', 'Notice email name'),
+(14, 'recaptcha_enable', 'false', 'false', 'ReCAPTCHA enable'),
+(15, 'recaptcha_public_key', '', '', 'ReCAPTCHA public key'),
+(16, 'recaptcha_private_key', '', '', 'ReCAPTCHA private key');
+
 CREATE EVENT reset_populer
   ON SCHEDULE
     EVERY 1 DAY
