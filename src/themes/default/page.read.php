@@ -35,9 +35,9 @@ require_once __DIR__ . "/frame.header.php";
       </div>
     </div>
   
-  <?php if ($get->retrieve("from") !== null) { ?>
+  <?php if (HttpVarsManager::get_instance()->get("from") !== null) { ?>
   <div class="alert alert-info" role="alert">
-    Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo($get->retrieve("from"));?></a>.
+    Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo(HttpVarsManager::get_instance()->get("from"));?></a>.
   </div>
   <?php } ?>
   <ol class="breadcrumb">
