@@ -10,12 +10,15 @@
 require_once YAONGWIKI_CORE . "/page.signup.processor.php";
 
 $page = process();
+$settings = SettingsManager::get_instance();
+$http_vars = HttpVarsManager::get_instance();
 
-if (isset($page["redirect"]) && $page["redirect"] == true) {
-    $redirect->redirect();  
+if (isset($page["redirect"])) {
+    redirect($page["redirect"]);
+    exit();
 }
 
-$page["title"] = "YaongWiki Sign Up";
+$page["title"] = "Sign up" . " - " . $settings->get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>
@@ -42,26 +45,26 @@ require_once __DIR__ . "/frame.header.php";
         <p>Please fill out below form.</p>
         <div class="form-group">
           <label for="nameInput">Name</label>
-          <input type="text" name="user-name" class="form-control" id="nameInput" value="<?php echo($post->retrieve('user-name'));?>" required>
+          <input type="text" name="user-name" class="form-control" id="nameInput" value="<?php echo($http_vars->get("user-name"));?>" required>
           <small id="nameInputHelper" class="text-muted">At least three letters long</small>
         </div>
         <div class="form-group">
           <label for="emailInput">Email Address</label>
-          <input type="email" name="user-email" class="form-control" id="emailInput" value="<?php echo($post->retrieve('user-email'));?>" required>
+          <input type="email" name="user-email" class="form-control" id="emailInput" value="<?php echo($http_vars->get("user-email"));?>" required>
         </div>
         <div class="form-group">
           <label for="passwordInput">Password</label>
-          <input type="password" name="user-password" class="form-control" id="passwordInput" value="<?php echo($post->retrieve('user-password'));?>" required>
+          <input type="password" name="user-password" class="form-control" id="passwordInput" value="<?php echo($http_vars->get("user-password"));?>" required>
           <small id="nameInputHelper" class="text-muted">At least four letters long</small>
         </div>
         <div class="form-group">
           <label for="passwordReInput">Confirm Password</label>
-          <input type="password" name="user-password-re" class="form-control" id="passwordReInput" value="<?php echo($post->retrieve('user-password-re'));?>" required>
+          <input type="password" name="user-password-re" class="form-control" id="passwordReInput" value="<?php echo($http_vars->get("user-password-re"));?>" required>
         </div>
         <label for="recaptchInput">Recaptcha</label>
         <script src='https://www.google.com/recaptcha/api.js'></script>
-        <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_PUBLIC_KEY;?>"></div><br/>
-      </div>
+        <div class="g-recaptcha" data-sitekey="<?php echo($settings->get("recaptcha_public_key"));?>" ></div>
+        </div>
       <div class="col-md-6">
         <div class="form-group">
           <label for="termsTextArea">Terms of Use</label>
