@@ -8,7 +8,9 @@
  */
 
 define("YAONGWIKI_CORE", __DIR__);
- 
+
+
+
 require_once YAONGWIKI_CORE . "/languages/language.php";
 require_once YAONGWIKI_CORE . "/languages/" . LANGUAGE . ".php";
 require_once dirname(YAONGWIKI_CORE) . "/themes/theme.php";

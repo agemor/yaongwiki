@@ -17,7 +17,7 @@ class Session {
     private function __construct() {
     }
    
-    public static function get_session() {
+    public static function get_instance() {
 
         if (!isset(self::$instance)) {
             self::$instance = new self;

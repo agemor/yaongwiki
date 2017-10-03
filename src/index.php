@@ -15,10 +15,9 @@ define("YAONGWIKI_DIR", "");
 define("YAONGWIKI_ROOT", __DIR__ . YAONGWIKI_DIR);
 
 require_once YAONGWIKI_ROOT . "/navigator.php";
-require_once YAONGWIKI_ROOT . "/core/module.form.php";
+require_once YAONGWIKI_ROOT . "/core/manager.http-vars.php";
 
-$post->set($_POST);
-$get->set($_GET);
+HttpVarsManager::get_instance()->set($_GET, $_POST);
 
 $current_page_url = get_current_page_url();
 

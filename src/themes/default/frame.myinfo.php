@@ -2,7 +2,7 @@
 /**
  * YaongWiki Engine
  *
- * @version 1.1
+ * @version 1.1 
  * @author HyunJun Kim
  * @date 2016. 01. 31
  */
@@ -26,7 +26,7 @@ require_once 'common.php';?>
         <td><?php echo $page_response['user']['email'];?></td>
       </tr>
       <tr>
-        <td><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 등급</td>
+        <td><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 등급</td> 
         <td>
           <?php
             $info = permissionInfo(intval($page_response['user']['permission']));

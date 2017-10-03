@@ -13,6 +13,7 @@ const DB_USER_PASSWORD = "yaongwiki";
 const DB_NAME = "yaongwiki";
 const DB_TABLE_PREFIX = "";
 
+const DB_SETTINGS_TABLE = DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_settings';
 const DB_USER_TABLE = DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_users';
 const DB_ARTICLE_TABLE = DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_articles';
 const DB_FILE_TABLE = DB_NAME . '`.`' . DB_TABLE_PREFIX . 'yaongwiki_files';

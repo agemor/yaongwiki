@@ -8,19 +8,18 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.db.php";
-require_once __DIR__ . "/module.form.php";
-require_once __DIR__ . "/module.user.php";
-require_once __DIR__ . "/module.redirect.php";
+require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/manager.http-vars.php";
+require_once __DIR__ . "/manager.user.php";
 
 function process() {
     
-    global $db;
-    global $post;
+    $db = Database::get_instance();
+    $http_vars = HttpVarsManager::get_instance();
     global $user;
     global $redirect;
 
-    $http_article_title = $post->retrieve("article-title");
+    $http_article_title = $http_vars->retrieve("article-title");
 
     // 로그인 되어 있지 않을 경우
     if (!$user->signined()) {

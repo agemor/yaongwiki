@@ -16,19 +16,19 @@ class RedirectManager {
     
     public function __construct() {
 
-        $session = Session::get_session();
+        $session = Session::get_instance();
 
         $this->redirect_url = $session->get("redirect_url");
 
         $this->session = $session;
     }
 
-    function set($url) {
+    public function set($url) {
         $this->redirect_url = $url;
         $this->session->set("redirect_url", $url);
     }
 
-    function redirect() {
+    public function redirect() {
 
         if ($this->redirect_url == null) {
             return;

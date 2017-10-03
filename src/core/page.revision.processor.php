@@ -8,7 +8,7 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/module.db.php";
+require_once __DIR__ . "/db.php";
 require_once __DIR__ . "/module.form.php";
 require_once __DIR__ . "/module.user.php";
 require_once __DIR__ . "/module.redirect.php";
@@ -35,7 +35,7 @@ function process() {
     }
 
     if (!$db->connect()) {
-        
+
         $redirect->set("./?out-of-service");
         
         return array(

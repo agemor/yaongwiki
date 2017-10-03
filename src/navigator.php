@@ -8,7 +8,7 @@
  */
 
 require_once YAONGWIKI_ROOT . "/core/common.php";
-require_once YAONGWIKI_ROOT . "/core/module.db.account.php";
+require_once YAONGWIKI_ROOT . "/core/db.account.php";
 
 // 현재 페이지의 전체 URL 구하기
 function get_current_page_url() {

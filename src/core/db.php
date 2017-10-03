@@ -7,10 +7,12 @@
  * @date 2017. 08. 26
  */
 
-require_once __DIR__ . "/module.db.account.php";
+require_once __DIR__ . "/db.account.php";
 
 /* 모듈 생성 */
 class Database {
+
+    private static $instance;
 
     public $connected = false;
     public $connection;
@@ -19,6 +21,18 @@ class Database {
     public $recent_query;
 
     public $query_blocks = array();
+
+    private function __construct() {
+    }
+
+    public static function get_instance() {
+
+		if(!isset(self::$instance)) { 
+			self::$instance = new self();
+        }
+        
+		return self::$instance;
+	}
 
     /* 데이터베이스에 접속한다 */
     public function connect() {
@@ -298,5 +312,3 @@ class Database {
         return str_replace($search, $replace, $value);
     }
 }
-
-$db = new Database();
