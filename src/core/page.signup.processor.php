@@ -114,6 +114,7 @@ function process() {
     }
     
     $response = $db->in(DB_LOG_TABLE)
+                   ->insert("user_name", $http_user_name)
                    ->insert("behavior", "signup")
                    ->insert("data", $http_user_name)
                    ->go();

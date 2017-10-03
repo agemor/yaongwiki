@@ -105,4 +105,5 @@ function parse_tags($tags) {
 }
 
 
-include 'frame.footer.php';?>
+require_once __DIR__ . "/frame.footer.php";
+?>

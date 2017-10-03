@@ -29,7 +29,7 @@ function process() {
     $page_focus = 0;
     
     // 로그인 되어 있지 않을 경우
-    if (!$user_data->signined()) {
+    if (!$user->signined()) {
         $redirect->set(get_theme_path() . HREF_MAIN);
         return array(
             "redirect" => true
@@ -38,7 +38,7 @@ function process() {
     
     $user_data = $db->in(DB_USER_TABLE)
                     ->select("*")
-                    ->where("id", "=", $user_data->id)
+                    ->where("id", "=", $user->id)
                     ->go_and_get();
 
     if (!$user_data) {
@@ -62,7 +62,7 @@ function process() {
         return array(
             "result" => false,
             "user" => $user_data,
-            "message" => STRINGS["EPDH1"]
+            "message" => STRINGS["EPDH1"] . $db->rq()
         );
     }
 

@@ -242,6 +242,7 @@ function process() {
     }
 
     $response = $db->in(DB_LOG_TABLE)
+                   ->insert("user_name", $user->name) 
                    ->insert("behavior", "write")
                    ->insert("data", $article_data["id"] . "/" . (intval($article_data["revisions"]) + 1))
                    ->go();

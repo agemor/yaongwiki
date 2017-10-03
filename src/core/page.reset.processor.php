@@ -109,6 +109,7 @@ function process() {
     }
     
     $response = $db->in(DB_LOG_TABLE)
+                   ->insert("user_name", $user_data["name"]) 
                    ->insert("behavior", "reset")
                    ->insert("data", "*")
                    ->go();

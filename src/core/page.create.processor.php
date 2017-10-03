@@ -110,6 +110,7 @@ function process() {
     }
 
     $response = $db->in(DB_LOG_TABLE)
+                   ->insert("user_name", $user->name) 
                    ->insert("behavior", "create")
                    ->insert("data", $http_article_title)
                    ->go();

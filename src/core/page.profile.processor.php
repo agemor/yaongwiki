@@ -108,6 +108,7 @@ function process() {
         $user_data["info"] = $http_user_info;
 
         $response = $db->in(DB_LOG_TABLE)
+                       ->insert("user_name", $user_data["name"]) 
                        ->insert("behavior", "update-user-info")
                        ->insert("data", $http_user_info)
                        ->go();

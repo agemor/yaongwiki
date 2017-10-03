@@ -64,6 +64,7 @@ function process() {
     if (strcmp(hash_password($http_user_password), $user_data["password"]) != 0) {
 
         $response = $db->in(DB_LOG_TABLE)
+                       ->insert("user_name", $user_data["name"])
                        ->insert("behavior", "signin")
                        ->insert("data", "0")
                        ->go();
@@ -78,6 +79,7 @@ function process() {
     $user->signin($user_data["name"], $user_data["id"], intval($user_data["permission"]));
 
     $response = $db->in(DB_LOG_TABLE)
+                   ->insert("user_name", $user_data["name"])
                    ->insert("behavior", "signin")
                    ->insert("data", "1")
                    ->go();

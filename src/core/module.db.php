@@ -262,8 +262,8 @@ class Database {
             $length = count($this->query_blocks["conditions"]);
             for ($i = 0; $i < $length; $i++) {
                 $condition = $this->query_blocks["conditions"][$i];
-                $surrounding = $condition[4] ? "" : "`";
-                $query .= $surrounding.$this->escape($condition[0]).$surrounding.$condition[1]."'".$this->escape($condition[2])."'";
+                $surrounding = $condition[4] ? "" : "'";
+                $query .= "`".$this->escape($condition[0])."`".$condition[1].$surrounding.$this->escape($condition[2]).$surrounding;
                 if ($i + 1 < $length) {
                     $query .= " ".$condition[3]." ";
                 }

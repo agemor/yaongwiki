@@ -22,8 +22,7 @@ require_once __DIR__ . "/frame.header.php";
 <div class="container">
   <div class="title my-4">
     <h2>
-    <?php echo($page["revision"]["article_title"]);?>
-    <small class="text-muted"> (<em>Revision <?php echo($page["revision"]["revision"]);?>)</em></small>
+    Dashboard
     <h2>
   </div>
   <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
@@ -31,41 +30,98 @@ require_once __DIR__ . "/frame.header.php";
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-  
-</div>
 
-
-<div class="container">
-<h1 ><a href="#" style="text-decoration: none;">대시보드</a></h1><br/>
-<ul class="nav nav-tabs" role="tablist">
-  <li role="presentation" class="<?php if($page_focus==0) {echo ' active';}?>"><a href="#main" aria-controls="main" role="tab" data-toggle="tab">계정 정보</a></li>
-  <?php
-    if (empty($page_response['user']['code'])){
-        echo '<li role="presentation"'.(($page_focus==1) ? ' class="active"' : '').'><a href="#auth" aria-controls="auth" role="tab" data-toggle="tab">재학생 인증</a></li>';
-    }?>
-  <li role="presentation" class="<?php if($page_focus==2) {echo ' active';}?>"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">이메일 변경</a></li>
-  <li role="presentation" class="<?php if($page_focus==3) {echo ' active';}?>"><a href="#password" aria-controls="password" role="tab" data-toggle="tab">비밀번호 변경</a></li>
-  <li role="presentation" class="<?php if($page_focus==4) {echo ' active';}?>"><a href="#dropout" aria-controls="dropout" role="tab" data-toggle="tab">계정 삭제</a></li>
+  <!-- Nav tabs -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Account status</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Change password</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#messages" role="tab">Change email</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Delete account</a>
+  </li>
 </ul>
+
+<!-- Tab panes -->
 <div class="tab-content">
+  <div class="tab-pane active" id="home" role="tabpanel">
   
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 0) ? ' active' : ' fade');?>" id="main">
-    <?php include 'frame.myinfo.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 1) ? ' active' : ' fade');?>" id="auth">
-    <?php include 'frame.yonseiauth.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 2) ? ' active' : ' fade');?>" id="email">
-    <?php include 'frame.changeemail.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 3) ? ' active' : ' fade');?>" id="password">
-    <?php include 'frame.changepassword.php';?>
-  </div>
-  <div role="tabpanel" class="tab-pane<?php echo (($page_focus == 4) ? ' active' : ' fade');?>" id="dropout">
-    <?php include 'frame.deleteaccount.php';?>
-  </div>
+<div class="row">
+
+<div class="col-md-6" style="min-height:300px;">
+  <h4>내 정보</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span> 아이디</th>
+        <th><a href="#"><?php echo '<a href="'.HREF_PROFILE.'/'.$page['user']['name'].'">'.$page['user']['name'].'</a>';?></a></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> 이메일</td>
+        <td><?php echo $page['user']['email'];?></td>
+      </tr>
+      <tr>
+        <td><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 등급</td>
+        <td>
+          <?php
+            $info = (intval($page['user']['permission']));
+            echo '<a href="./pages/'.$info['description'].'">'.$info['description'].'</a>';?>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span> 생성일</td>
+        <td><?php echo $page['user']['timestamp'];?></td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+</div>
+<div class="col-md-6">
+  <h4 style="margin-top: 16px;">최근 3일간 <a href="<?php echo HREF_READ;?>/로그인">로그인</a> 기록</h4>
+  <table class="table table-hover table-condensed">
+    <thead>
+      <tr>
+        <th class="text-center" style="width: 50%">시간</th>
+        <th class="text-center" style="width: 30%">IP 주소</th>
+        <th class="text-center" style="width: 20%">결과</th>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+      <?php
+        foreach ($page['user']['login_history'] as $result) {
+            echo '<tr>';
+            echo '<td>'.$result["timestamp"].'</td>';
+            echo '<td>'.$result["ip"].'</td>';
+            echo '<td>'.(($result["data"] == "0") ? "실패" : "성공").'</td>';
+            echo '</tr>';
+        }?>    
+    </tbody>
+  </table>
 </div>
 </div>
+
+
+
+
+
+
+  
+  
+  </div>
+  <div class="tab-pane" id="profile" role="tabpanel">...</div>
+  <div class="tab-pane" id="messages" role="tabpanel">...</div>
+  <div class="tab-pane" id="settings" role="tabpanel">...</div>
+</div>
+  
+</div>
+
 
 <?php
 require_once __DIR__ . "/frame.footer.php";
