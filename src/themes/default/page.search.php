@@ -34,35 +34,18 @@ require_once __DIR__ . "/frame.header.php";
       <?php echo($page["message"]);?>
     </div>
     <?php } ?>
-  <div style="padding: 20px"></div>
 
   <div class="alert alert-light" role="alert">
     Found <?php echo(count($page["search_result"]));?> results. (<?php echo($page["elapsed_time"]);?>sec)
   </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   <div class="card-columns">
   <?php foreach ($page['search_result'] as $result) { ?>
 
-
-
-
-    <div class="card mb-3" style="max-width: 20rem;">
+    <div class="card mb-3" >
   <div class="card-body">
-    <h4 class="card-title"><a href="#"><?php echo($result["title"]);?></a></h4>
+    <h4 class="card-title"><a href="./?read&t=<?php echo($result["title"]);?>"><?php echo($result["title"]);?></a></h4>
     <p class="card-text"><?php echo(highlight(truncate(strip_tags($result["content"]), CONTENT_PREVIEW_LENGTH), $page['keywords']));?></p>
   </div>
   <div class="card-footer">

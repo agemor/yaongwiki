@@ -1,3 +1,8 @@
+<?php
+require_once YAONGWIKI_CORE . "/module.user.php";
+require_once YAONGWIKI_CORE . "/module.form.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,7 +29,7 @@
           <a class="nav-link" href="./?recent">Recent Edits <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">Random Article</a>
         </li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdownLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,11 +45,12 @@
           <a class="dropdown-item" href="./?signin">Sign in</a>
           <a class="dropdown-item" href="./?signup">Sign up</a>
         <?php } ?>
-        </div>
+        </div> 
       </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Keyword">
+      <form action="./" method="get" class="form-inline my-2 my-lg-0">
+        <input name="search" type="hidden" value="">
+        <input name="q" class="form-control mr-sm-2" type="text" placeholder="Keyword" value="<?php echo($get->retrieve("q"));?>" required>
         <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>
