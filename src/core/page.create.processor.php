@@ -8,24 +8,22 @@
  */
 
 require_once __DIR__ . "/common.php";
-require_once __DIR__ . "/db.php";
-require_once __DIR__ . "/manager.http-vars.php";
-require_once __DIR__ . "/manager.user.php";
 
 function process() {
     
     $db = Database::get_instance();
+    $user = UserManager::get_instance();
+    $log = LogManager::get_instance();
     $http_vars = HttpVarsManager::get_instance();
-    global $user;
-    global $redirect;
-
-    $http_article_title = $http_vars->retrieve("article-title");
+    
+    $http_article_title = $http_vars->get("article-title");
 
     // 로그인 되어 있지 않을 경우
-    if (!$user->signined()) {
-        $redirect->set("./?signin&redirect=./?create");
+    if (!$user->authorized()) {
         return array(
-            "redirect" => true
+            "result" => false,
+            "redirect" => "./?signin&redirect=./?create",
+            "message" => STRINGS["ESDB1"]
         );
     }
 
@@ -42,22 +40,11 @@ function process() {
             "message" => STRINGS["EPCR0"]
         );
     }
-    
-    // 제목이 숫자로만 구성되어 있을 경우
-    if (is_numeric($http_article_title)) {
-        return array(
-            "result" => false,
-            "message"=> STRINGS["EPCR1"]
-        );
-    }
 
     if (!$db->connect()) {
-        
-        $redirect->set("./?out-of-service");
-        
         return array(
-            "redirect" => true,
             "result" => false,
+            "redirect" => "./?out-of-service",
             "message" => STRINGS["ESDB0"]
         );
     }
@@ -70,8 +57,8 @@ function process() {
     if ($response) {
         return array(
             "result" => false,
-            "title" => $http_article_title,
-            "message" => STRINGS["EPCR3"]
+            "message" => STRINGS["EPCR3"],
+            "title" => $http_article_title            
         );
     }
     
@@ -83,7 +70,7 @@ function process() {
                      ->insert("snapshot_content", "")
                      ->insert("snapshot_tags", "")
                      ->insert("fluctuation", "0")
-                     ->insert("comment", "새로 만들어짐")
+                     ->insert("comment", STRINGS["SPCR0"])
                      ->go();
     
     $initial_revision_id = $db->last_insert_id();
@@ -102,21 +89,16 @@ function process() {
 
     if (!$response_1 || !$response_2) {
         return array(
-            "result" => false,
-            "title" => $http_article_title,
-            "message" => STRINGS["EPCR4"]
+            "result" => false,            
+            "message" => STRINGS["EPCR4"],
+            "title" => $http_article_title
         );
     }
 
-    $response = $db->in(DB_LOG_TABLE)
-                   ->insert("user_name", $user->name) 
-                   ->insert("behavior", "create")
-                   ->insert("data", $http_article_title)
-                   ->go();
-
-    $redirect->set("./?write&" . "t=" . $http_article_title);
+    $log->create($user->get("name"), "create", $http_article_title);
     
     return array(
-        "redirect" => true
+        "result" => true,
+        "redirect" => "./?write&" . "t=" . $http_article_title
     );
 }

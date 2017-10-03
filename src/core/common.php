@@ -9,7 +9,11 @@
 
 define("YAONGWIKI_CORE", __DIR__);
 
-
+require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/manager.user.php";
+require_once __DIR__ . "/manager.settings.php";
+require_once __DIR__ . "/manager.http-vars.php";
+require_once __DIR__ . "/manager.log.php";
 
 require_once YAONGWIKI_CORE . "/languages/language.php";
 require_once YAONGWIKI_CORE . "/languages/" . LANGUAGE . ".php";

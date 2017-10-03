@@ -36,7 +36,7 @@ class UserManager {
 
     public static function get_instance() {
 
-		if(!isset(self::$instance)) { 
+		if (!isset(self::$instance)) { 
 			self::$instance = new self();
         }
         
@@ -99,7 +99,7 @@ class UserManager {
     }
 
     public function get($key) {
-        
+
         if ($this->signined() && array_key_exists($key, $this->user_data)) {
             return $this->user_data[$key];
         }
