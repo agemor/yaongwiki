@@ -74,7 +74,7 @@ function process() {
                        ->go_and_get();
 
         if ($response) {
-            $redirect->set(get_theme_path() . HREF_READ . "?t=" . $response["title"]);
+            $redirect->set("?read&t=" . $response["title"]);
             return array(
                 "redirect" => true
             );

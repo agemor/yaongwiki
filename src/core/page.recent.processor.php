@@ -10,6 +10,7 @@
 require_once __DIR__ . "/common.php";
 require_once __DIR__ . "/module.db.php";
 require_once __DIR__ . "/module.redirect.php";
+require_once __DIR__ . "/module.user.php";
 
 const MAX_RECENT_CHANGED = 30;
 

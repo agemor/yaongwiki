@@ -17,9 +17,7 @@ if (isset($page["redirect"]) && $page["redirect"] == true) {
 
 $page["title"] = "Search Results for " . implode($page["keywords"], " ");
 
-
 const CONTENT_PREVIEW_LENGTH =100;
-
 
 
 require_once __DIR__ . "/frame.header.php";
@@ -42,41 +40,48 @@ require_once __DIR__ . "/frame.header.php";
     Found <?php echo(count($page["search_result"]));?> results. (<?php echo($page["elapsed_time"]);?>sec)
   </div>
 
-  <?php foreach ($page['search_result'] as $result) {
-        echo '<div class="col-md-12">';
-        echo '<h4><a href="'.HREF_READ.'/'.$result["title"].'">'.$result["title"].'</a> <span class="badge">+'.$result["hits"].'</span></h4>';
-        echo '<p>'.highlight(truncate(strip_tags($result["content"]), CONTENT_PREVIEW_LENGTH), $page['keywords']).'</p>';
-        echo '<h5>'.parseTags($result["tags"]).'</h5><br/>';
-        echo '</div>';
-  }?>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="card-columns">
+  <?php foreach ($page['search_result'] as $result) { ?>
+
+
+
+
+    <div class="card mb-3" style="max-width: 20rem;">
+  <div class="card-body">
+    <h4 class="card-title"><a href="#"><?php echo($result["title"]);?></a></h4>
+    <p class="card-text"><?php echo(highlight(truncate(strip_tags($result["content"]), CONTENT_PREVIEW_LENGTH), $page['keywords']));?></p>
+  </div>
+  <div class="card-footer">
+      <small class="text-muted"><?php echo(parse_tags($result["tags"]));?></small>
+    </div>
+</div>
+
+
+
+
+ <?php }?>
+
+ </div>
 
 </div>
 
 
 <div class="container">
 
-  <?php
-    if (!$page['result']) {
-        echo '<div class="alert alert-dismissible alert-danger" role="alert">'.$page['message'];
-        echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-        echo '</div>';
-    } else {
-        echo '<div class="well well-sm">';
-        echo '<b>'.implode(' ', $page['keywords']).'</b>에 대해 '
-             .$page['total_results'].'항목을 찾았습니다. ('. $page['elapsed_time'].'초)';
-        echo '</div>';
-    }?>
-  <div class="row">
-    <?php if ($page['result']) {
-    foreach ($page['search_result'] as $result) {
-        echo '<div class="col-md-12">';
-        echo '<h4><a href="'.HREF_READ.'/'.$result["title"].'">'.$result["title"].'</a> <span class="badge">+'.$result["hits"].'</span></h4>';
-        echo '<p>'.highlight(truncate(strip_tags($result["content"]), CONTENT_PREVIEW_LENGTH), $page['keywords']).'</p>';
-        echo '<h5>'.parseTags($result["tags"]).'</h5><br/>';
-        echo '</div>';
-    }}?>
-  </div>
   <?php if ($page['result']) {
     if ($page['total_results'] > MAX_ARTICLES) {
 
@@ -106,12 +111,12 @@ require_once __DIR__ . "/frame.header.php";
 
 <?php
 
-function parseTags($tags) {
+function parse_tags($tags) {
   $chunks = explode(' ', $tags);
   $tags   = "";
   for ($i = 0; $i < count($chunks); $i++) {
-      if (strlen($chunks[$i]) > 0)
-          $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="' . HREF_SEARCH . '?' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
+      if (mb_strlen($chunks[$i]) > 0)
+          $tags .= ($i > 0 ? '&nbsp;&nbsp;' : '') . '<a href="./?search&q=@' . $chunks[$i] . '">#' . $chunks[$i] . '</a>';
   }
   return $tags;
 }

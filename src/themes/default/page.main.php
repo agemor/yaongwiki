@@ -7,6 +7,9 @@
  * @date 2017. 09. 09
  */
 
+require_once YAONGWIKI_CORE . "/page.main.processor.php";
+ 
+
 $page["title"] = "YaongWiki";
  
 require_once __DIR__ . "/frame.header.php";

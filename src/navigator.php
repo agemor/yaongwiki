@@ -34,7 +34,7 @@ function get_current_page_url() {
 function to_inner_url($url) {
 
     $parsed_url = parse_url($url);
-
+    
     if (empty(DB_HOST)) {
         $target = "page.install.php";
     }
@@ -52,6 +52,6 @@ function to_inner_url($url) {
     else {
         $target = "page.main.php";
     }
-    
+
     return get_theme_path() . $target;
 }

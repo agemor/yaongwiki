@@ -5,6 +5,7 @@
       </div>
     </footer>
     <script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/jquery-3.2.1.min.js"></script>
+    <script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/popper.min.js"></script>
     <script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/bootstrap.min.js"></script>
   </body>
 </html>
