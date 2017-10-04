@@ -186,7 +186,7 @@ function process() {
     
     $response = $db->in(DB_USER_TABLE)
                    ->update("total_contributions", "`total_contributions` + 1", true)
-                   ->where("id", "=", $user->id)
+                   ->where("id", "=", $user->get("id"))
                    ->go();
 
     $response = $db->in(DB_REVISION_TABLE)
@@ -194,7 +194,7 @@ function process() {
                    ->insert("article_title", $article_data["title"])
                    ->insert("predecessor_id", $article_data["latest_revision_id"])
                    ->insert("revision", intval($article_data["revisions"]) + 1)
-                   ->insert("user_name", $user->name)
+                   ->insert("user_name", $user->get("name"))
                    ->insert("snapshot_content", $article_data["content"])
                    ->insert("snapshot_tags", $article_data["tags"])
                    ->insert("fluctuation", (strlen($article_data["content"]) - strlen($article_snapshot_data["content"])))
@@ -233,12 +233,8 @@ function process() {
             "message" => STRINGS["EPWR10"]
         );
     }
-
-    $response = $db->in(DB_LOG_TABLE)
-                   ->insert("user_name", $user->name) 
-                   ->insert("behavior", "write")
-                   ->insert("data", $article_data["id"] . "/" . (intval($article_data["revisions"]) + 1))
-                   ->go();
+    
+    $log->create($user->get("name"), "write", $article_data["id"] . "/" . (intval($article_data["revisions"]) + 1));
     
     return array(
         "result" => true,

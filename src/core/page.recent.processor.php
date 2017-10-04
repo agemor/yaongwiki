@@ -26,10 +26,7 @@ function process($max_displayed_in_one_page = 30) {
     $response = $db->custom("SELECT * FROM `" . DB_REVISION_TABLE . "` WHERE `id` IN (SELECT MAX(`id`) FROM `" . DB_REVISION_TABLE . "` GROUP BY `article_id`) ORDER BY `id` DESC LIMIT " . $max_displayed_in_one_page . ";");
     
     if (!$response) {
-        return array(
-            "result" => false,
-            "message" => STRINGS["EPRC0"]
-        );
+        $response = array();
     }
     
     return array(

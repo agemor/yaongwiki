@@ -171,7 +171,7 @@ function process() {
             );
         }
 
-        $response = $db->in(USER_TABLE)
+        $response = $db->in(DB_USER_TABLE)
                        ->delete()
                        ->where("id", "=", $user->get("id"))
                        ->go();

@@ -61,12 +61,17 @@ function process() {
             "title" => $http_article_title            
         );
     }
+
+    $response = $db->in(DB_USER_TABLE)
+                   ->update("total_contributions", "`total_contributions` + 1", true)
+                   ->where("id", "=", $user->get("id"))
+                   ->go();
     
     $response_1 = $db->in(DB_REVISION_TABLE)
                      ->insert("article_id", $response["id"])
                      ->insert("article_title", $http_article_title)
                      ->insert("revision", "0")
-                     ->insert("user_name", $user->name)
+                     ->insert("user_name", $user->get("name"))
                      ->insert("snapshot_content", "")
                      ->insert("snapshot_tags", "")
                      ->insert("fluctuation", "0")

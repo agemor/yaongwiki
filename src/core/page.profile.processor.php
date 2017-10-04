@@ -57,11 +57,7 @@ function process($max_displayed_in_one_page = 10) {
                     ->go_and_get_all();
     
     if (!$contribution_data) {
-        return array(
-            "result" => false,
-            "message" => STRINGS["EPPF1"],
-            "user" => $user_data
-        );
+        $contribution_data = array();
     }
 
     $user_data["contributions"] = $contribution_data;

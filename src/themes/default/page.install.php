@@ -10,6 +10,7 @@
 require_once YAONGWIKI_CORE . "/page.install.processor.php";
 
 $page = process();
+$http_vars = HttpVarsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
@@ -47,23 +48,23 @@ require_once __DIR__ . "/frame.header.php";
         <p>Please fill out below form.</p>
         <div class="form-group">
           <label for="hostInput">DB Host</label>
-          <input type="text" name="db-host" class="form-control" id="hostInput" placeholder="localhost:3306" value="<?php echo($post->retrieve('db-host'));?>" required>
+          <input type="text" name="db-host" class="form-control" id="hostInput" placeholder="localhost:3306" value="<?php echo($http_vars->get("db-host"));?>" required>
         </div>
         <div class="form-group">
           <label for="userInput">DB User</label>
-          <input type="text" name="db-user" class="form-control" id="userInput" placeholder="root" value="<?php echo($post->retrieve('db-user'));?>" required>
+          <input type="text" name="db-user" class="form-control" id="userInput" placeholder="root" value="<?php echo($http_vars->get("db-user"));?>" required>
         </div>
         <div class="form-group">
           <label for="passwordInput">DB User Password</label>
-          <input type="password" name="db-password" class="form-control" id="passwordInput" value="<?php echo($post->retrieve('db-password'));?>" required>
+          <input type="password" name="db-password" class="form-control" id="passwordInput" value="<?php echo($http_vars->get("db-password"));?>" required>
         </div>
         <div class="form-group">
           <label for="nameInput">DB Name</label>
-          <input type="text" name="db-name" class="form-control" id="nameInput" placeholder="yaongwiki" value="<?php echo($post->retrieve('db-name'));?>" required>
+          <input type="text" name="db-name" class="form-control" id="nameInput" placeholder="yaongwiki" value="<?php echo($http_vars->get("db-name"));?>" required>
         </div>
         <div class="form-group">
           <label for="prefixInput">YaongWiki Table Prefix</label>
-          <input type="text" name="db-prefix" class="form-control" id="prefixInput" value="<?php echo($post->retrieve('db-prefix'));?>" placeholder="">
+          <input type="text" name="db-prefix" class="form-control" id="prefixInput" value="<?php echo($http_vars->get("db-prefix"));?>" placeholder="">
           <small id="prefixInputHelper" class="text-muted">This is optional parameter.</small>
         </div>
       </div>

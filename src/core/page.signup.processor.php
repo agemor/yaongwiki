@@ -18,6 +18,7 @@ function process() {
     $log = LogManager::get_instance();
     $http_vars = HttpVarsManager::get_instance();
     $recaptcha = ReCaptchaManager::get_instance();
+    $settings = SettingsManager::get_instance();
 
     $http_user_name = $http_vars->get("user-name");
     $http_user_password = $http_vars->get("user-password");
@@ -82,7 +83,7 @@ function process() {
     
     if ($response) {
         for ($i = 0; $i < count($response); $i++) {
-            if (strcmp($http_user_name, $response[i]["name"]) == 0) {
+            if (strcmp($http_user_name, $response[$i]["name"]) == 0) {
                 return array(
                     "result" => false,
                     "message" => STRINGS["EPSU5"]

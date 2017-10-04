@@ -68,11 +68,11 @@ require_once __DIR__ . "/frame.header.php";
 <div class="container">
 
   <?php if ($page['result']) {
-    if ($page['total_results'] > MAX_ARTICLES) {
+    if ($page['total_results'] > MAX_DISPLAY) {
 
         $total_pages = 0;//ceil($page['total_results'] / MAX_ARTICLES);
         $firstPage = 0;//floor($page / MAX_PAGINATION) * MAX_PAGINATION;
-        $lastPage = $firstPage + MAX_PAGINATION;
+        $lastPage = $firstPage + MAX_DISPLAY;
       
         echo '<div class="text-center"><ul class="pagination">';
 

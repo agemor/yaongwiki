@@ -92,7 +92,7 @@ require_once __DIR__ . "/frame.header.php";
                 <tr>
                   <td><?php echo($result["timestamp"]);?></td>
                   <td><?php echo(empty($result["ip"]) ? "127.0.0.1" : $result["ip"]);?></td>
-                  <td><?php echo(($result["data"] == "0") ? "실패" : "성공");?></td>
+                  <td><?php echo($result["behavior"]);?></td>
                 </tr>
                 <?php }?>    
               </tbody>
@@ -156,7 +156,7 @@ require_once __DIR__ . "/frame.header.php";
           Delete account
         </div>
         <div class="card-body">
-          <p>Deleting </p>
+          <p>Deleting account does not remove your contribution history.</p>
           <form action="./?dashboard" method="post">
             <div class="form-group">
               <label for="dropPasswordInput">Password</label>
