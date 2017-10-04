@@ -228,10 +228,7 @@ function process() {
             }
 
             $response = $db->in(DB_SETTINGS_TABLE)
-                           ->update("name", $data["name"])
                            ->update("value", $value)
-                           ->update("default_value", $data["default_value"])
-                           ->update("comment", $data["comment"])
                            ->where("id", "=", $data["id"])
                            ->go();
         }
