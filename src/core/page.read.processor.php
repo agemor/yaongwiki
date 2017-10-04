@@ -27,10 +27,7 @@ function process() {
     $read_by_id = !empty($http_article_id);
     
     if (empty($http_article_title) && empty($http_article_id)) {
-        return array(
-            "result" => false,
-            "redirect" => "./?page-not-found"
-        );
+        $http_article_title = SettingsManager::get_instance()->get("site_main_article");
     }
 
     if (!$db->connect()) {
@@ -53,12 +50,13 @@ function process() {
     
     if (!$article_data) {
         if (!$read_by_id) {
-            $redirect->set("./?page-not-found&t=" . $http_article_title);
+            $redirect = "./?page-not-found&t=" . $http_article_title;
         } else {
-            $redirect->set("./?page-not-found");
+            $redirect = "./?page-not-found";
         }
         return array(
-            "redirect" => true
+            "result" => true,
+            "redirect" => $redirect
         );
     }
     

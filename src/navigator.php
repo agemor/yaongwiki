@@ -50,7 +50,7 @@ function to_inner_url($url) {
     } 
 
     else {
-        $target = "page.main.php";
+        $target = "page.read.php";
     }
 
     return get_theme_path() . $target;
