@@ -42,7 +42,7 @@ require_once __DIR__ . "/frame.header.php";
     <a class="nav-link" data-toggle="tab" href="#modifyAccountPanel" role="tab">Modify account</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#deleteAccountPanel" role="tab">Delete account</a>
+    <a class="nav-link" data-toggle="tab" href="#settingsPanel" role="tab">Site settings</a>
   </li>
 </ul>
 
@@ -106,23 +106,7 @@ require_once __DIR__ . "/frame.header.php";
 
   <div class="tab-pane" id="modifyAccountPanel" role="tabpanel">
   <div class="row mt-3">
-    <div class="col-md-6">
-      <div class="card mt-3">
-        <div class="card-header">
-          Change email
-        </div>
-        <div class="card-body">
-        <form action="./?dashboard" method="post">
-          <div class="form-group">
-            <label for="newEmailInput">Email address</label>
-            <input type="email" name="user-email" class="form-control" id="newEmailInput" aria-describedby="newEmailInputHelp" placeholder="New email address" value="<?php echo $page["user"]["email"];?>" required>
-            <small id="newEmailInputHelp" class="form-text text-muted">Enter vaild new email address</small>
-          </div>
-          <button type="submit" class="btn btn-primary">Change email</button>
-        </form>
-      </div>
-    </div>
-  </div>
+
 
   <div class="col-md-6">
     <div class="card mt-3">
@@ -145,18 +129,30 @@ require_once __DIR__ . "/frame.header.php";
         </div>
       </div>
     </div>
+    <div class="col-md-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          Change email
+        </div>
+        <div class="card-body">
+        <form action="./?dashboard" method="post">
+          <div class="form-group">
+            <label for="newEmailInput">Email address</label>
+            <input type="email" name="user-email" class="form-control" id="newEmailInput" aria-describedby="newEmailInputHelp" placeholder="New email address" value="<?php echo $page["user"]["email"];?>" required>
+            <small id="newEmailInputHelp" class="form-text text-muted">Enter vaild new email address</small>
+          </div>
+          <button type="submit" class="btn btn-primary">Change email</button>
+        </form>
+      </div>
+    </div>
   </div>
-  </div>
-  
-  <div class="tab-pane" id="deleteAccountPanel" role="tabpanel">
-  <div class="row mt-3">
     <div class="col-md-6">
       <div class="card mt-3">
         <div class="card-header">
           Delete account
         </div>
         <div class="card-body">
-          <p>Deleting account does not remove your contribution history.</p>
+          <em>Deleting account does not remove your contribution history.</em>
           <form action="./?dashboard" method="post">
             <div class="form-group">
               <label for="dropPasswordInput">Password</label>
@@ -169,6 +165,41 @@ require_once __DIR__ . "/frame.header.php";
       </div>
     </div>
   </div>
+  
+  <div class="tab-pane" id="settingsPanel" role="tabpanel">
+
+
+
+  <div class="card mt-3">
+        <div class="card-header">
+          Site settings
+        </div>
+        <div class="card-body">
+        <form action="./?dashboard" method="post">
+          <?php foreach($page["settings"] as $settings) { ?>
+            <div class="form-group">
+              <label for="settingsInput<?php echo($settings["id"]);?>"><?php echo($settings["name"]);?></label>
+              <input type="text" name="settings-<?php echo($settings["name"]);?>" class="form-control" id="settingsInput<?php echo($settings["id"]);?>" aria-describedby="settingsInput<?php echo($settings["id"]);?>Help" placeholder="<?php echo($settings["default_value"]);?>" value="<?php echo($settings["value"]);?>">
+              <small id="settingsInput<?php echo($settings["id"]);?>Help" class="form-text text-muted"><?php echo($settings["comment"]);?></small>
+            </div>
+          <?php }?>
+          <button type="submit" class="btn btn-primary">Update values</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+          Settings toolbox
+        </div>
+        <div class="card-body">
+          <a href="#" class="btn btn-secondary">Restore defaults</a>
+      </div>
+    </div>
+
+
+
+
   </div>
 </div>
 

@@ -76,4 +76,8 @@ class SettingsManager {
             return null;
         }        
     }
+
+    public function settings_count() {
+        return count($this->settings_data);
+    }
 }
