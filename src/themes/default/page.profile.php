@@ -37,12 +37,27 @@ require_once __DIR__ . "/frame.header.php";
   </div>
   <?php } ?>
 
-  <h5 class="mt-5">Profile</h5>
-  <span>Joined: <em><?php echo($page["user"]["timestamp"]);?></em></span><br/>
+
+  <div class="card mt-5">
+  <div class="card-header">
+    Profile
+  </div>
+  <div class="card-body">
+
+  <dl class="row" style="margin-bottom: -10px">
+  <dt class="col-sm-3">Joined</dt>
+  <dd class="col-sm-9"><?php echo($page["user"]["timestamp"]);?></dd>
+
+  <dt class="col-sm-3">Message</dt>
+  <dd class="col-sm-9">
   <form id="intro">
     <span id="introText" class="mr-2"><?php echo($page["user"]["info"]);?></span>
-    <button type="button" class="btn btn-default btn-sm my-2" id="introButton">Edit</button>
+    <button type="button" class="btn btn-default btn-sm" id="introButton">Edit</button>
   </form>
+  </dd>
+  </dl>
+  </div>
+</div>
 
   <h5 class="mt-5">Contribution History</h5>
   <table class="table table-hover">
@@ -109,7 +124,7 @@ window.onload = function() {
     var introText = document.getElementById("introText");
     var introButton = document.getElementById("introButton");
     var introCancelButton = introButton.cloneNode(true);
-    var introInput = document.createElement("input");
+    var introInput = document.createElement("textarea");
 
     var originalText = introText.textContent;
     var editMode = false;
@@ -117,7 +132,8 @@ window.onload = function() {
     introInput.type = "text";
     introInput.classList.add("form-control");
     introCancelButton.textContent = "Cancel";
-    introCancelButton.classList.add("mx-2");
+    introCancelButton.classList.add("mx-1");
+    introCancelButton.classList.add("mt-2");
 
     introButton.onclick = introCancelButton.onclick =  function(event) {
         editMode = !editMode;
@@ -126,12 +142,14 @@ window.onload = function() {
             intro.removeChild(introText);
             intro.insertBefore(introInput, introButton);
             intro.appendChild(introCancelButton, introButton);
+            introButton.classList.add("mt-2");
             introButton.textContent = "Save";
         } else {
             if (event.target == introCancelButton) {
                 intro.removeChild(introInput);
                 intro.removeChild(introCancelButton);
                 intro.insertBefore(introText, introButton);
+                introButton.classList.remove("mt-2");
                 introButton.textContent = "Edit";
             } else {
                 post("./?profile&user-name=<?php echo($page["user"]["name"]);?>", {
