@@ -81,7 +81,8 @@ function to_inner_url($url) {
         if (array_key_exists($first_param_key, YAONGWIKI_NAVIGATOR_TABLE)) {
             $target = YAONGWIKI_NAVIGATOR_TABLE[$first_param_key];
         } else {
-            $target = YAONGWIKI_NAVIGATOR_TABLE["page-not-found"];
+            //$_GET["main"] = true;
+            $target = YAONGWIKI_NAVIGATOR_TABLE["read"];
         }
 
     } else {

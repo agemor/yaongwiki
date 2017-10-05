@@ -24,10 +24,11 @@ function process() {
     $http_article_id = $http_vars->get("i");
     $http_no_redirect = $http_vars->get("no-redirect") != null;
     $http_random = $http_vars->get("random") != null;
+    $http_main = $http_vars->get("main") != null;
     
     $read_by_id = !empty($http_article_id);
     
-    if (empty($http_article_title) && empty($http_article_id)) {
+    if (empty($http_article_title) && empty($http_article_id) || $http_main) {
         $http_article_title = SettingsManager::get_instance()->get("site_main_article");
     }
 

@@ -7,6 +7,8 @@
  * @date 2017. 09. 08
  */
 
+require_once YAONGWIKI_CORE_DIR . "/common.php";
+
 if (isset($page["redirect"]) && $page["redirect"] == true) {
     $redirect->redirect();  
 }
@@ -30,6 +32,7 @@ $page["title"] = "Page Not Found";
           Sorry, this page<em><?php echo(" ". HttpVarsManager::get_instance()->get("t"));?></em> does not exist.
           It may be removed or renamed. You can try another search keyword.
         </p>
+        <a href="./" class="btn btn-link">Go main page</a>
       </div>
     </div>
 </div>
