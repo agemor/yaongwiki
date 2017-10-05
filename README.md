@@ -22,6 +22,11 @@ Visit [yaongwiki.org](http://yaongwiki.org)
 - PHP7
 - MySQL (or MariaDB)
 
+## Releases
+
+List of available releases can be viewed [here](https://github.com/agemor/yaongwiki/releases). The latest version is `v1.2`
+
+
 ## Installation
 
 Copy contents of `src` folder to your desired remote directory. After that, you can start installation process visiting the directory.
@@ -32,6 +37,9 @@ For contributors and testers, YaongWiki have ready-to-launch docker configuratio
 ```
 $ docker-compose up
 ```
+
+## Contributions
+Any kind of help or contribution is welcome! YaongWiki is owned by everyone.
 
 ## License
 By the terms of [GPL-2.0](#) license, YaongWiki can be used by anyone. 
