@@ -28,7 +28,14 @@ require_once __DIR__ . "/frame.header.php";
     <small class="text-muted"> (<em>Revision <?php echo($page["revision"]["revision"]);?>)</em></small>
     <h2>
   </div>
-  <p><?php echo($page["revision"]["comment"]);?></p>
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+  <div class="alert alert-danger" role="alert">
+    <?php echo($page["message"]);?>
+  </div>
+  <?php } ?>
+  <div class="alert alert-light" role="alert">
+  <?php echo($page["revision"]["comment"]);?>
+  </div>
   <div class="text-right mb-3">
       <div class="btn-group" role="group">
         <a class="btn btn-default" href="./?read&i=<?php echo($page['revision']['article_id']);?>" >Read article</a>
@@ -36,11 +43,7 @@ require_once __DIR__ . "/frame.header.php";
         <a class="btn btn-default" href="./?revision-history&i=<?php echo($page['revision']['article_id']);?>">Revision History</a>
       </div>
     </div>
-  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
-  <div class="alert alert-danger" role="alert">
-    <?php echo($page["message"]);?>
-  </div>
-  <?php } ?>
+  
 
   <ul class="nav nav-tabs">
     <li class="nav-item">
