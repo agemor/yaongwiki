@@ -17,42 +17,42 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = $page["article"]["title"] . " - " . $settings->get("site_title");
-
-require_once __DIR__ . "/frame.header.php";
+$page["title"] = $page["article"]["title"] . " - " . SettingsManager::get_instance()->get("site_title");
 ?>
+
+<?php require_once __DIR__ . "/frame.header.php"; ?>
 <div class="container">
+
   <div class="title my-4">
     <h2>
-    <?php echo($page["article"]["title"]);?>
-    <small class="text-muted"> (Views: <?php echo($page["article"]["hits"]);?>)</small>
-    <h2>
+      <?php echo($page["article"]["title"]);?>
+      <small class="text-muted"> (Views: <?php echo($page["article"]["hits"]);?>)</small>
+    </h2>
+  </div>
+
+  <div class="text-right mb-3">
+    <div class="btn-group" role="group">
+      <a class="btn btn-default" href="./?write&i=<?php echo($page["article"]["id"]);?>" >Edit article</a>
+      <a class="btn btn-default" href="./?revision-history&i=<?php echo($page["article"]["id"]);?>" >Revision history</a>
     </div>
-    <div class="text-right mb-3">
-      <div class="btn-group" role="group">
-        <a class="btn btn-default" href="./?write&i=<?php echo($page['article']['id']);?>" >Edit article</a>
-        <a class="btn btn-default" href="./?revision-history&i=<?php echo($page['article']['id']);?>" >Revision history</a>
-      </div>
-    </div>
+  </div>
   
   <?php if (HttpVarsManager::get_instance()->get("from") !== null) { ?>
   <div class="alert alert-info" role="alert">
     Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo(HttpVarsManager::get_instance()->get("from"));?></a>.
   </div>
   <?php } ?>
+  
   <ol class="breadcrumb">
-  <?php 
-  if (count($page["article"]["tags"]) == 0) { ?>
+    <?php if (count($page["article"]["tags"]) == 0) { ?>
     <li class="breadcrumb-item">No tags</li>
-  <?php }
-  for ($i = 0; $i < count($page["article"]["tags"]); $i++) { ?>
+    <?php } ?>
+    <?php for ($i = 0; $i < count($page["article"]["tags"]); $i++) { ?>
     <li class="breadcrumb-item"><a href="./?search&q=@<?php echo($page["article"]["tags"][$i]);?>"><?php echo($page["article"]["tags"][$i]);?></a></li>
-  <?php } ?>
+    <?php } ?>
   </ol>
   <div class="text-content my-4">
   <?php echo($page["article"]["content"]);?><br/>
   </div>
 </div>
-<?php
-require_once __DIR__ . "/frame.footer.php";
-?>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>
