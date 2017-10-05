@@ -77,6 +77,7 @@ class UserManager {
     
     public function signout() {
 
+        $this->user_data = null;
         $this->session->set("user_data", null);
     }
     

@@ -17,50 +17,32 @@ require_once __DIR__ . "/manager.log.php";
 require_once __DIR__ . "/manager.recaptcha.php";
 require_once __DIR__ . "/manager.email.php";
 
-require_once YAONGWIKI_CORE . "/languages/language.php";
-require_once YAONGWIKI_CORE . "/languages/" . LANGUAGE . ".php";
+// 언어팩 로드
+require_once YAONGWIKI_CORE . "/languages/" . SettingsManager::get_instance()->get("site_language") . ".php";
 require_once dirname(YAONGWIKI_CORE) . "/themes/theme.php";
 
 const PERMISSION_NO_FILTERING = 3;
 const PERMISSION_CHANGE_TITLE = 1;
 const PERMISSION_DELETE_ARTICLE = 1;
 
-const HREF_MAIN = "page.main.php";
-const HREF_SIGNIN = "page.signin.php";
-const HREF_SIGNUP = "page.signup.php";
-const HREF_SIGNOUT = "page.signout.php";
-const HREF_RESET = "page.reset.php";
-const HREF_SEARCH = "page.search.php";
-const HREF_READ = "page.read.php";
-const HREF_WRITE = "page.write.php";
-const HREF_CREATE = "page.create.php";
-const HREF_REVISION_HISTORY = "page.revision-history.php";
-const HREF_REVISION = "page.revision.php";
-const HREF_DASHBOARD = "page.dashboard.php";
-const HREF_PROFILE = "page.profile.php";
-const HREF_404 = "page.page-not-found.php";
-const HREF_SUGGEST = "page.suggest.php";
-const HREF_RECENT = "page.recent.php";
-const HREF_500 = "page.out-of-service.php";
-
 const NAVIGATOR_TABLE = array(
-    "main" => HREF_MAIN,
-    "signin" => HREF_SIGNIN,
-    "signup" => HREF_SIGNUP,
-    "signout" => HREF_SIGNOUT,
-    "reset" => HREF_RESET,
-    "search" => HREF_SEARCH,
-    "read" => HREF_READ,
-    "write" => HREF_WRITE,
-    "create" => HREF_CREATE,
-    "revision-history" => HREF_REVISION_HISTORY,
-    "revision" => HREF_REVISION,
-    "dashboard" => HREF_DASHBOARD,
-    "profile" => HREF_PROFILE,
-    "page-not-found" => HREF_404,
-    "suggest" => HREF_SUGGEST,
-    "recent" => HREF_RECENT,
-    "out-of-service" => HREF_500,
+    "main" => "page.main.php",
+    "signin" => "page.signin.php",
+    "signup" => "page.signup.php",
+    "signout" => "page.signout.php",
+    "reset" => "page.reset.php",
+    "search" => "page.search.php",
+    "read" => "page.read.php",
+    "write" => "page.write.php",
+    "create" => "page.create.php",
+    "revision-history" => "page.revision-history.php",
+    "revision" => "page.revision.php",
+    "dashboard" => "page.dashboard.php",
+    "profile" => "page.profile.php",
+    "suggest" => "page.suggest.php",
+    "recent" => "page.recent.php",
+    "out-of-service" => "page.out-of-service.php",
+    "page-not-found" => "page.page-not-found.php",
     "phpinfo" => "page.phpinfo.php"
 );
 

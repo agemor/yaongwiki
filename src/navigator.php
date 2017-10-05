@@ -7,7 +7,6 @@
  * @date 2017. 08. 26
  */
 
-require_once YAONGWIKI_ROOT . "/core/common.php";
 require_once YAONGWIKI_ROOT . "/core/db.account.php";
 
 // 현재 페이지의 전체 URL 구하기

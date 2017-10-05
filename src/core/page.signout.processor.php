@@ -17,7 +17,7 @@ function process() {
     $http_redirect = $http_vars->get("redirect") != null ? $http_vars->get("redirect") : "./";
 
     $user->signout();
-
+    
     return array(
         "result" => true,
         "redirect" => $http_redirect

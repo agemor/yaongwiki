@@ -106,7 +106,7 @@ INSERT INTO `[PREFIX]yaongwiki_settings` (`id`, `name`, `value`, `default_value`
 (2, 'site_title', 'YaongWiki', 'YaongWiki', 'Site title'),
 (3, 'site_description', 'Yet another wiki site', '', 'Site description'),
 (4, 'site_keywords', '', '', 'Site keywords'),
-(5, 'site_language', 'en-US', 'en-US', 'Site language'),
+(5, 'site_language', 'en_US', 'en_US', 'Site language'),
 (6, 'site_theme', 'default', 'default', 'Site theme'),
 (7, 'site_main_article', 'Main', 'Main', 'Site main article'),
 (8, 'file_directory', 'uploads', 'uploads', 'File upload directory'),
