@@ -56,7 +56,7 @@ function process($max_displayed_in_one_page = 10) {
     // 검색 쿼리 취득
     $keywords = explode(" ", $http_query);
     $query = $tag_search_mode ? get_tag_search_query($keywords, $fulltext_enable) : get_content_search_query($keywords, $fulltext_enable);
-    $query .= " LIMIT " . ($http_page * $max_displayed_in_one_page) . ", " . $max_displayed_in_one_page . ";";
+    $query .= " LIMIT " . (($http_page + 1) * $max_displayed_in_one_page) . ";";
 
     // 정확히 제목이 일치하는 항목이 있으면 바로 이동
     if (count($keywords) == 1) {
@@ -85,7 +85,8 @@ function process($max_displayed_in_one_page = 10) {
             "result" => true,
             "search_result" => array(),
             "keywords" => $keywords,
-            "elapsed_time" => $elapsed_time
+            "elapsed_time" => $elapsed_time,
+            "page" => $http_page
         );
     }
 
@@ -93,7 +94,8 @@ function process($max_displayed_in_one_page = 10) {
         "result" => true,
         "search_result" => $search_result_data,
         "keywords" => $keywords,
-        "elapsed_time" => $elapsed_time
+        "elapsed_time" => $elapsed_time,
+        "page" => $http_page
     );
 }
 

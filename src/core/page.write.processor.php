@@ -25,7 +25,7 @@ function process() {
     $http_article_id = $http_vars->get("article-id") !== null ? $http_vars->get("article-id") : $http_vars->get("i");
     $http_article_new_title = strip_tags($http_vars->get("article-new-title"));
     $http_article_content = $http_vars->get("article-content");
-    $http_article_tags = preg_replace("!\s+!", " ", strip_tags($http_vars->get("article-tags")));
+    $http_article_tags = preg_replace("/\s+/", "", strip_tags($http_vars->get("article-tags")));
     $http_article_delete = $http_vars->get("article-delete") !== null;
     $http_article_change_permission = $http_vars->get("article-permission") !== null;
     $http_article_permission = $http_article_change_permission ? abs(intval($http_vars->get("article-permission"))) : 0;

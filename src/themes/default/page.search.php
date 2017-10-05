@@ -9,7 +9,7 @@
 
 require_once YAONGWIKI_CORE . "/page.search.processor.php";
 
-const MAX_DISPLAY = 10;
+const MAX_DISPLAY = 5;
 const CONTENT_PREVIEW_LENGTH =100;
 
 $page = process(MAX_DISPLAY);
@@ -61,43 +61,18 @@ require_once __DIR__ . "/frame.header.php";
  <?php }?>
 
  </div>
+<?php if (($page["page"] + 1) * MAX_DISPLAY <= count($page["search_result"])) { ?>
+<a href="./?search&q=<?php echo(HttpVarsManager::get_instance()->get("q"));?>&p=<?php echo($page["page"] + 1);?>" class="btn btn-link">Load more...</a>
+<?php } ?>
+
 
 </div>
 
-
-<div class="container">
-
-  <?php if ($page['result']) {
-    if ($page['total_results'] > MAX_DISPLAY) {
-
-        $total_pages = 0;//ceil($page['total_results'] / MAX_ARTICLES);
-        $firstPage = 0;//floor($page / MAX_PAGINATION) * MAX_PAGINATION;
-        $lastPage = $firstPage + MAX_DISPLAY;
-      
-        echo '<div class="text-center"><ul class="pagination">';
-
-        if ($firstPage > 0) {
-            echo '<li><a href="'.$page_location.'&p='.($firstPage - 1).'" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
-        }
-        for ($i = $firstPage; $i < min($total_pages, $lastPage); $i++) {
-            if ($i == $page) {
-                echo '<li class="active"><a href="'.$page_location.'&p='.$i.'>'.($i + 1).'<span class="sr-only">(current)</span></a></li>';
-            } else {
-                echo '<li><a href="'.$page_location.'&p='.$i.'">'.($i + 1).'</a></li>';
-            }
-        }
-        if ($lastPage < $total_pages) {
-          echo '<li><a href="'.$page_location.'&p='.$lastPage.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
-        }
-        echo '</ul></div>';
-    }}?>
-  <div class="well well-sm">원하는 지식이 없다면, <a href="<?php echo HREF_CREATE;?>"><b>직접 지식을 추가</b></a>해 보세요</div>
-</div>
 
 <?php
 
 function parse_tags($tags) {
-  $chunks = explode(' ', $tags);
+  $chunks = explode(',', $tags);
   $tags   = "";
   for ($i = 0; $i < count($chunks); $i++) {
       if (mb_strlen($chunks[$i]) > 0)
