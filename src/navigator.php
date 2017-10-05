@@ -7,7 +7,29 @@
  * @date 2017. 08. 26
  */
 
+require_once YAONGWIKI_ROOT . "/core/common.php";
 require_once YAONGWIKI_ROOT . "/core/db.account.php";
+
+const NAVIGATOR_TABLE = array(
+    "main" => "page.main.php",
+    "signin" => "page.signin.php",
+    "signup" => "page.signup.php",
+    "signout" => "page.signout.php",
+    "reset" => "page.reset.php",
+    "search" => "page.search.php",
+    "read" => "page.read.php",
+    "write" => "page.write.php",
+    "create" => "page.create.php",
+    "revision-history" => "page.revision-history.php",
+    "revision" => "page.revision.php",
+    "dashboard" => "page.dashboard.php",
+    "profile" => "page.profile.php",
+    "suggest" => "page.suggest.php",
+    "recent" => "page.recent.php",
+    "out-of-service" => "page.out-of-service.php",
+    "page-not-found" => "page.page-not-found.php",
+    "phpinfo" => "page.phpinfo.php"
+);
 
 // 현재 페이지의 전체 URL 구하기
 function get_current_page_url() {

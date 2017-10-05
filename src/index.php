@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 define("YAONGWIKI_DIR", "");
 define("YAONGWIKI_ROOT", __DIR__ . YAONGWIKI_DIR);
 
-require_once YAONGWIKI_ROOT . "/core/common.php";
+require_once YAONGWIKI_ROOT . "/core/manager.http-vars.php";
 require_once YAONGWIKI_ROOT . "/navigator.php";
 
 HttpVarsManager::get_instance()->set($_GET, $_POST);

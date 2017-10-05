@@ -18,32 +18,19 @@ require_once __DIR__ . "/manager.recaptcha.php";
 require_once __DIR__ . "/manager.email.php";
 
 // 언어팩 로드
-require_once YAONGWIKI_CORE . "/languages/" . SettingsManager::get_instance()->get("site_language") . ".php";
+$site_language = SettingsManager::get_instance()->get("site_language");
+$site_theme = SettingsManager::get_instance()->get("site_theme");
+if (empty($site_language)) {
+    $site_language = "en_US";
+}
+if (empty($site_theme)) {
+    $site_theme = "default";
+}
+require_once YAONGWIKI_CORE . "/languages/" . $site_language . ".php";
 
 const PERMISSION_NO_FILTERING = 3;
 const PERMISSION_CHANGE_TITLE = 1;
 const PERMISSION_DELETE_ARTICLE = 1;
-
-const NAVIGATOR_TABLE = array(
-    "main" => "page.main.php",
-    "signin" => "page.signin.php",
-    "signup" => "page.signup.php",
-    "signout" => "page.signout.php",
-    "reset" => "page.reset.php",
-    "search" => "page.search.php",
-    "read" => "page.read.php",
-    "write" => "page.write.php",
-    "create" => "page.create.php",
-    "revision-history" => "page.revision-history.php",
-    "revision" => "page.revision.php",
-    "dashboard" => "page.dashboard.php",
-    "profile" => "page.profile.php",
-    "suggest" => "page.suggest.php",
-    "recent" => "page.recent.php",
-    "out-of-service" => "page.out-of-service.php",
-    "page-not-found" => "page.page-not-found.php",
-    "phpinfo" => "page.phpinfo.php"
-);
 
 const PERMISSION_TABLE = array(
     0 => "Reader",
@@ -58,7 +45,8 @@ function redirect($url) {
 }
 
 function get_theme_path() {
-    return dirname(YAONGWIKI_CORE) . "/themes/" . SettingsManager::get_instance()->get("site_theme")  . "/";
+    global $site_theme;
+    return dirname(YAONGWIKI_CORE) . "/themes/" .$site_theme . "/";
 }
 
 function hash_password($password) {
