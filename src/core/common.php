@@ -19,7 +19,6 @@ require_once __DIR__ . "/manager.email.php";
 
 // 언어팩 로드
 require_once YAONGWIKI_CORE . "/languages/" . SettingsManager::get_instance()->get("site_language") . ".php";
-require_once dirname(YAONGWIKI_CORE) . "/themes/theme.php";
 
 const PERMISSION_NO_FILTERING = 3;
 const PERMISSION_CHANGE_TITLE = 1;
@@ -59,7 +58,7 @@ function redirect($url) {
 }
 
 function get_theme_path() {
-    return dirname(YAONGWIKI_CORE) . "/themes/" . THEME . "/";
+    return dirname(YAONGWIKI_CORE) . "/themes/" . SettingsManager::get_instance()->get("site_theme")  . "/";
 }
 
 function hash_password($password) {
