@@ -10,7 +10,6 @@
 require_once YAONGWIKI_CORE_DIR . "/page.read.processor.php";
 
 $page = process();
-$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
@@ -42,7 +41,7 @@ $page["title"] = $page["article"]["title"] . " - " . SettingsManager::get_instan
     Redirected from <a href="./?read&t=<?php echo($get->retrieve('from'));?>&no-redirect=1"><?php echo(HttpVarsManager::get_instance()->get("from"));?></a>.
   </div>
   <?php } ?>
-  
+
   <ol class="breadcrumb">
     <?php if (count($page["article"]["tags"]) == 0) { ?>
     <li class="breadcrumb-item">No tags</li>

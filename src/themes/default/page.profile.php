@@ -12,7 +12,6 @@ require_once YAONGWIKI_CORE_DIR . "/page.profile.processor.php";
 const MAX_DISPLAY = 10;
 
 $page = process(MAX_DISPLAY);
-$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);

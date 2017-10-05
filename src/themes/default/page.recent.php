@@ -10,30 +10,31 @@
 require_once YAONGWIKI_CORE_DIR . "/page.recent.processor.php";
 
 $page = process();
-$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
     exit();
 }
 
-$page["title"] = "Recent Edits" . " - " . $settings->get("site_title");
-
-require_once __DIR__ . "/frame.header.php";
+$page["title"] = "Recent Edits" . " - " . SettingsManager::get_instance()->get("site_title");
 ?>
 
+<?php require_once __DIR__ . "/frame.header.php"; ?>
 <div class="container">
+
   <div class="title my-4">
     <h2>
-    Recent Articles
-    <small class="text-muted">(Latest 30)</small>
+        Recent Articles
+        <small class="text-muted">(Latest 30)</small>
     </h2>
-    </div>
-    <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
-    <div class="alert alert-danger" role="alert">
-      <?php echo($page["message"]);?>
-    </div>
-    <?php } ?>
+  </div>
+
+  <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
+  <div class="alert alert-danger" role="alert">
+    <?php echo($page["message"]);?>
+  </div>
+  <?php } ?>
+  
   <div style="padding: 20px"></div>
   <table class="table table-hover">
     <thead>
@@ -76,6 +77,4 @@ require_once __DIR__ . "/frame.header.php";
     </tbody>
   </table>
 </div>
-<?php
-require_once __DIR__ . "/frame.footer.php";
-?>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>
