@@ -37,8 +37,8 @@ require_once __DIR__ . "/frame.header.php";
   <?php
   if (isset($page["message"]) && $page["message"] == "success") { ?>
 
-  <p>Installation was successful. YaongWiki is all set!</p>
-  <p>You can manage this site from <a href="./?dashboard">dashboard</a>, or <a href="./">go main page</a> to take a look.</p>
+  <p>Installation was successful. </p>
+  <p>Now please register admin account from <a href="./?signup">here</a>, or <a href="./">go main page</a> to take a look.</p>
     
   <?php } else { ?>
   <form action="/" method="post">

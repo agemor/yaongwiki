@@ -61,9 +61,12 @@ require_once __DIR__ . "/frame.header.php";
           <label for="passwordReInput">Confirm Password</label>
           <input type="password" name="user-password-re" class="form-control" id="passwordReInput" value="<?php echo($http_vars->get("user-password-re"));?>" required>
         </div>
+
+        <?php if ($settings->get("recaptcha_enable") == "true") { ?>
         <label for="recaptchInput">Recaptcha</label>
         <script src='https://www.google.com/recaptcha/api.js'></script>
         <div class="g-recaptcha" data-sitekey="<?php echo($settings->get("recaptcha_public_key"));?>" ></div>
+        <?php } ?>
         </div>
       <div class="col-md-6">
         <div class="form-group">

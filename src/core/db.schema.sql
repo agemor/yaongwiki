@@ -19,6 +19,9 @@ ALTER TABLE `[PREFIX]yaongwiki_articles`
 ALTER TABLE `[PREFIX]yaongwiki_articles`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
+INSERT INTO `[PREFIX]yaongwiki_articles` (`title`, `content`, `tags`) VALUES
+('Main', 'Welcome to YaongWiki!', 'Main');
+
 CREATE TABLE `[PREFIX]yaongwiki_files` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -102,7 +105,7 @@ ALTER TABLE `yaongwiki_settings`
   ADD UNIQUE KEY `name` (`name`);
 
 INSERT INTO `[PREFIX]yaongwiki_settings` (`id`, `name`, `value`, `default_value`, `comment`) VALUES
-(1, 'administrator', 'admin', 'admin', 'System administrator'),
+(1, 'administrator', '', '', 'System administrator'),
 (2, 'site_title', 'YaongWiki', 'YaongWiki', 'Site title'),
 (3, 'site_description', 'Yet another wiki site', '', 'Site description'),
 (4, 'site_keywords', '', '', 'Site keywords'),

@@ -48,9 +48,11 @@ require_once __DIR__ . "/frame.header.php";
 					<input type="text" name="user-email" class="form-control" id="emailInput" value="<?php echo($http_vars->get("user-email"));?>" required>
 				</div>
                 <div class="my-3">
+                <?php if ($settings->get("recaptcha_enable") == "true") { ?>
                     <label for="recaptchInput">Recaptcha</label>
                     <script src='https://www.google.com/recaptcha/api.js'></script>
                     <div class="g-recaptcha" data-sitekey="<?php echo($settings->get("recaptcha_public_key"));?>" ></div>
+                <?php } ?>
                 </div>
 				<button type="submit" class="btn btn-primary mt-1">Request new password</button>
 				<a href="./?signin" class="btn btn-default">Go back</a>

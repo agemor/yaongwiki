@@ -97,10 +97,37 @@ function process() {
         }
     }
 
+    // 관리자 등록인지 검사
+    $response = $db->in(DB_SETTINGS_TABLE)
+                   ->select("*")
+                   ->where("name", "=", "administrator")
+                   ->go_and_get();
+
+    $register_admin = false;
+    if (empty($response["value"])) {
+        $register_admin = true;
+    }
+
+    if ($register_admin) {
+
+        $response = $db->in(DB_SETTINGS_TABLE)
+                    ->update("value", $http_user_name)
+                    ->where("name", "=", "administrator")
+                    ->go();
+        
+        if (!$response) {
+            return array(
+                "result" => false,
+                "message" => STRINGS["EPSU8"]
+            );
+        }
+    }
+
     $response = $db->in(DB_USER_TABLE)
                    ->insert("name", $http_user_name)
                    ->insert("password", hash_password($http_user_password))
                    ->insert("email", $http_user_email)
+                   ->insert("permission", $register_admin ? "10" : "0")
                    ->go();
     
     if (!$response) {

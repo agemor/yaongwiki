@@ -13,7 +13,14 @@
   <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="./"><?php echo(SettingsManager::get_instance()->get("site_title"));?></a>
+    <div class="container">
+  <?php
+  $site_title = SettingsManager::get_instance()->get("site_title");
+  if ($site_title == null) {
+    $site_title = "YaongWiki";
+  }
+  ?>
+    <a class="navbar-brand" href="./"><?php echo($site_title);?></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -46,7 +53,8 @@
       <form action="./" method="get" class="form-inline my-2 my-lg-0">
         <input name="search" type="hidden" value="">
         <input name="q" class="form-control mr-sm-2" type="text" placeholder="Keyword" value="<?php echo(HttpVarsManager::get_instance()->get("q"));?>" required>
-        <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
       </form>
+    </div>
     </div>
   </nav>
