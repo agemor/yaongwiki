@@ -12,29 +12,30 @@ require_once YAONGWIKI_CORE_DIR . "/page.revision-history.processor.php";
 const MAX_DISPLAY = 10;
 
 $page = process(MAX_DISPLAY);
-$settings = SettingsManager::get_instance();
 
 if (isset($page["redirect"])) {
     redirect($page["redirect"]);
     exit();
 }
 
-$page["title"] = "Revision History: " . $page["article"]["title"] . " - " . $settings->get("site_title");
-
-require_once __DIR__ . "/frame.header.php";
+$page["title"] = "Revision History: " . $page["article"]["title"] . " - " . SettingsManager::get_instance()->get("site_title");
 ?>
 
+<?php require_once __DIR__ . "/frame.header.php"; ?>
 <div class="container">
+
   <div class="title my-4">
     <h2>
     Revision History <em>(<?php echo($page["article"]["title"]); ?>)</em>
-    <h2>
+    </h2>
   </div>
+
   <div class="text-right mb-3">
-      <div class="btn-group" role="group">
-        <a class="btn btn-default" href="./?read&i=<?php echo($page['article']['id']);?>" >Read article</a>
-      </div>
+    <div class="btn-group" role="group">
+      <a class="btn btn-default" href="./?read&i=<?php echo($page['article']['id']);?>">Read article</a>
     </div>
+  </div>
+
   <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
@@ -90,12 +91,8 @@ require_once __DIR__ . "/frame.header.php";
               $li_text = $i + 1;
               echo('<li class="' . $li_class . '"><a class="page-link" href="' . $li_href . '">' . $li_text . '</a></li>');
           }
-        }
-        ?>
+        }?>
     </ul>
   </nav>
-  
 </div>
-<?php
-require_once __DIR__ . "/frame.footer.php";
-?>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>
