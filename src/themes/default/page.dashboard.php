@@ -34,7 +34,7 @@ require_once __DIR__ . "/frame.header.php";
   <?php } ?>
 
   <!-- Nav tabs -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
+<ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" data-toggle="tab" href="#viewAccountPanel" role="tab">Account status</a>
   </li>

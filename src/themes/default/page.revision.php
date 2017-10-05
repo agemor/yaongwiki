@@ -44,28 +44,34 @@ require_once __DIR__ . "/frame.header.php";
 
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a id="originalViewButton" class="tab-button nav-link" href="#" onclick="switchView(event, 'originalView')">Original view</a>
+      <a class="nav-link active" data-toggle="tab" href="#orignalViewPanel" role="tab">Original view</a>
     </li>
     <li class="nav-item">
-      <a id="diffViewButton" class="tab-button nav-link active" href="#" onclick="switchView(event, 'diffView')">Diff view</a>
+      <a class="nav-link" data-toggle="tab" href="#diffViewPanel" role="tab" onclick="loadDiffElement();">Diff view</a>
     </li>
   </ul>
 
-  <div id="diffViewContent" class="tab-content">
-    <pre><code id="diffViewContentDisplay"></code></pre>
-  </div>
-  <div id="originalViewContent" class="tab-content mt-5">
-    <ol class="breadcrumb">
-    <?php 
-    if (count($page["article"]["tags"]) == 0) { ?>
-      <li class="breadcrumb-item">No tags</li>
-    <?php }
-    for ($i = 0; $i < count($page["article"]["tags"]); $i++) { ?>
-      <li class="breadcrumb-item"><a href="./?search&q=@<?php echo($page["article"]["tags"][$i]);?>"><?php echo($page["article"]["tags"][$i]);?></a></li>
-    <?php } ?>
-    </ol>
-    <div class="text-content my-4">
-    <?php echo($page["article"]["content"]);?><br/>
+  <div class="tab-content">
+    <div class="tab-pane active" id="orignalViewPanel" role="tabpanel">
+
+
+        <ol class="breadcrumb mt-3">
+            <?php 
+            if (count($page["article"]["tags"]) == 0) { ?>
+            <li class="breadcrumb-item">No tags</li>
+            <?php }
+            for ($i = 0; $i < count($page["article"]["tags"]); $i++) { ?>
+            <li class="breadcrumb-item"><a href="./?search&q=@<?php echo($page["article"]["tags"][$i]);?>"><?php echo($page["article"]["tags"][$i]);?></a></li>
+            <?php } ?>
+        </ol>
+        <div class="text-content my-4">
+        <?php echo($page["article"]["content"]);?><br/>
+        </div>
+
+
+    </div>
+    <div class="tab-pane" id="diffViewPanel" role="tabpanel">
+        <pre><code id="diffViewContentDisplay"></code></pre>
     </div>
   </div>
 
@@ -90,29 +96,23 @@ require_once __DIR__ . "/frame.header.php";
 <script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/diff.js"></script>
 <script>
 
+var revContentText = null;
+var revCompContentText = null;
+var diffViewContentDisplay = null
+var diffCalculated = false;
+
 window.onload = function() {
+    revContentText = document.getElementById("revContentText");
+    revCompContentText = document.getElementById("revCompContentText");
+    diffViewContentDisplay = document.getElementById("diffViewContentDisplay");
+}
 
-    var diffViewButton = document.getElementById("diffViewButton");
-    var originalViewButton = document.getElementById("originalViewButton");
-    var diffViewContent = document.getElementById("diffViewContent");
-    var originalViewContent = document.getElementById("originalViewContent");
-    var diffViewContentDisplay = document.getElementById("diffViewContentDisplay");
-    var revContentText = document.getElementById("revContentText");
-    var revCompContentText = document.getElementById("revCompContentText");
-    
-    var diffCalculated = false;
-
-    diffViewButton.onclick = function(event) {
-        if (!diffCalculated) {
-            diffViewContentDisplay.appendChild(getDiffElement(revCompContentText.textContent, revContentText.textContent));
-            displayLineNumbers();
-            diffCalculated = true;
-        }
-        switchView(event, "diffViewContent");
+function loadDiffElement() {
+    if (!diffCalculated) {
+        diffViewContentDisplay.appendChild(getDiffElement(revCompContentText.textContent, revContentText.textContent));
+        displayLineNumbers();
+        diffCalculated = true;
     }
-    originalViewButton.onclick = function(event) { switchView(event, "originalViewContent");}
-
-    switchView(null, "originalViewContent");
 }
 
 function getDiffElement(text1, text2) {
@@ -146,25 +146,6 @@ function displayLineNumbers() {
             var line_num = pre[i].getElementsByTagName('span')[0];
             line_num.innerHTML += '<span>' + (j + 1) + '</span>';
         }
-    }
-}
-
-function switchView(event, viewName) {
-    var i, tabcontent, tablinks;
-
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    tablinks = document.getElementsByClassName("tab-button");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-
-    document.getElementById(viewName).style.display = "block";
-    if (event != null) {
-      evt.currentTarget.className += " active";
     }
 }
 
