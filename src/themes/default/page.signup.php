@@ -17,7 +17,7 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = "Sign up" . " - " . SettingsManager::get_instace()->get("site_title");
+$page["title"] = "Sign up" . " - " . SettingsManager::get_instance()->get("site_title");
 ?>
 
 <?php require_once __DIR__ . "/frame.header.php"; ?>

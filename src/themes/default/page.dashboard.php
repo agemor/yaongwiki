@@ -178,5 +178,4 @@ $page["title"] = "Dashboard" . " - " . SettingsManager::get_instance()->get("sit
     </div>
   </div>
 </div>
-</body>
-</html>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>

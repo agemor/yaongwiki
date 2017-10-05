@@ -12,8 +12,9 @@ define("YAONGWIKI_LANGUAGE", "en_US");
 
 define("YAONGWIKI_ROOT_DIR", __DIR__);
 define("YAONGWIKI_CORE_DIR", __DIR__ . "/core");
-define("YAONGWIKI_THEME_DIRNAME", "/themes/" . YAONGWIKI_THEME);
-define("YAONGWIKI_THEME_DIR", __DIR__ . YAONGWIKI_THEME_DIRNAME);
+define("YAONGWIKI_THEME_DIR", __DIR__ . "/themes/" . YAONGWIKI_THEME);
+define("YAONGWIKI_THEME_INCLUDE_DIR", YAONGWIKI_ENGINE_DIRNAME . "/themes/" . YAONGWIKI_THEME);
+
 
 define("YAONGWIKI_NAVIGATOR_TABLE", array(
     "install" => "page.install.php",

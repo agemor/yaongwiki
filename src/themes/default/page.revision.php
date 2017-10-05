@@ -92,7 +92,7 @@ $page["title"] = $page["revision"]["article_title"] . " (Revision " .$page["revi
   </div>
 </div>
 
-<script src=".<?php echo(YAONGWIKI_THEME_DIR);?>/js/diff.js"></script>
+<script src=".<?php echo(YAONGWIKI_THEME_INCLUDE_DIR);?>/js/diff.js"></script>
 <script>
 
 var revContentText = null;

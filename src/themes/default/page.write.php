@@ -26,8 +26,8 @@ $have_permission = $user_permission >= intval($page["article"]["permission"]);
 
 <?php require_once __DIR__ . "/frame.header.php"; ?>
 
-<link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/simplemde.min.css" rel="stylesheet">
-<script src=".<?php echo(YAONGWIKI_THEME_DIR);?>/js/simplemde.min.js"></script>
+<link href=".<?php echo(YAONGWIKI_THEME_INCLUDE_DIR);?>/css/simplemde.min.css" rel="stylesheet">
+<script src=".<?php echo(YAONGWIKI_THEME_INCLUDE_DIR);?>/js/simplemde.min.js"></script>
 
 <div class="container">
 
