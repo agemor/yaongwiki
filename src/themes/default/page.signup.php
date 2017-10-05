@@ -10,7 +10,6 @@
 require_once YAONGWIKI_CORE_DIR . "/page.signup.processor.php";
 
 $page = process();
-$settings = SettingsManager::get_instance();
 $http_vars = HttpVarsManager::get_instance();
 
 if (isset($page["redirect"])) {
@@ -18,23 +17,23 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = "Sign up" . " - " . $settings->get("site_title");
-
-require_once __DIR__ . "/frame.header.php";
+$page["title"] = "Sign up" . " - " . SettingsManager::get_instace()->get("site_title");
 ?>
+
+<?php require_once __DIR__ . "/frame.header.php"; ?>
 <div class="container">
+
   <div class="title my-4">
-    <h2>
-    Sign Up
-    <h2>
+    <h2>Sign Up</h2>
   </div>
+
   <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
-  <?php
-  if (isset($page["message"]) && $page["message"] == "success") { ?>
+
+  <?php if (isset($page["message"]) && $page["message"] == "success") { ?>
 
   <p>Sign up successful! You can now <a href="./?signin">sign in</a>.</p>
     
@@ -62,12 +61,12 @@ require_once __DIR__ . "/frame.header.php";
           <input type="password" name="user-password-re" class="form-control" id="passwordReInput" value="<?php echo($http_vars->get("user-password-re"));?>" required>
         </div>
 
-        <?php if ($settings->get("recaptcha_enable") == "true") { ?>
+        <?php if (SettingsManager::get_instance()->get("recaptcha_enable") == "true") { ?>
         <label for="recaptchInput">Recaptcha</label>
         <script src='https://www.google.com/recaptcha/api.js'></script>
-        <div class="g-recaptcha" data-sitekey="<?php echo($settings->get("recaptcha_public_key"));?>" ></div>
+        <div class="g-recaptcha" data-sitekey="<?php echo(SettingsManager::get_instance()->get("recaptcha_public_key"));?>" ></div>
         <?php } ?>
-        </div>
+      </div>
       <div class="col-md-6">
         <div class="form-group">
           <label for="termsTextArea">Terms of Use</label>
@@ -88,6 +87,4 @@ require_once __DIR__ . "/frame.header.php";
   </form>
   <?php } ?>
 </div>
-<?php
-require_once __DIR__ . "/frame.footer.php";
-?>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>
