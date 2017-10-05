@@ -7,26 +7,14 @@
  * @date 2017. 08. 26
  */
 
-define("YAONGWIKI_CORE", __DIR__);
-
 require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/session.php";
 require_once __DIR__ . "/manager.user.php";
 require_once __DIR__ . "/manager.settings.php";
 require_once __DIR__ . "/manager.http-vars.php";
 require_once __DIR__ . "/manager.log.php";
 require_once __DIR__ . "/manager.recaptcha.php";
 require_once __DIR__ . "/manager.email.php";
-
-// 언어팩 로드
-$site_language = SettingsManager::get_instance()->get("site_language");
-$site_theme = SettingsManager::get_instance()->get("site_theme");
-if (empty($site_language)) {
-    $site_language = "en_US";
-}
-if (empty($site_theme)) {
-    $site_theme = "default";
-}
-require_once YAONGWIKI_CORE . "/languages/" . $site_language . ".php";
 
 const PERMISSION_NO_FILTERING = 3;
 const PERMISSION_CHANGE_TITLE = 1;
@@ -42,11 +30,6 @@ const PERMISSION_TABLE = array(
 
 function redirect($url) {
     header("Location: " . $url);
-}
-
-function get_theme_path() {
-    global $site_theme;
-    return dirname(YAONGWIKI_CORE) . "/themes/" .$site_theme . "/";
 }
 
 function hash_password($password) {

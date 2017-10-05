@@ -7,7 +7,7 @@
  * @date 2017. 09. 19
  */
 
-require_once YAONGWIKI_CORE . "/page.revision-history.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.revision-history.processor.php";
 
 const MAX_DISPLAY = 10;
 

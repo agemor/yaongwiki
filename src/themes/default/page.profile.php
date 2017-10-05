@@ -7,7 +7,7 @@
  * @date 2017. 09. 20
  */
 
-require_once YAONGWIKI_CORE . "/page.profile.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.profile.processor.php";
 
 const MAX_DISPLAY = 10;
 

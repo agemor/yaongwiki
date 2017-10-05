@@ -7,7 +7,7 @@
  * @date 2017. 10. 03
  */
 
-require_once YAONGWIKI_CORE . "/page.search.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.search.processor.php";
 
 const MAX_DISPLAY = 5;
 const CONTENT_PREVIEW_LENGTH =100;

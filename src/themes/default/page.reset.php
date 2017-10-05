@@ -7,7 +7,7 @@
  * @date 2017. 09. 23
  */
 
-require_once YAONGWIKI_CORE . "/page.reset.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.reset.processor.php";
 
 $page = process();
 $settings = SettingsManager::get_instance();

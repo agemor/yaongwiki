@@ -7,7 +7,7 @@
  * @date 2017. 09. 09
  */
 
-require_once YAONGWIKI_CORE . "/page.signup.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.signup.processor.php";
 
 $page = process();
 $settings = SettingsManager::get_instance();

@@ -7,7 +7,7 @@
  * @date 2017. 09. 08
  */
 
-require_once YAONGWIKI_CORE . "/page.install.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.install.processor.php";
 
 $page = process();
 $http_vars = HttpVarsManager::get_instance();

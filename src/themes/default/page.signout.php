@@ -7,7 +7,7 @@
  * @date 2017. 10. 04
  */
 
-require_once YAONGWIKI_CORE . "/page.signout.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.signout.processor.php";
 
 $page = process();
 

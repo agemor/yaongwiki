@@ -7,7 +7,7 @@
  * @date 2017. 09. 23
  */
 
-require_once YAONGWIKI_CORE . "/page.revision.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.revision.processor.php";
 
 $page = process();
 $settings = SettingsManager::get_instance();
@@ -96,7 +96,7 @@ require_once __DIR__ . "/frame.header.php";
   </div>
 </div>
 
-<script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/diff.js"></script>
+<script src=".<?php echo(YAONGWIKI_THEME_DIR);?>/js/diff.js"></script>
 <script>
 
 var revContentText = null;

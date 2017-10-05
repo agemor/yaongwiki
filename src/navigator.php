@@ -7,11 +7,15 @@
  * @date 2017. 08. 26
  */
 
-require_once YAONGWIKI_ROOT . "/core/common.php";
-require_once YAONGWIKI_ROOT . "/core/db.account.php";
+define("YAONGWIKI_THEME", "default");
+define("YAONGWIKI_LANGUAGE", "en_US"); 
 
-const NAVIGATOR_TABLE = array(
-    "main" => "page.main.php",
+define("YAONGWIKI_ROOT_DIR", __DIR__);
+define("YAONGWIKI_CORE_DIR", __DIR__ . "/core");
+define("YAONGWIKI_THEME_DIR", __DIR__ . "/theme/" . YAONGWIKI_THEME);
+
+define("YAONGWIKI_NAVIGATOR_TABLE", array(
+    "install" => "page.install.php",
     "signin" => "page.signin.php",
     "signup" => "page.signup.php",
     "signout" => "page.signout.php",
@@ -29,9 +33,17 @@ const NAVIGATOR_TABLE = array(
     "out-of-service" => "page.out-of-service.php",
     "page-not-found" => "page.page-not-found.php",
     "phpinfo" => "page.phpinfo.php"
-);
+));
 
-// 현재 페이지의 전체 URL 구하기
+require_once YAONGWIKI_CORE_DIR . "/languages/" . YAONGWIKI_LANGUAGE . ".php";
+require_once YAONGWIKI_CORE_DIR . "/db.account.php";
+
+// HTTP 헤더 값 저장하기
+HttpVarsManager::get_instance()->set($_GET, $_POST);
+
+/**
+ * 현재 페이지의 전체 URL 구하기
+ */
 function get_current_page_url() {
 
     $current_page_url = "http";
@@ -51,28 +63,36 @@ function get_current_page_url() {
     return $current_page_url;
 }
 
-// 받은 URL을 내부 주소로 전환하기
+/**
+ * 받은 URL을 내부 주소로 전환하기
+ */
 function to_inner_url($url) {
 
     $parsed_url = parse_url($url);
     
     if (empty(DB_HOST)) {
-        $target = "page.install.php";
-    }
 
-    elseif (isset($parsed_url["query"])) {
+        $target = YAONGWIKI_NAVIGATOR_TABLE["install"];
+
+    } elseif (isset($parsed_url["query"])) {
 
         $first_param = explode("&", $parsed_url["query"])[0];
         $first_param_key = explode("=", $first_param)[0];
 
-        if (array_key_exists($first_param_key, NAVIGATOR_TABLE)) {
-            $target = NAVIGATOR_TABLE[$first_param_key];
-        } 
-    } 
+        if (array_key_exists($first_param_key, YAONGWIKI_NAVIGATOR_TABLE)) {
+            $target = YAONGWIKI_NAVIGATOR_TABLE[$first_param_key];
+        } else {
+            $target = YAONGWIKI_NAVIGATOR_TABLE["page-not-found"];
+        }
 
-    else {
-        $target = "page.read.php";
+    } else {
+        
+        $target = YAONGWIKI_NAVIGATOR_TABLE["read"];
     }
 
-    return get_theme_path() . $target;
+    return YAONGWIKI_THEME_DIR . "/" . $target;
 }
+
+// 사이트 로드
+$current_page_url = get_current_page_url();
+require_once to_inner_url($current_page_url);

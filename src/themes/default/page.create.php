@@ -7,7 +7,7 @@
  * @date 2017. 09. 08
  */
 
-require_once YAONGWIKI_CORE . "/page.create.processor.php";
+require_once YAONGWIKI_CORE_DIR . "/page.create.processor.php";
 
 $page = process();
 $settings = SettingsManager::get_instance();
@@ -17,7 +17,7 @@ if (isset($page["redirect"])) {
     exit();
 }
 
-$page["title"] = "Create" . " - " . $settings->get("site_title");
+$page["title"] = "Create" . " - " . SettingsManager::get_instance()->get("site_title");
 
 require_once __DIR__ . "/frame.header.php";
 ?>

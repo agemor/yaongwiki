@@ -3,24 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="<?php echo(SettingsManager::get_instance()->get("site_keywords"));?>">
 
     <title><?php echo($page["title"]);?></title>
 
-    <!-- Bootstrap CSS -->
-    <link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/bootstrap.min.css" rel="stylesheet">
-    <link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/default.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/default.css" rel="stylesheet">
   </head>
   <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-  <?php
-  $site_title = SettingsManager::get_instance()->get("site_title");
-  if ($site_title == null) {
-    $site_title = "YaongWiki";
-  }
-  ?>
-    <a class="navbar-brand" href="./"><?php echo($site_title);?></a>
+    <a class="navbar-brand" href="./"><?php echo(SettingsManager::get_instance()->get("site_title"));?></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
