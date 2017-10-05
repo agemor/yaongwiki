@@ -20,7 +20,17 @@ if (isset($page["redirect"])) {
 $page["title"] = "Installation - YaongWiki";
 ?>
 
-<?php require_once __DIR__ . "/frame.header.php"; ?>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title><?php echo($page["title"]);?></title>
+
+  <link href=".<?php echo(YAONGWIKI_THEME_DIRNAME);?>/css/bootstrap.min.css" rel="stylesheet">
+  <link href=".<?php echo(YAONGWIKI_THEME_DIRNAME);?>/css/default.css" rel="stylesheet">
+</head>
+<body>
 <div class="container">
 
   <div class="title my-4">
@@ -86,4 +96,5 @@ $page["title"] = "Installation - YaongWiki";
   </form>
   <?php } ?>
 </div>
-<?php require_once __DIR__ . "/frame.footer.php"; ?>
+</body>
+</html>

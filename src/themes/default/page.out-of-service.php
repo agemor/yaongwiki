@@ -21,8 +21,8 @@ $page["title"] = "Out of Service";
 
     <title><?php echo($page["title"]);?></title>
 
-    <link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/bootstrap.min.css" rel="stylesheet">
-    <link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/default.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_THEME_DIRNAME);?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href=".<?php echo(YAONGWIKI_THEME_DIRNAME);?>/css/default.css" rel="stylesheet">
   </head>
   <body>
     <div class="container">

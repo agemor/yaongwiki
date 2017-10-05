@@ -21,14 +21,17 @@ $page["title"] = "Dashboard" . " - " . SettingsManager::get_instance()->get("sit
 
 <?php require_once __DIR__ . "/frame.header.php"; ?>
 <div class="container">
+
   <div class="title my-4">
     <h2>Dashboard</h2>
   </div>
+
   <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
   </div>
   <?php } ?>
+  
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" data-toggle="tab" href="#viewAccountPanel" role="tab">Account status</a>
@@ -175,4 +178,5 @@ $page["title"] = "Dashboard" . " - " . SettingsManager::get_instance()->get("sit
     </div>
   </div>
 </div>
-<?php require_once __DIR__ . "/frame.footer.php"; ?>
+</body>
+</html>

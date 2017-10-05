@@ -28,6 +28,9 @@ const PERMISSION_TABLE = array(
     4 => "System Admistrator"
 );
 
+// HTTP 헤더 값 저장하기
+HttpVarsManager::get_instance()->set($_GET, $_POST);
+
 function redirect($url) {
     header("Location: " . $url);
 }

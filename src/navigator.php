@@ -12,7 +12,8 @@ define("YAONGWIKI_LANGUAGE", "en_US");
 
 define("YAONGWIKI_ROOT_DIR", __DIR__);
 define("YAONGWIKI_CORE_DIR", __DIR__ . "/core");
-define("YAONGWIKI_THEME_DIR", __DIR__ . "/theme/" . YAONGWIKI_THEME);
+define("YAONGWIKI_THEME_DIRNAME", "/themes/" . YAONGWIKI_THEME);
+define("YAONGWIKI_THEME_DIR", __DIR__ . YAONGWIKI_THEME_DIRNAME);
 
 define("YAONGWIKI_NAVIGATOR_TABLE", array(
     "install" => "page.install.php",
@@ -37,9 +38,6 @@ define("YAONGWIKI_NAVIGATOR_TABLE", array(
 
 require_once YAONGWIKI_CORE_DIR . "/languages/" . YAONGWIKI_LANGUAGE . ".php";
 require_once YAONGWIKI_CORE_DIR . "/db.account.php";
-
-// HTTP 헤더 값 저장하기
-HttpVarsManager::get_instance()->set($_GET, $_POST);
 
 /**
  * 현재 페이지의 전체 URL 구하기
