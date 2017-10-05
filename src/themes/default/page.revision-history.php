@@ -32,7 +32,7 @@ $page["title"] = "Revision History: " . $page["article"]["title"] . " - " . Sett
 
   <div class="text-right mb-3">
     <div class="btn-group" role="group">
-      <a class="btn btn-default" href="./?read&i=<?php echo($page['article']['id']);?>">Read article</a>
+      <a class="btn btn-default" href="./?read&i=<?php echo($page["article"]["id"]);?>">Read article</a>
     </div>
   </div>
 
