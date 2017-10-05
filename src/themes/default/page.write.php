@@ -22,18 +22,21 @@ $page["title"] = "Edit Article" . " - " . $settings->get("site_title");
 
 $user_permission = UserManager::get_instance()->get("permission");
 $have_permission = $user_permission >= intval($page["article"]["permission"]);
-
-require_once __DIR__ . "/frame.header.php";
 ?>
-<link href=".<?php echo(YAONGWIKI_DIR);?>/themes/default/css/simplemde.min.css" rel="stylesheet">
-<script src=".<?php echo(YAONGWIKI_DIR);?>/themes/default/js/simplemde.min.js"></script>
+
+<?php require_once __DIR__ . "/frame.header.php"; ?>
+
+<link href=".<?php echo(YAONGWIKI_THEME_DIR);?>/css/simplemde.min.css" rel="stylesheet">
+<script src=".<?php echo(YAONGWIKI_THEME_DIR);?>/js/simplemde.min.js"></script>
 
 <div class="container">
+
   <div class="title my-4">
     <h2>
     Edit Article <em>(<?php echo($page["article"]["title"]);?>)</em>
-    <h2>
+    </h2>
   </div>
+
   <?php if (isset($page["result"]) && $page["result"] !== true) { ?>
   <div class="alert alert-danger" role="alert">
     <?php echo($page["message"]);?>
@@ -103,6 +106,4 @@ function deleteAlert(e) {
     writeForm.submit();
 }
 </script>
-<?php
-require_once __DIR__ . "/frame.footer.php";
-?>
+<?php require_once __DIR__ . "/frame.footer.php"; ?>
