@@ -23,6 +23,7 @@ function process() {
     $http_article_title = $http_vars->get("t");
     $http_article_id = $http_vars->get("i");
     $http_no_redirect = $http_vars->get("no-redirect") != null;
+    $http_random = $http_vars->get("random") != null;
     
     $read_by_id = !empty($http_article_id);
     
@@ -37,15 +38,20 @@ function process() {
             "redirect" => "./?out-of-service"
         );
     }
-    
-    $db->in(DB_ARTICLE_TABLE)->select("*");
 
-    if ($read_by_id) {
-        $db->where("id", "=", $http_article_id);
+    if ($http_random) {
+        $db->in(DB_ARTICLE_TABLE)->select("*");
+        $db->order_by("RAND()");
+        $db->limit("1");
     } else {
-        $db->where("title", "=", $http_article_title);
+        $db->in(DB_ARTICLE_TABLE)->select("*");
+        if ($read_by_id) {
+            $db->where("id", "=", $http_article_id);
+        } else {
+            $db->where("title", "=", $http_article_title);
+        }
     }
-
+    
     $article_data = $db->go_and_get();
     
     if (!$article_data) {

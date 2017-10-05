@@ -31,7 +31,10 @@
           <a class="nav-link" href="./?recent">Recent Edits <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Random Article</a>
+          <a class="nav-link" href="./?create">Create</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./?read&random=true">Visit Random</a>
         </li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdownLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

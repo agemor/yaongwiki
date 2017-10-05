@@ -188,15 +188,6 @@ require_once __DIR__ . "/frame.header.php";
       </div>
     </div>
 
-    <div class="card mt-3">
-        <div class="card-header">
-          Settings toolbox
-        </div>
-        <div class="card-body">
-          <a href="#" class="btn btn-secondary">Restore defaults</a>
-      </div>
-    </div>
-
 
   </div>
 
